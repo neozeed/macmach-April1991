@@ -1,0 +1,71 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#
+#
+# HISTORY
+# $Log:	files.mmax,v $
+# Revision 2.4  89/10/11  13:59:01  dlb
+# 	Added mmax/mmax_ast.c for remote ast support.
+# 	[89/10/02            dlb]
+# 
+# Revision 2.3  89/02/25  17:41:09  gm0w
+# 	Changes for cleanup.
+# 
+# Revision 2.2  89/02/13  23:17:05  dlb
+# 	Removed string.c.  Assembly language routines now in locore.s.
+# 	[89/02/09            dlb]
+# 
+# 16-Jan-88  David Kirschen (kirschen) at Encore Computer Corporation
+#       Added mmax_safe_icu option to turn on National chip bug
+#	workaround for APC boards.
+#
+# 19-Nov-87  David Black (dlb) at Carnegie-Mellon University
+#	Removed net_machdep.c, superseded by net/netisr.c.
+#
+#  2-Oct-87  David Black (dlb) at Carnegie-Mellon University
+#	Added mmax_exception.c to support Mach exception codes.
+#
+# 26-May-87  David Black (dlb) at Carnegie-Mellon University
+#	Removed sys_machdep.c
+#
+# 14-Apr-87  David Black (dlb) at Carnegie-Mellon University
+#	Added mmax_apc option to support new 32332-based cards.
+#
+#  3-Mar-87  David L. Black (dlb) at Carnegie-Mellon University
+#	Removed mmax_sccrom option (release 1 operating code is no
+#	longer supported), and mach_time file (never worked on mmax).
+#
+
+OPTIONS/mmax_apc	optional mmax_apc
+OPTIONS/mmax_safe_icu	optional mmax_safe_icu
+OPTIONS/mmax_kdb	optional mmax_kdb
+OPTIONS/mmax_etlb	optional mmax_etlb
+mmax/autoconf.c		standard device-driver
+mmax/clock.c		standard
+mmax/conf.c		standard
+mmax/counter.c		standard
+mmax/cpu.c		standard
+mmax/crq.c		standard
+mmax/emc.c		optional emc device-driver
+mmax/in_cksum.c		optional inet
+mmax/machdep.c		standard
+mmax/mem.c		standard
+mmax/mmax_ast.c		standard
+mmax/mmax_init.c	standard
+mmax/mmax_exception.c	standard
+mmax/mmax_ptrace.c	standard
+mmax/pcb.c		standard
+mmax/phys.c		standard
+mmax/pmap.c		standard
+mmax/scc.c		standard
+mmax/trap.c		standard
+mmax/ufs_machdep.c	standard
+mmaxio/ms.c		optional msd device-driver
+mmaxio/ms.c		optional mst device-driver
+mmaxio/ms_subr.c	optional msd device-driver
+mmaxio/ms_subr.c	optional mst device-driver
+mmaxio/sccsl.c		standard device-driver
+mmaxif/if_emc.c		optional emc device-driver

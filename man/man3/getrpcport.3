@@ -1,0 +1,41 @@
+.\"
+.\" $Id: getrpcport.3,v 1.2 90/01/12 18:30:06 jamie Exp $
+.\"
+.\" HISTORY
+.\" $Log:	getrpcport.3,v $
+.\" Revision 1.2  90/01/12  18:30:06  jamie
+.\" 	Updated for 2.6 MSD release.
+.\" 	[90/01/12            jamie]
+.\" 
+.\"
+.\" @(#)getrpcport.3r 1.1 85/12/28 SMI; new on release 3.0
+.TH GETRPCPORT 3R "6 October 1987"
+.SU
+.SH NAME
+getrpcport \- get RPC port number
+.SH SYNOPSIS
+.ft B
+.nf
+int getrpcport(host, prognum, versnum, proto)
+	char *host;
+	int prognum, versnum, proto;
+.fi
+.SH DESCRIPTION
+.I Getrpcport
+returns the port number for version
+.I versnum
+of the RPC program
+.I prognum
+running on
+.I host
+and using protocol
+.IR proto .
+It returns 0 if it cannot contact the portmapper, or if
+.I prognum
+is not registered.  If
+.I prognum
+is registered but not with version
+.IR versnum ,
+it will still return a port number (for some version of the program)
+indicating that the program is indeed registered.
+The version mismatch will be detected upon the first call to the service.

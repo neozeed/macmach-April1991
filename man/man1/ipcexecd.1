@@ -1,0 +1,45 @@
+.TH ipcexecd 1 5/7/87
+.SH NAME
+.nf
+ipcexecd \- run the ipcexecd server
+.SH SYNOPSIS
+.nf
+.B 	/usr/mach/etc/ipcexecd [-p prefix] [-o file]
+
+.SH DESCRIPTION	
+The 
+.B ipcexecd
+server checks in a public service port with the
+.B net-name-server
+and  waits for requests to start processes. Its full
+path name must be used when it is started. It checks in
+ports with the names 
+.I <prefix>host-name.
+If no prefix argument is given
+.I DEFAULT_PREFIX 
+defined in <servers/ipcx_types.h> is used. The host names are those
+found by
+.I gethostbyname(3n).
+The same port is entered by a different name for each alias.
+This server must be running on a target host before any
+calls to startserver for that target will work.
+.br
+The options are:
+.TP
+-p <prefix>
+the prefix to be used on the names for the service port
+.TP
+-o <filename>
+the file to which the output from any created processes will be directed.
+The default is /dev/null.
+.i0
+.DT
+
+
+.SH SEE ALSO
+start_rem_server(1), ipcx(3), gethostbyname(3n), net_name_checkin(3)
+
+.SH HISTORY
+.TP
+7 May 87 Alessandro Forin and Jeffrey Eppinger at Carnegie Mellon
+Made a mach version of old accent ipcexecd.

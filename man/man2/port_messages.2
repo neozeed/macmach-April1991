@@ -1,0 +1,57 @@
+.TH port_messages 2 1/13/87
+.CM 4
+.SH NAME
+.nf
+port_messages  \-  returns ports having outstanding messages
+.SH SYNOPSIS
+.nf
+.ft B
+#include  <mach.h>
+.nf
+.ft B
+kern_return_t port_messages(target_task, ports, ports_count)
+	task_t		target_task;
+	port_array_t	*ports ;	/* out array */
+	int		*ports_count;	/* out */
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+target_task
+The task for which ports are to be checked.
+.TP 15
+.B
+ports
+Returned pointing to an array of ports that have messages waiting.
+.TP 15
+.B
+ports_count
+The number of ports returned in the 
+.B ports
+array.
+
+.SH DESCRIPTION
+.B port_messages
+returns an array consisting of all the 
+.B unrestricted
+ports for which 
+there is a message waiting.
+
+The memory for this array of ports is allocated when the message is received,
+therefore, the task that receives this message should use 
+.B vm_deallocate
+to free the allocated virtual memory once it is done with the information.
+
+Note that the list of ports is computed prior to the queueing of a reply
+message for this call; therefore, the reply port involved in this call 
+will only appear in the resulting array if another message were previously
+queued.  
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+A list of ports is returned.
+

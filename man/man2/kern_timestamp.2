@@ -1,0 +1,49 @@
+.TH kern_timestamp 2 4/3/87
+.CM 4
+.SH NAME
+.nf
+kern_timestamp  \-  return (machine-dependent) timestamp
+.SH SYNOPSIS
+.nf
+.ft B
+#include <sys/time_stamp.h>
+
+.nf
+.ft B
+kern_return_t kern_timestamp(tsp);
+	struct tsval	*tsp;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+tsp
+pointer to a struct tsval to receive the timestamp.
+
+.SH DESCRIPTION
+.B kern_timestamp
+obtains a current low-overhead timestamp from the kernel.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The timestamp has been returned.
+
+.TP 25
+KERN_INVALID_ADDRESS
+tsp does not point to valid user memory.
+
+.SH SEE ALSO
+.B convert_ts_to_tv, gettimeofday
+
+.SH BUGS
+Availability limited.  Timestamp format is machine-dependent;
+the value
+of the symbol
+.B TS_FORMAT
+must be saved for
+.B convert_ts_to_tv().  Multimax timestamps are subject to rollover on
+an hourly basis (2^32 usec).  Timestamps on most other systems have a
+granularity of 10ms.

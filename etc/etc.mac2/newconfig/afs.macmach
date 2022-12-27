@@ -1,0 +1,231 @@
+#! /bin/sh
+
+# afs.macmach, version 02
+
+# shell script for AFS update of a MacMach system
+
+# First the /.README file is copied, along with fixit and sed.
+# Next, fixit is applied to the /.README and any need files are
+# copied to the destination.  If they do not already exist, the
+# /.hostname and /etc/fstab files are created.  Fixit is again
+# applied to the /.README to set file protections.  The Makefile
+# in /etc/newconfig is used to install all configuration files
+# and then to install all device files in /dev.
+
+if [ "$#" != 5 -a "$#" != 0 ] ; then
+   echo "usage: afs.macmach [ <addr> <gateway> <scsi id> <dest root> <source root> ]"
+   exit 1
+fi
+
+ADDR="$1"
+GATEWAY="$2"
+SCSIID="$3"
+DESTDIR="$4"
+SRCDIR="$5"
+
+echo "AFS MACMACH System Update"
+[ "$ADDR" ] || { echo -n "Enter network address: "; read ADDR; }
+[ "$GATEWAY" ] || { echo -n "Enter network gateway address: "; read GATEWAY; }
+[ "$SCSIID" ] || { echo -n "Enter disk scsi id: "; read SCSIID; }
+[ "$DESTDIR" ] || { echo -n "Enter destination root: "; read DESTDIR; }
+[ "$SRCDIR" ] || { echo -n "Enter source root: "; read SRCDIR; }
+
+echo "If the destination system is going to be used as a workstation"
+echo "on a CMU network with dependable access to AFS, much disk space"
+echo "can be saved by making /lib, /usr/bin and so on be symbolic"
+echo "links back to the AFS source directory.  Otherwise, all files"
+echo "from the source directory will be copied to the destination disk."
+while true; do
+  echo -n "Ok to use symbolic links? [YES] "
+  read LINKS
+  [ "$LINKS" ] || LINKS="YES"
+  case "$LINKS" in
+    Y|y|YES|yes) LINKS="YES"; break;;
+    N|n|NO|no) LINKS=""; break;;
+    *) echo "Please enter YES or NO.";;
+  esac
+done
+
+# This is the directory where common configuration files reside.
+[ "$COMMON" ] || COMMON="/afs/andrew/common/etc"
+# note: if this script is used to install from a local disk, this can be
+# changed to "$SRCDIR/etc"
+
+echo ""
+echo "ADDR    = $ADDR"
+echo "SCSIID  = $SCSIID"
+echo "DESTDIR = $DESTDIR"
+echo "SRCDIR  = $SRCDIR"
+echo "COMMON  = $COMMON"
+
+# common installation files
+HOSTS=$COMMON/hosts
+RESOLV=$COMMON/resolv.conf
+THISCELL=$COMMON/ThisCell
+CELLSRV=$COMMON/CellServDB
+CACHEINFO=$COMMON/cacheinfo20000
+
+# These commands are essential.
+[ -d $DESTDIR/tmp ] || mkdir $DESTDIR/tmp
+FIXIT=$DESTDIR/tmp/fixit
+SED=$DESTDIR/tmp/sed
+CPIO=$DESTDIR/tmp/cpio
+GREP=$DESTDIR/tmp/old.bin.grep
+
+echo ""
+echo "Getting $DESTDIR/.README from AFS."
+[ -f $SED ] || cp $SRCDIR/bin/sed $SED
+chmod 755 $SED
+[ -f $FIXIT ] || cp $SRCDIR/usr/bin/fixit $FIXIT
+chmod 755 $FIXIT
+[ -f $CPIO ] || cp $SRCDIR/bin/cpio $CPIO
+chmod 755 $CPIO
+[ -f $GREP ] || cp $SRCDIR/usr/lib/old.bin.grep $GREP
+chmod 755 $GREP
+if [ "$LINKS" ]; then
+  $GREP -v '^/lib' $SRCDIR/.README |
+  $GREP -v '^/usr/bin' |
+  $GREP -v '^/usr/dict' |
+  $GREP -v '^/usr/etc' |
+  $GREP -v '^/usr/include' |
+  $GREP -v '^/usr/lib' |
+  $GREP -v '^/usr/man' |
+  $GREP -v '^/usr/old' |
+  $GREP -v '^/usr/ucb' >$DESTDIR/.README
+  (
+    echo "#"
+    echo "# symbolic links to AFS source: \"$SRCDIR\""
+    echo "/afs 0777 0 0 0 d"
+    echo "/lib 0777 0 3 655042112 l $SRCDIR/lib"
+    echo "/usr/bin 0777 0 3 655042112 l $SRCDIR/usr/bin"
+    echo "/usr/dict 0777 0 3 655042112 l $SRCDIR/usr/dict"
+    echo "/usr/etc 0777 0 3 655042112 l $SRCDIR/usr/etc"
+    echo "/usr/include 0777 0 3 655042112 l $SRCDIR/usr/include"
+    echo "/usr/lib 0777 0 3 655042112 l $SRCDIR/usr/lib"
+    echo "/usr/man 0777 0 3 655042112 l $SRCDIR/usr/man"
+    echo "/usr/old 0777 0 3 655042112 l $SRCDIR/usr/old"
+    echo "/usr/ucb 0777 0 3 655042112 l $SRCDIR/usr/ucb"
+    echo "/usr/src 0777 0 3 655042112 l $SRCDIR/usr/src"
+  ) >>$DESTDIR/.README
+else
+  cp $SRCDIR/.README $DESTDIR/.README
+fi
+[ -f $DESTDIR/.README ] || {
+  echo "failed to get $DESTDIR/.README"
+  exit 1
+}
+chmod 444 $DESTDIR/.README
+README="$DESTDIR/.README"
+
+echo ""
+echo "Checking $DESTDIR for files to fix."
+cat $README | $FIXIT -fix $DESTDIR | $SED -n "
+  /^\/.*: missing file$/ {
+    s\"$DESTDIR/\"\"
+    s\": missing file\"\"
+    p
+  }
+  /^\/.*: sum .*$/ {
+    s\"$DESTDIR/\"\"
+    s\": sum .*\"\"
+    p
+  }
+" > $DESTDIR/tmp/FILES$$
+
+echo ""
+echo "Copying files..."
+( cd $SRCDIR; $CPIO -pduv $DESTDIR <$DESTDIR/tmp/FILES$$ )
+rm $DESTDIR/tmp/FILES$$
+
+[ -f $DESTDIR/.hostname ] || {
+  echo ""
+  echo "creating $DESTDIR/.hostname"
+  [ "$GATEWAY" = "NONE" ] && GATEWAY=""
+  [ "$ADDR" = "NONE" ] && ADDR=""
+  if [ "$ADDR" ]; then
+    # translate the IP address into the primary hostname
+    # and put it in the .hostname file in the DESTDIR directory.
+    HOSTNAME=`$SED -n \
+      -e "/$ADDR/s/[ 	][ 	]*/ /g"   \
+      -e "/$ADDR/s/^[^ ]* \([^ ]*\).*/\1/p" \
+      < $HOSTS`
+    [ "$HOSTNAME" ] || {
+      echo "ERROR: can not find $ADDR in $HOSTS"
+      echo "System will not use external network."
+    }
+  else
+    HOSTNAME=""
+  fi
+  if [ "$HOSTNAME" ]; then
+    NETNAME='$HOSTNAME'
+  else
+    HOSTNAME="MacMach"
+    NETNAME=""
+  fi
+  (
+    echo "# This is the system's name."
+    echo "HOSTNAME=\"$HOSTNAME\""
+    echo ""
+    echo "# Set NETNAME to \$HOSTNAME to enable external network access."
+    echo "NETNAME=\"$NETNAME\""
+    echo ""
+    echo "# This is the gateway IP address."
+    echo "GATEWAY=\"$GATEWAY\""
+  ) >$DESTDIR/.hostname
+}
+chmod 444 $DESTDIR/.hostname
+
+[ -f $DESTDIR/etc/fstab ] || {
+  echo ""
+  echo "creating $DESTDIR/etc/fstab"
+  echo /dev/sd$SCSIID"a:/:rw:0:1" > $DESTDIR/etc/fstab 
+  echo /dev/sd$SCSIID"g:/usr:rw:0:2" >> $DESTDIR/etc/fstab
+}
+chmod 444 $DESTDIR/etc/fstab
+
+echo ""
+echo "copying network configuration files..."
+[ -f $DESTDIR/etc/newconfig/resolv.conf ] ||
+  cp $RESOLV $DESTDIR/etc/newconfig/resolv.conf
+chmod 444 $DESTDIR/etc/newconfig/resolv.conf
+[ -f $DESTDIR/etc/hosts ] ||
+  cp $HOSTS $DESTDIR/etc/hosts
+chmod 444 $DESTDIR/etc/hosts
+
+echo ""
+echo "copying AFS configuration files..."
+cp $CELLSRV $DESTDIR/usr/vice/etc/CellServDB
+chmod 444 $DESTDIR/usr/vice/etc/CellServDB
+cp $THISCELL $DESTDIR/usr/vice/etc/ThisCell
+chmod 444 $DESTDIR/usr/vice/etc/ThisCell
+cp $CACHEINFO $DESTDIR/usr/vice/etc/cacheinfo
+chmod 444 $DESTDIR/usr/vice/etc/cacheinfo
+
+echo ""
+echo "setting file protections on $DESTDIR"
+cat $README | $FIXIT -fastfix $DESTDIR
+
+PATH="$DESTDIR/bin:$DESTDIR/etc:$DESTDIR/usr/bin:$DESTDIR/usr/ucb"
+export PATH
+
+echo ""
+echo "installing configuration files..."
+[ -f $DESTDIR/etc/group ] || cp $DESTDIR/etc/newconfig/group $DESTDIR/etc/group
+[ -f $DESTDIR/etc/passwd ] || cp $DESTDIR/etc/newconfig/passwd $DESTDIR/etc/passwd
+[ -f /etc/group ] || cp $DESTDIR/etc/newconfig/group /etc/group
+[ -f /etc/passwd ] || cp $DESTDIR/etc/newconfig/passwd /etc/passwd
+cd $DESTDIR/etc/newconfig
+make DESTDIR=$DESTDIR config
+
+echo ""
+echo "creating device files..."
+cd $DESTDIR/etc/newconfig
+make DESTDIR=$DESTDIR dev
+
+# remove .STATUS to force checksum verification
+rm -f $DESTDIR/.STATUS
+
+sync
+echo ""
+echo "AFS MACMACH Update complete."
+exit 0

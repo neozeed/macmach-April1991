@@ -1,0 +1,90 @@
+.TH port_extract 2 4/13/87
+.CM 4
+.SH NAME
+.nf
+port_extract_send  \-  extracts a task's send rights
+port_extract_receive  \-  extracts a task's receive/ownership rights
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t port_extract_send(task, his_name, his_port)
+	task_t task;
+	port_name_t his_name;
+	port_t *his_port;		/* out */
+
+
+.fi
+.ft P
+.nf
+.ft B
+kern_return_t port_extract_receive(task, his_name, his_port)
+	task_t task;
+	port_name_t his_name;
+	port_t *his_port;		/* out */
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+task
+The task whose rights the caller takes.
+.TP 15
+.B
+his_name
+The name by which 
+.B task
+knows the rights.
+.TP 15
+.B
+his_port
+Rights returned to the caller.
+
+.SH DESCRIPTION
+.B port_extract_send
+and 
+.B port_extract_receive
+remove 
+.B task
+'s
+rights for a port and return the rights to the caller.  
+.B task
+is
+left with no rights for the port.
+
+.B port_extract_send
+extracts send rights; 
+.B task
+can't have
+receive or ownership rights for the named port.  
+.B port_extract_receive
+extracts receive/ownership rights, both of which 
+.B task
+must hold.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B task
+was invalid or 
+.B his_name
+does not name a port for which 
+.B task
+has the required rights.
+
+.SH BUGS
+There is no way to extract just receive rights or just ownership rights.
+
+.SH SEE ALSO
+.B port_insert_send
+,
+.B port_insert_receive
+

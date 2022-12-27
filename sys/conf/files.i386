@@ -1,0 +1,139 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#
+#
+# HISTORY
+# $Log:	files.i386,v $
+# Revision 2.8  89/09/25  12:20:13  rvb
+# 	Make fp configurable, flush files that we do not need
+# 	[89/09/23            rvb]
+# 
+# Revision 2.7  89/09/20  17:26:19  rvb
+# 	Added ln and ec for ORC
+# 	[89/09/20            rvb]
+# 
+# Revision 2.6  89/09/09  15:19:09  rvb
+# 	Allow blit device and make more devices configureable
+# 	[89/09/07            rvb]
+# 
+# Revision 2.5  89/07/17  10:34:49  rvb
+# 	Add fpsup.c, com.c, and qd.c.  Trash mCOM.c
+# 	[89/07/10            rvb]
+# 
+# Revision 2.4  89/04/05  12:57:20  rvb
+# 	new kdb org
+# 	build kdasm.s
+# 	[89/03/04            rvb]
+# 
+# Revision 2.3  89/02/25  17:40:55  gm0w
+# 	Changes for cleanup.
+# 
+# Revision 2.2  89/01/23  22:17:45  af
+# 	Created.
+# 	[89/01/16  17:23:38  af]
+# 
+
+i386/kdb/access.c		optional mach_kdb
+i386/kdb/bits.c			optional mach_kdb
+i386/kdb/command.c		optional mach_kdb
+i386/kdb/expr.c			optional mach_kdb
+i386/kdb/format.c		optional mach_kdb
+i386/kdb/input.c		optional mach_kdb
+i386/kdb/kdb_main.c		optional mach_kdb
+i386/kdb/message.c		optional mach_kdb
+i386/kdb/opset.c		optional mach_kdb
+i386/kdb/output.c		optional mach_kdb
+i386/kdb/pcs.c			optional mach_kdb
+i386/kdb/print.c		optional mach_kdb
+i386/kdb/runpcs.c		optional mach_kdb
+i386/kdb/setup.c		optional mach_kdb
+i386/kdb/stack.c		optional mach_kdb
+i386/kdb/sym.c			optional mach_kdb
+i386/kdb/tbls.c			optional mach_kdb
+i386/kdb/utls.c			optional mach_kdb
+
+#kdb/access.c			optional mach_kdb
+#kdb/command.c			optional mach_kdb
+#kdb/expr.c			optional mach_kdb
+#kdb/input.c			optional mach_kdb
+#kdb/output.c			optional mach_kdb
+#kdb/pcs.c			optional mach_kdb
+#kdb/print.c			optional mach_kdb
+#kdb/setup.c			optional mach_kdb
+
+#i386/kdb.new/bits.c		optional mach_kdb
+#i386/kdb.new/kdb_main.c		optional mach_kdb
+#i386/kdb.new/opset.c		optional mach_kdb
+#i386/kdb.new/stack.c		optional mach_kdb
+#i386/kdb.new/sym.c		optional mach_kdb
+#i386/kdb.new/tbls.c		optional mach_kdb
+#i386/kdb.new/utls.c		optional mach_kdb
+
+i386/autoconf.c			standard
+i386/btptes.c			standard
+i386/clever.s			standard
+i386/clock.c			standard
+i386/copy.c			standard
+i386/fpsup.c			standard
+i386/fp/arith.b			optional fp
+i386/fp/dcode.b			optional fp
+i386/fp/divmul.b		optional fp
+i386/fp/lipsq.b			optional fp
+i386/fp/reg.b			optional fp
+i386/fp/remsc.b			optional fp
+i386/fp/round.b			optional fp
+i386/fp/status.b		optional fp
+i386/fp/store.b			optional fp
+i386/fp/subadd.b		optional fp
+i386/fp/trans.b			optional fp
+i386/i386_init.c		standard
+i386/pic.c			standard
+i386/pit.c			standard
+#i386/i80387.s			standard
+i386/in_cksum.c			standard
+i386/kdb.c			optional mach_kdb
+i386/libc.c			standard
+i386/loose_ends.c		standard
+i386/machdep.c			standard
+i386/mem.c			standard
+i386/pcb.c			standard
+i386/phys.c			standard
+i386/pmap.c			standard
+i386/sys_machdep.c		standard
+i386/tables.c			standard
+i386/trap.c			standard
+i386/ufs_machdep.c		standard
+i386/vm_machdep.c		standard
+i386/vx_exception.c		standard
+i386at/blit.c			optional blit
+i386at/c765.c			optional fd
+i386at/com.c			optional com device-driver |${VOLATILE}
+i386at/conf.c			optional at386
+i386at/ec.c			optional ec device-driver |${VOLATILE}
+i386at/hd.c			optional hd
+i386at/if_pc586.c		optional pc586 device-driver |${VOLATILE}
+i386at/kd.c			optional at386
+i386at/kdasm.s			optional at386
+i386at/kd_event.c		optional at386
+i386at/kd_mouse.c		optional blit
+i386at/kd_queue.c		optional at386
+i386at/ln.c			optional ln device-driver |${VOLATILE}
+i386at/lna.s			optional ln device-driver |${VOLATILE}
+i386at/m765drv.c		optional fd
+i386at/m765knl.c		optional fd
+i386at/pc586bcopy.s		optional pc586
+i386at/qd.c			optional qd device-driver |${VOLATILE}
+i386at/rtc.c			optional at386
+i386at/wt.c			optional wt
+i386exl/conf.c			optional exl
+i386exl/exlmCOM.c		optional exl
+i386exl/i3.c			optional exl
+i386exl/i386_pic.c		optional exl
+i386exl/icsp.c			optional exl
+i386exl/prf.c			optional exl
+i386exl/s2.c			optional exl
+i386exl/scsi.c			optional exl
+i386exl/todc.c			optional exl

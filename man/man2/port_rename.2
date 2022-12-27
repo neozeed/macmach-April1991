@@ -1,0 +1,74 @@
+.TH port_rename 2 4/13/87
+.CM 4
+.SH NAME
+.nf
+port_rename  \-  change a task's name for a port or port set
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t port_rename(task, old_name, new_name)
+	task_t task;
+	port_name_t old_name;
+	port_name_t new_name;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+task
+The task whose port name space is changed.
+.TP 15
+.B
+old_name
+The name being changed.
+.TP 15
+.B
+new_name
+The new value for 
+.B old_name
+.
+
+.SH DESCRIPTION
+.B port_rename
+changes the name by which a port or port set is known
+to 
+.B task
+.  
+.B new_name
+must not already be in use, and it can't
+be a distinguished value like 
+.B PORT_NULL
+.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_NAME_EXISTS
+.B task
+already has a right named 
+.B new_name
+.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B task
+was invalid or 
+.B task
+did
+not have any rights named 
+.B old_name
+or 
+.B new_name
+was
+an invalid name.
+
+.SH SEE ALSO
+.B port_names
+

@@ -1,0 +1,52 @@
+.TH port_set_allocate 2 4/13/87
+.CM 4
+.SH NAME
+.nf
+port_set_allocate  \-  creates a port set in a specified task
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t port_set_allocate(task, set_name)
+	task_t task;
+	port_set_name_t *set_name;	/* out */
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+task
+The task in which the new port set is created.
+.TP 15
+.B
+set_name
+The task's name for the new port set.
+
+.SH DESCRIPTION
+.B port_set_allocate
+causes a port set to be created for the
+specified task; the resulting set's name is returned in 
+.B set_name
+.
+The new port set is empty.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B task
+was invalid.
+.TP 25
+KERN_RESOURCE_SHORTAGE
+The kernel ran out of memory.
+
+.SH SEE ALSO
+.B port_set_deallocate
+

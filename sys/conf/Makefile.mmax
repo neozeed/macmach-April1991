@@ -1,0 +1,192 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# Copyright (c) 1988 Carnegie-Mellon University
+# Copyright (c) 1987 Carnegie-Mellon University
+# Copyright (c) 1986 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#  
+#
+# HISTORY
+# $Log:	Makefile.mmax,v $
+# Revision 2.5  89/10/11  13:57:05  dlb
+# 	Update inline technology.  Add hack rule to haul in extra header
+# 	       files that it needs.
+# 	Move all locore rules here.  Remove special ioconf dependency.
+# 	Use ${KCC} for all kernel sources.
+# 	Use SOURCE_DIR to find sources for inline, locore, dbmon.
+# 
+# Revision 2.4  89/02/25  17:39:28  gm0w
+# 	Changes for cleanup.
+# 
+# Revision 2.3  88/07/21  00:02:27  rpd
+# Changed INLINECMD to ././inline, because make seems to strip a "./".
+# 
+#  1-Mar-88  David Kirschen (kirschen) at Encore Computer Corporation
+#       Changed rules to pipe ccom output into inline program
+#       (performance improvement)
+#
+# 22-Feb-88  Joseph Boykin (boykin) at Encore Computer Corporation
+#	Added ${INLINECMD} to ioconf.o (which ifself was added) so
+#	the inline command is built prior to its being used
+#	(this was a problem for	parallel make).
+#	Added CLEAN_EXTRA and SWAPDEPS_PREFIX to
+#	deal with inline (this really should be in the 'main' makefile).
+#
+# 18-Jan-88 Sue LoVerso (sue) at Encore Computer Corporation
+#	Added FEATURES_EXTRA for putting mmax_*.h into the
+#	../machine/FEATURES.h file.
+#
+# 23-Dec-87 Joseph Boykin (boykin) at Encore Computer Corp.
+#	Changed -Wc,-Z202 to -q nosb -q volatile per new compiler.
+#
+#  3-Nov-87  David Black (dlb) at Carnegie-Mellon University
+#	Added support for inline program.
+#
+# 31-Aug-87  David Black (dlb) at Carnegie-Mellon University
+#	Removed -q nodirect_code nonsense; compiler driver has been fixed.
+#
+# 30-Mar-87  David Black (dlb) at Carnegie-Mellon University
+#	Added _P rules for profiling.
+#
+# 24-Mar-87  David Black (dlb) at Carnegie-Mellon University
+#	Changed -A switch to -q nodirect_code for new compiler.
+#
+# 24-Feb-87  David L. Black (dlb) at Carnegie-Mellon University
+#	Initial version -- lots of changes from original skeleton.
+#
+
+######################################################################
+#BEGIN	Machine dependent Makefile fragment for the Multimax
+######################################################################
+
+INLINECMD= ./inline
+INLINE = ${INLINECMD} ${INLINEOPTS}
+
+LDFLAGS=-e start memconf.mmax
+
+FEATURES_EXTRA=mmax_*.h
+LIBS=
+
+LDOBJS_PREFIX=locore.o
+LDOBJS_SUFFIX=dbmon.o
+
+LDDEPS=memconf.mmax dbmon.o
+
+SWAPDEPS_PREFIX= ${INLINECMD}
+CLEAN_EXTRA= ${INLINECMD}
+
+OBJSDEPS= ${INLINECMD}
+
+MMAX_COPTS = -Wc,-Z50 -Wc,-X182 -q nosb -q volatile -q nopreload  
+
+#
+#  Compilation rules to generate .o from .c for normal files.
+#  Multimax has special compiler switches, and sh doesn't understand
+#  null commands between semicolons.
+#
+C_RULE_1A=${KCC} -S -O ${COPTS} ${MMAX_COPTS}
+C_RULE_1B=$*.c | ${INLINECMD} | as -o $*.o
+C_RULE_2=
+C_RULE_3=
+C_RULE_4=
+
+#
+#  Compilation rules to generate .o from .c for profiling routine files.
+#
+C_RULE_1A_P=${KCC} -S -O ${COPTS_P} ${MMAX_COPTS}
+C_RULE_1B_P=$*.c | ${INLINECMD} | as -o $*.o
+C_RULE_2_P=
+C_RULE_3_P=
+C_RULE_4_P=
+
+#
+# Compilation rules to generate .o from .c for driver files
+#
+C_RULE_1A_D=${C_RULE_1A}
+C_RULE_1B_D=${C_RULE_1B}
+C_RULE_2_D=${C_RULE_2}
+C_RULE_3_D=${C_RULE_3}
+C_RULE_4_D=${C_RULE_4}
+
+#
+#  Special rules to compile with symbols  These are inserted where
+#	desired by hand editing the resulting Makefile.  It is also
+#	necessary to remove the -x switch from the ld line to get symbols
+#	into the image.
+#
+CG_RULE_1A=${KCC} -S -g ${COPTS} ${MMAX_COPTS}
+CG_RULE_1A_D=${CG_RULE_1A}
+CG_RULE_1A_P=${KCC} -S -g ${COPTS_P} ${MMAX_COPTS}
+
+
+INLINE_DIR=$(SOURCE_DIR)/inline
+MMAX_INLINE_DIR=$(SOURCE_DIR)/mmax/inline
+
+#
+#  Special rules to build the ${INLINECMD} program.  These are moved
+#  here from the separate makefile since the program is configuration
+#  dependent (e.g. with conditional compilation). 
+#
+
+INLINE_SRC = \
+	$(MMAX_INLINE_DIR)/multimaxpats.c \
+	$(MMAX_INLINE_DIR)/inline_machdep.c \
+	$(INLINE_DIR)/main.c
+
+INLINE_OBJ = 	multimaxpats.o inline_machdep.o main.o
+
+${INLINE_OBJ}: ctype.h stdio.h
+
+${INLINECMD}:${P} ${INLINE_OBJ}
+	${CC} -o ${INLINECMD} ${INLINE_OBJ}
+
+multimaxpats.o: $(MMAX_INLINE_DIR)/multimaxpats.c $(INLINE_DIR)/inline.h
+	${CC} ${CFLAGS} -c $(MMAX_INLINE_DIR)/multimaxpats.c
+
+inline_machdep.o: $(MMAX_INLINE_DIR)/inline_machdep.c $(INLINE_DIR)/inline.h
+	${CC} ${CFLAGS} -c $(MMAX_INLINE_DIR)/inline_machdep.c
+
+main.o: $(INLINE_DIR)/main.c $(INLINE_DIR)/inline.h
+	${CC} ${CFLAGS} -c $(INLINE_DIR)/main.c
+
+#
+#	Haul in non-kernel files needed by inline (XXX).
+#
+
+ctype.h stdio.h:
+	ln -s /usr/include/$@ $@
+
+#
+#  Special rule to generate locore
+#
+
+locore.c: assym.s ${SOURCE_DIR}/mmax/locore.s
+	cat assym.s ${SOURCE_DIR}/mmax/locore.s > locore.c
+
+locore.o: assym.s locore.c 
+	${KCC} -E -DLOCORE -I$(SOURCE_DIR)/machine ${SFLAGS} locore.c >locore.i
+	${AS} -o locore.o locore.i
+	rm locore.i
+#
+#  Build rules for dbmon kernel debugger (talks to real debugger over
+#	a serial line.
+#
+dbmon.c: assym.s ${SOURCE_DIR}/mmax/dbmon.s
+	cat assym.s ${SOURCE_DIR}/mmax/dbmon.s > dbmon.c
+
+dbmon.o: dbmon.c ${LOCORE_HEADS}
+	${KCC} -E -DLOCORE  ${SFLAGS} dbmon.c > dbmon.i ; \
+	${AS} -o dbmon.o ${LOCORE_HEADS} dbmon.i ; \
+	rm dbmon.i
+
+#
+#  Special rule to get memory configuration file (ld directives).
+#
+memconf.mmax: ${SOURCE_DIR}/conf/memconf.mmax
+	cp ${SOURCE_DIR}/conf/memconf.mmax memconf.mmax
+
+######################################################################
+#END	Machine dependent Makefile fragment for the Multimax
+######################################################################

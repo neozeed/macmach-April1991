@@ -1,0 +1,59 @@
+#! /bin/sh -
+
+# /etc/rc.network for MacMach BSD 4.3
+
+# This script starts up the network access.
+# See /etc/rc.afs and /etc/rc.nfs for fileserver startup.
+
+# The /.hostname file sets these shell variables:
+HOSTNAME="MacMach" # system name
+NETNAME=""         # external system name, usually $HOSTNAME
+GATEWAY=""         # gateway address to use
+
+[ -r /.hostname ] && . /.hostname
+
+hostname "$HOSTNAME"
+echo "starting network for \"`hostname`\""
+
+# First, start up local network.
+ifconfig lo0 127.0.0.1 up || {
+  echo "ERROR: ifconfig lo0 127.0.0.1 failed"
+  echo "$WIZARD"
+  eval "$RESTART"
+}
+ifconfig lo0
+
+# Now start up the external network if hostname specified.
+if [ "$NETNAME" ]; then
+
+  if [ "`hostname`" != "$NETNAME" ]; then
+    echo "WARNING: NETNAME != HOSTNAME in /.hostname"
+    hostname "$NETNAME"
+  fi
+
+  ifconfig en0 `hostname` up arp -trailers || {
+    echo "ERROR: ifconfig en0 `hostname` failed"
+    echo "Make sure that this host has an entry in /etc/hosts."
+    echo "Check that the network hardware is connected properly."
+    eval "$RESTART"
+    echo "WARNING: there is no external network connectivity"
+  }
+  ifconfig en0
+
+  hostid `hostname`
+
+  if [ "$GATEWAY" ]; then
+    route -f -n add 0 "$GATEWAY" 1 || {
+      echo "ERROR: route failed"
+      echo "$WIZARD"
+      eval "$RESTART"
+    }
+  else
+    echo "NOTICE: no gateway specified, see /.hostname"
+  fi
+
+else
+
+  echo "NOTICE: external network not started, see /etc/rc.network"
+
+fi

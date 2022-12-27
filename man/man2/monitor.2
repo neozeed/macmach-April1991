@@ -1,0 +1,197 @@
+.TH monitor 2 1/11/90
+.CM 4
+.SH NAME
+.nf
+monitor  \-  Mach kernel monitor (the following are calls)
+monitor_create  \-  creates new monitor within named task.
+monitor_resume  \-  resumes specified monitor.
+monitor_suspend  \-  suspends specified monitor.
+monitor_terminate  \-  destroys specified monitor.
+monitor_read  \-  reads events belonging to named monitor.
+thread_monitor  \-  enables specified thread for monitoring.
+thread_monitor  \-  disables specified thread from monitoring.
+.SH DESCRIPTION
+The current version of the Mach kernel monitor detects context-switches
+of selected threads and saves information about them in protected 
+kernel buffers that are readable by the user.  
+
+The information consists of the type of event (currently, only one
+type of kernel event is detected: context-switches), the stopped-thread
+and started-thread, the processor on which the threads switched, and
+a timestamp with integer seconds and microseconds fields.  If one of
+the threads is unknown, its id is -1.  The most significant bit
+of the processor field is 1 if that event overwrote a previous, unread
+event (ie. overflow).  
+
+.B monitor_create
+creates
+a monitor within the calling task.  It returns the monitor id and the
+size of the event buffer in the kernel.  The user uses this size to
+allocate an appropriatly sized user buffer into which 
+.B monitor_read
+writes context-switch data read from the kernel.  
+.B monitor_create
+returns the monitor
+in a suspended state.  
+.B monitor_resume
+starts the monitor.  
+.B monitor_suspend
+permits the user to suspend (pause) monitoring.  
+.B monitor_terminate
+destroys
+the monitor.  
+.B monitor_read
+reads the context-switch event data from
+the kernel into a user supplied buffer.  
+.B monitor_read
+calls are valid
+as long as its argument is a valid, non-terminated monitor.  
+
+.B thread_monitor
+enables individual threads for monitoring.  When a 
+thread calls 
+.B thread_monitor
+the associated monitor will detect
+each time the thread context-switches.  
+.B thread_unmonitor
+disables
+a thread from being monitored.
+
+For more information, run man on each of the  monitoring calls.
+
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+#include <mach/kernel_event.h>
+
+
+/* only current interpretion of kernel_event */
+
+typedef
+struct 	kernel_event {	/* unit kernel event */
+	 unsigned 	event_type;	 /* the type of kernel event  */
+	 unsigned	first_element;	 /* the stopped thread 	      */
+	 unsigned	second_element;  /* the started thread 	      */
+	 unsigned	third_element;   /* flag and cpu number       */
+	 unsigned 	hi_time;         /* hi time stamp 	      */
+	 unsigned 	lo_time;         /* lo time stamp 	      */
+} kern_mon_event, *kern_mon_event_t, kern_mon_data_t, *kern_mon_buffer_t;
+
+.nf
+.ft B
+kern_return_t monitor_create(owner_task, new_monitor, buffer_size)
+	task_t		owner_task;
+	monitor_t	*new_monitor;	/* out */
+        int		*buffer_size;   /* out */	
+
+
+.fi
+.ft P
+.nf
+.ft B
+kern_return_t monitor_resume(target_monitor)
+	monitor_t	target_monitor;
+
+
+.fi
+.ft P
+.nf
+.ft B
+kern_return_t monitor_suspend(target_monitor);
+	monitor_t	target_monitor;
+
+
+.fi
+.ft P
+.nf
+.ft B
+kern_return_t monitor_terminate(target_monitor)
+	monitor_t	target_monitor;	
+
+
+.fi
+.ft P
+.nf
+.ft B
+kern_return_t monitor_read(target_monitor, buffer, events_read)
+	monitor_t	 	target_monitor;
+    	kern_mon_buffer_t 	buffer;
+    	int			events_read;
+
+
+.fi
+.ft P
+.nf
+.ft B
+kern_return_t thread_monitor(target_monitor, unique_id, target_thread)
+    	monitor_t	 	target_monitor;
+    	int			unique_id;
+    	thread_t		target_thread;
+
+
+.fi
+.ft P
+.nf
+.ft B
+kern_return_t thread_unmonitor(target_monitor, target_thread)
+    	monitor_t	 	target_monitor;
+    	thread_t		target_thread;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+owner_task
+The task which is to contain the new monitor.
+.TP 15
+.B
+new_monitor
+The new monitor.
+.TP 15
+.B
+buffer_size
+The size (in number of events) of the monitor buffer in kernel.
+.TP 15
+.B
+target_monitor
+The monitor for which the operation is being performed.
+.TP 15
+.B
+buffer
+The user's buffer into which the events will be written.
+.TP 15
+.B
+events_read
+The number of events read by the 
+.B monitor_read
+.
+.TP 15
+.B
+unique_id
+A unique id for thread identification outside kernel.
+.TP 15
+.B
+target_thread
+The target for which the operation is being performed.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+When call is successful.  Run man on each call for details
+.TP 25
+KERN_INVALID_ARGUMENT
+When and argument or its port is invalid.  Run man
+on each call for details.
+.TP 25
+KERN_FAILURE
+When call fails.  Run man on each call for details
+
+.SH SEE ALSO
+.B monitor_resume, monitor_terminate, monitor_suspend,
+.B monitor_read, thread_monitor, thread_unmonitor
+.B monitor_create
+
+

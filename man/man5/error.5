@@ -1,0 +1,87 @@
+.TH ERROR 5 "8-June-88"
+.UC 4
+.SH NAME
+error \- Mach error formats
+.SH DESCRIPTION
+Mach error codes contain information about the orgin
+and nature of program errors.  This information consists of
+the major system component involved, the subsystem within that
+system and the specific code within that subsystem.  
+.PP
+Examples of major systems include the operating system kernel,
+user space libraries, the ipc system and servers.
+.PP
+Error codes are organized as follows:
+.nf
+        hi | system(6) | subsystem(12) | code(14) | low
+.fi
+.PP
+The file <sys/error.h> includes useful macros for generating and
+disecting error codes, as well as a complete list of the currently
+defined system codes. 
+.nf
+
+#define	err_none		(mach_error_t)0
+#define ERR_SUCCESS		(mach_error_t)0
+#define	ERR_ROUTINE_NIL		(mach_error_fn_t)0
+
+#define	err_system(x)		(((x)&0x3f)<<26)
+#define err_sub(x)		(((x)&0xfff)<<14)
+
+#define err_get_system(err)	(((err)>>26)&0x3f)
+#define err_get_sub(err)	(((err)>>14)&0xfff)
+#define err_get_code(err)	((err)&0x3fff)
+
+#define system_emask		(err_system(0x3f))
+#define sub_emask		(err_sub(0xfff))
+#define code_emask		(0x3fff)
+
+/*	major error systems	*/
+#define	err_kern	err_system(0x0)		/* kernel */
+#define	err_us		err_system(0x1)		/* user space library */
+#define	err_server	err_system(0x2)		/* user space servers */
+#define	err_ipc		err_system(0x3)		/* mach-ipc errors */
+#define err_local	err_system(0x3e)	/* user defined errors */
+#define	err_ipc_compat	err_system(0x3f)	/* (compatibility) mach-ipc errors */
+
+#define	err_max_system	0x3f
+
+
+/*	unix errors get lumped into one subsystem  */
+#define	unix_err(errno)	(err_kern|err_sub(3)|errno)
+
+typedef	kern_return_t	mach_error_t;
+typedef mach_error_t	(* mach_error_fn_t)();
+
+.PP
+.SH EXAMPLES
+The implementation of the table server module would define its
+error codes as follows:
+.nf
+
+	#define TABLE_SUB	(err_sub(12))
+	#define	TABLE_MODULE	(err_server|TABLE_SUB)
+	#define TABLE_WRONG_DRESS	(TABLE_MODULE|0x0001)
+	#define	TABLE_NO_RESERVATIONS	(TABLE_MODULE|0x0002)
+
+.fi
+Then a client of the table server who had received an error code
+could check its value as follows;
+.nf
+
+	if ((errcode && system_emask) != err_server) 
+		printf("non server error\\n");
+	else if ((errcode && sub_emask) != TABLE_SUB ) 
+		printf("error from server other than TABLE\\n");
+	else if (errcode == TABLE_WRONG_DRESS) 
+		printf("Sorry, you are incorrectly dressed.\\n")
+	else if (errcode == TABLE_NO_RESERVATIONS )
+		printf("Sorry, but you don't have a reservation.\\n")
+
+.fi
+.PP
+.SH "SEE ALSO"
+macherr(1), mach_error(3)
+.SH BUGS
+Some original Mach errors use negative numbers that don't fit well into
+this scheme.

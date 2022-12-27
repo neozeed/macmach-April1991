@@ -1,0 +1,78 @@
+.TH map_fd 2 4/17/87
+.CM 4
+.SH NAME
+.nf
+map_fd \- cause a file to be mapped into virtual memory
+.SH SYNOPSIS
+.nf
+#include <mach.h>
+
+map_fd(fd, offset, addr, find_space, numbytes)
+	int		fd;
+	vm_offset_t	offset;
+	vm_offset_t	*addr;
+	boolean_t	find_space;
+	vm_size_t	numbytes;
+
+.SH ARGUMENTS
+
+.TP 15
+.B fd
+an open Unix file descriptor for the file which is to be mapped
+.TP 15
+.B offset
+byte offset within the file at which mapping is to begin
+.TP 15
+.B addr
+a pointer to an address in the calling process at which the
+mapped file should start. This address, unlike the offset,
+must be page aligned.
+.TP 15
+.B find_space
+if TRUE the kernel will select an unused address range at
+which to map the file and return its value in 
+.B addr.
+.TP 15
+.B numbytes
+the number of bytes to be mapped.
+
+.SH DESCRIPTION
+.I map_fd
+causes 
+.I numbytes
+of data starting at
+.I offset
+in the file specified by
+.I fd
+to be mapped into the virtual memory at the address specified by
+.I addr.
+If 
+.I find_space
+is TRUE, the value of 
+.I addr 
+may be input as null, and the kernel will find an unused
+piece of virtual memory to use. If the user provides the
+.I addr,
+it must be page aligned and at least 
+.I numbytes 
+long. If
+.I offset + numbytes
+exceeds the length of the file the virtual memory will be
+zero-filled up to a page boundary. What happens beyond the
+page boundary is not gaurenteed.
+
+Note that memory mapping does not cause any i/o to take place. When
+specific pages are first referenced, they will cause page-faults which
+will bring in the data.  The mapped memory is copy-on-write. The only
+way in which modified data is returned to the file is by a write(2)
+call.
+ 
+.SH SEE ALSO
+.I  fmap(3s)
+
+.SH HISTORY
+.TP
+17-Apr-87 Avie Tevanian (avie) at Carnegie Mellon
+Created.
+
+

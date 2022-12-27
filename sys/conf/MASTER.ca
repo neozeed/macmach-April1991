@@ -1,0 +1,292 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# Copyright (c) 1988 Carnegie-Mellon University
+# Copyright (c) 1987 Carnegie-Mellon University
+# Copyright (c) 1986 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#  
+#
+# HISTORY
+# $Log:	MASTER.ca,v $
+# Revision 2.15  90/07/03  16:36:16  mrt
+# 	Added the CODA configuration flag, the ramd pseudo-device, and the dtc device.
+# 	[90/05/23            dcs]
+# 	Merged mt Xinu 2.6MSD Changes.
+# 	[90/05/17  17:55:16  mrt]
+# 
+# Revision 2.14  89/03/09  03:32:34  rpd
+# 	Added UNTESTED set of devices for apa8c and ap, devices that weren't
+# 	in ANY.  Added pseudo-device entries for those devices.
+# 
+# Revision 2.13  89/02/25  17:37:37  gm0w
+# 	Changes for cleanup.
+# 
+# Revision 2.12  89/01/17  02:06:44  rpd
+# 	Added "romp_cache" to MSTD.
+# 
+# Revision 2.11  89/01/12  07:41:33  rpd
+# 	Added MACH_DEBUG_CA (tag "mdebug_ca").
+# 	[89/01/12  04:31:37  rpd]
+# 
+# Revision 2.10  89/01/04  13:34:55  rpd
+# 	Added ROMP_FPA_COUNT option (tag "fpa_count").  It turns on
+# 	counters in ca/fpa.c.  It also enables kernel calls that
+# 	retrieve/reset the counters.
+# 	[89/01/01  14:59:35  rpd]
+# 	
+# 	Removed ec0 device; there is no driver for it.
+# 	[88/12/30  21:51:14  rpd]
+# 
+# Revision 2.9  88/12/20  13:47:46  rpd
+# 	Added ROMP_SC_RTFL, which turns on the FP/signal hack.
+# 	Removed ascksum from MSTD, because it is buggy.
+# 	[88/12/07  17:17:48  rpd]
+# 
+# Revision 2.8  88/11/23  16:34:43  rpd
+# 	Merged in Acis changes to fd configuration.
+# 	[88/11/05  15:26:37  rpd]
+# 	
+# 	Added ROMP_135 option, which is always enabled.
+# 	Merged controller/device changes from Acis.
+# 	[88/11/04  17:55:04  rpd]
+# 
+# Revision 2.7  88/10/27  17:31:09  mrt
+# 	Oct-27-88 Mary Thompson (mrt)
+# 	Moved EXTRA devices [ asy lp sc mpel] to ANY
+# 	[88/10/27  17:08:03  mrt]
+# 
+# Revision 2.6  88/10/27  10:42:56  rpd
+# 	Added ROMP_ASCKSUM option, which somehow had gotten dropped,
+# 	under the "ascksum" tag.  Put it in MSTD.
+# 	[88/10/26  14:37:31  rpd]
+# 
+# Revision 2.5  88/10/01  21:51:14  rpd
+# 	Added the ROMP_TBCOMPAT (tag "tbcompat") option for
+# 	tablet numbering compatibility with Acis.
+# 	[88/09/27  22:04:07  rpd]
+# 
+# Revision 2.4  88/09/07  15:47:25  rpd
+# 	Added the mpel device to EXTRA.
+# 	[88/09/06  15:51:29  rpd]
+# 	
+# 	Added mpel pseudo-device.
+# 	[88/09/05  20:40:15  rpd]
+# 
+#  5-Jun-88  Michael Young (mwyoung) at Carnegie-Mellon University
+#	Redefine MACHRT; all other MACH configurations can be formed as
+#	simple additions to that name.  For example, MACHRTC =>
+#	MACHRT+romp_cache.
+#
+# 19-May-88  Mike Accetta (mja) at Carnegie-Mellon University
+#	Made MF and WS synonyms for ANY for now.
+#	[ V5.1(XF25) ]
+#
+# 17-May-88  Mike Accetta (mja) at Carnegie-Mellon University
+#	Renamed RT => ANY.
+#	[ V5.1(XF24) ]
+#
+#  4-Dec-87  Michael Young (mwyoung) at Carnegie-Mellon University
+#	Revise as per MASTER; removed old HISTORY.
+#
+# 17-Nov-87  Mike Accetta (mja) at Carnegie-Mellon University
+#	Revised production configurations into an "RT" macro which
+#	defines all the common devices and an "EXTRA" macro which
+#	includes the rest for use with the latest "doconf" technology.
+#	[ V5.1(XF21) ]
+#
+# 16-Oct-87  Richard Sanzi (sanzi) at Carnegie-Mellon University
+#	Changed disk declarations for the hd driver.  We can now
+#	wild-card the controller and drive number information for hard
+#	disks on the RT.
+#
+# 13-Oct-87  Mike Accetta (mja) at Carnegie-Mellon University
+#	Flush EXTRA and revise DEFAULT to include all common devices.
+#	[ V5.1(XF18) ]
+#
+
+#
+#
+#  Master IBM-RT configuration file (see the master machine independent
+#  configuration file for a description of the file format).
+#
+#
+#  RT (PSEUDO-)DEVICES (select any combination)
+#
+#	asy   - asynchronus communication ports
+#	ec    - 3-com ethernet
+#	lan   - token ring
+#	lp    - line printer
+#	un    - ungermann-bass ethernet
+#	psp   - printer serial port
+#	sc    - small device interface (SCSI) driver
+#
+#	aed   - AED display
+#	apa8  - APA-8 display
+#	apa16 - APA-16 display
+#	mono  - monochrome display
+#	ms    - mouse
+#	tb    - tablet
+#	mpel  - Megapel color display
+#
+#
+#  CPU TYPE (select exactly one)
+#
+#	ca     = any IBM-RT CPU
+#
+#
+#  Standard CMU CS/RI Production Configurations:
+#  -------- --- -- -- ---------- --------------
+#
+#  ANY	 = [aed apa8 apa16 fd hd lan mono ms psp st tb un rt asy lp sc mpel]
+#  MF	 = [aed apa8 apa16 fd hd lan mono ms psp st tb un rt]
+#  WS	 = [aed apa8 apa16 fd hd lan mono ms psp st tb un rt]
+#  MINI  = [    apa8 apa16 fd hd                 st    un   ]
+#
+#  (any IBM-RT cpu model)
+#
+#  EXTRA = [ ]
+#
+#  ("one-of-a-kind" devices)
+#
+#  UNTESTED = [apa8c ap]
+#
+#  (we've got code for these guys, but who knows)
+#
+#  Options which are almost always turned on when mach is turned on,
+#  but can still be individually selected:
+#
+#  MSTD  = [ romp_cache ]
+#
+#  Standard Mach Research Configurations:
+#  -------- ---- -------- ---------------
+#
+#  MACHRT       = [ ANY EXTRA ]
+#
+#  Support for the Coda File System
+#  ------- --- --- ---- ---- ------
+#
+#  CODA		= [ ramd dtc cfs ipmcast ]
+
+#
+#	PSEUDO DEVICES
+#
+pseudo-device	romp_tb		# <tb>
+pseudo-device	aed		# <aed>
+pseudo-device   mono		# <mono>
+pseudo-device	apaeight	# <apa8>
+pseudo-device	apasixteen	# <apa16>
+pseudo-device	mpel		# <mpel>
+pseudo-device	ms		# <ms>
+
+#
+#	UNTESTED DEVICES
+#
+pseudo-device	apaeightc	# <apa8c>
+pseudo-device	ap		# <ap>
+
+machine		ca
+cpu		"SBMODEL"
+
+#
+# RT options
+#
+options		MACH_DEBUG_CA	# IPC ca debugging interface	# <mdebug_ca>
+options		ROMP_135	# Model 135 support
+options		ROMP_APC	# advanced processor support
+options		ROMP_ASCKSUM	# Assembly Internet checksums # <ascksum>
+options		ROMP_CACHE	# alias mapping cache for the RT # <romp_cache>
+options		ROMP_DEBUG	# enable machine-dependant debugging # <debug>
+options		ROMP_DUALCALL	# new and old calling sequences supported
+options		ROMP_FPA_COUNT	# track execution of fpa code	# <fpa_count>
+options 	ROMP_NFL	# New floating point linkage
+options 	ROMP_RDB	# Romp kernel debugger.		# <debug>
+options		ROMP_SC_RTFL	# Romp sig hack for fp
+options		ROMP_SGP	# old style romp processor specific code
+options 	ROMP_SHOW_LOAD	# display load avg. in romp dds
+options		ROMP_TBCOMPAT	# tablet compatibility with Acis # <tbcompat>
+#
+# END RT OPTIONS
+#
+
+config		mach		swap generic	# <!unix>
+config		vmunix		swap generic	# <unix>
+
+#
+#  IOC Bus
+#
+controller	iocc0	at nexus ?
+
+#
+#  Network interfaces
+#
+device		un0	at iocc0 csr 0xf4080000 priority 5	# <un>
+controller	lanc0	at iocc0 csr 0xf00001c0 priority 12	# <lan>
+device		lan0	at lanc0 drive 0			# <lan>
+
+#
+#  Disks
+#
+controller	hdc0	at iocc0 csr 0xf00001f0 priority ?	# <hd>
+controller	hdc1	at iocc0 csr 0xf0000170 priority ?	# <hd>
+disk		hd0	at hdc0 drive 0				# <hd>
+disk		hd1	at hdc ? drive ?			# <hd>
+disk		hd2	at hdc ? drive ?			# <hd>
+disk		hd3	at hdc ? drive ?			# <hd>
+disk		hd4	at hdc ? drive ?			# <hd>
+disk		hd5	at hdc ? drive ?			# <hd>
+
+controller	fdc0	at iocc0 csr 0xf00003f2 priority 6	# <fd>
+controller	fdc1	at iocc0 csr 0xf0000372 priority 6	# <fd>
+device		fd0	at fdc ? drive 0			# <fd>
+device		fd1	at fdc ? drive 1			# <fd>
+
+controller	scc0	at iocc0 csr 0xf0000d52 priority 11	# <sc>
+controller	scc1	at iocc0 csr 0xf0000952 priority 12	# <sc>
+disk		sc0	at scc0 drive 0				# <sc>
+disk		sc1	at scc0 drive 1				# <sc>
+disk		sc2	at scc0 drive 2				# <sc>
+disk		sc3	at scc0 drive 3				# <sc>
+disk		sc4	at scc0 drive 4				# <sc>
+disk		sc5	at scc0 drive 5				# <sc>
+disk		sc6	at scc0 drive 6				# <sc>
+disk		sc7	at scc1 drive 0				# <sc>
+disk		sc8	at scc1 drive 1				# <sc>
+disk		sc9	at scc1 drive 2				# <sc>
+disk		sc10	at scc1 drive 3				# <sc>
+disk		sc11	at scc1 drive 4				# <sc>
+disk		sc12	at scc1 drive 5				# <sc>
+disk		sc13	at scc1 drive 6				# <sc>
+
+#
+#  Streamer tape
+#
+controller	stc0	at iocc0 csr 0xf00001e8 priority 12	# <st>
+tape		st0	at stc0 drive 0				# <st>
+
+#
+#  Asynchronous lines
+#
+device	 	asy0	at iocc0 csr 0xf0001230 flags 0xFF priority 9	# <asy>
+device	 	asy1	at iocc0 csr 0xf0002230 flags 0xFF priority 10	# <asy>
+device		asy4	at iocc0 csr 0xf00003f8 flags 0xFF priority 4	# <asy>
+
+#
+#  Printers
+#
+device		lp0	at iocc0 csr 0xf00003bc priority 7	# <lp>
+#device		ps0	at iocc0 csr 0xf0000278 priority 7
+device	 	psp0	at iocc0 csr 0xf0008000 flags 0xFF priority 2	# <psp>
+
+#
+#  Memory disk emulator
+#
+pseudo-device	ramd						# <ramd>
+#options         RAMD	# ramdisk device driver for CODA	# <ramd>
+#device		ramd0   at iocc0 csr 0xf4160000 priority 12     # <ramd> 
+
+#
+# High speed clock device for CODA performance testing -- DT2806
+#
+device          dtc0    at iocc0 csr 0xf0000370 priority 5      # <dtc>

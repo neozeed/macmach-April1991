@@ -1,0 +1,36 @@
+#if defined(LIBC_SCCS)
+	.asciz "@(#)ffs.s MacMach 5.1"
+	.even
+#endif /* LIBC_SCCS and not lint */
+
+#include "DEFS.h"
+
+	.text
+
+/*
+ * ffs -- vax ffs instruction
+ */
+
+/*
+ffs(mask)
+register long mask;
+{
+  register int cnt;
+
+  if (mask == 0) return(0);
+  for (cnt = 1; !(mask & 1); cnt++) mask >>= 1;
+  return(cnt);
+}
+*/
+
+ENTRY(ffs)
+	link	a6,#0		/* make stack frame */
+	movel	a6@(8), d0	/* get argument */
+	beqs	done		/* if zero, return zero */
+	moveq	#-1, d1		/* prepare for loop */
+loop:	lsrl	#1, d0		/* shift */
+	dbcs	d1, loop	/* count */
+	negl	d1		/* make it positive */
+	movl	d1, d0		/* set return value */
+done:	unlk	a6		/* scrap stack frame */
+	rts			/* all done */

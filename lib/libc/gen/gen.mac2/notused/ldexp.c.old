@@ -1,0 +1,16 @@
+#if defined(LIBC_SCCS) && !defined(lint)
+static char sccsid[] = "@(#)ldexp.c MacMach 4/26/90";
+#endif LIBC_SCCS and not lint
+
+/* ldexp() is an inline function in math.h */
+
+#define __LIBM__
+
+#include <math.h>
+
+double ldexp(value, exp)
+double value;
+int exp;
+{
+  return ldexp_68881(value, exp);
+}

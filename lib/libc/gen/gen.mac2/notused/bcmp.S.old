@@ -1,0 +1,131 @@
+#ifdef CSOURCE
+
+#if defined(LIBC_SCCS) && !defined(lint)
+static char sccsid[] = "@(#)bcmp.c MacMach 5.1";
+#endif LIBC_SCCS and not lint
+
+/* assume long is 32 bits, short is 16 bits */
+/* also works as memcmp() */
+
+inline int bcmp(b1, b2, length)
+  register char *b1, *b2;
+  register int length;
+{
+  if (length <= 0) return 0;
+  if (length > 15) {
+    if (!(((long)b1 | (long)b2) & 3)) {
+      /* loop via long's */
+      register long *a1 = (long *)b1;
+      register long *a2 = (long *)b2;
+      register int n = length >> 2;
+      while (n--) if (*a1++ != *a2++) break;
+      b1 = (char *)--a1;
+      b2 = (char *)--a2;
+      length = (length & 3) + 4;
+    }
+    else if (!(((long)b1 | (long)b2) & 1)) {
+      /* loop via short's */
+      register short *a1 = (short *)b1;
+      register short *a2 = (short *)b2;
+      register int n = length >> 1;
+      while (n--) if (*a1++ != *a2++) break;
+      b1 = (char *)--a1;
+      b2 = (char *)--a2;
+      length = (length & 1) + 2;
+    }
+  }
+  while (length--) if (*b1++ != *b2++) return (*--b1 - *--b2);
+  return 0;
+}
+
+#else
+
+#if defined(LIBC_SCCS)
+	.asciz "@(#)bcmp.s MacMach 5.1"
+	.even
+#endif /* LIBC_SCCS and not lint */
+
+#include "DEFS.h"
+
+ 	.text
+
+ENTRY2(memcmp)
+	jra	docmp		/* just like bcmp */
+
+ENTRY(bcmp)
+docmp:	link	a6,#0		/* set up stack frame */
+	movel	a6@(8),d2	/* d2 = b1 */
+	movel	a6@(12),d1	/* d1 = b2 */
+	movel	a6@(16),d3	/* d3 = length */
+	jle	done0		/* if (length <= 0) return 0 */
+	movel	d2,a0		/* a0 = b1 */
+	movel	d1,a1		/* a1 = b2 */
+	moveq	#15,d4
+	cmpl	d3,d4
+	jge	bytes		/* if length <= 15 */
+	movel	d2,d0
+	orl	d1,d0		/* d0 = b1 | b2 */
+	moveq	#3,d4
+	andl	d0,d4
+	jne	skip		/* (b1 | b2) & 3 */
+
+/* loop via long's: a0, a1 are pointers, d3 is counter */
+	movel	d3,d0
+	asrl	#2,d0		/* d0 = length >> 2 */
+	clrl	d4		/* set the Z bit */
+	jra	enter1		/* enter loop test first */
+loop1:	cmpml	a1@+,a0@+	/* compare and increment pointers */
+enter1:	dbne	d0,loop1	/* fast loop */
+	jne	exit1		/* exit if compare failed */
+	clrw	d0
+	subql	#1,d0		/* decrement high word */
+	jcc	loop1		/* continue fast loop */
+exit1:	subql	#4,a0
+	subql	#4,a1
+	moveq	#3,d4
+	andl	d4,d3
+	addql	#4,d3		/* (length & 3) + 4 */
+	jra	bytes		/* fall through to byte loop */
+
+skip:	btst	#0,d0		/* (b1 | b2) & 1 */
+	jne	bytes		/* fall through to byte loop */
+
+/* loop via short's: a0, a1 are pointers, d3 is counter */
+	movel	d3,d0
+	asrl	#1,d0		/* d0 = length >> 1 */
+	clrl	d4		/* set the Z bit */
+	jra	enter2		/* enter loop test first */
+loop2:	cmpmw	a0@+,a1@+	/* compare and increment pointers */
+enter2:	dbne	d0,loop2	/* fast loop */
+	jne	exit2		/* exit if compare failed */
+	clrw	d0
+	subql	#1,d0		/* decrement high word */
+	jcc	loop2		/* continue fast loop */
+exit2:	subql	#2,a0
+	subql	#2,a1
+	moveq	#1,d4
+	andl	d4,d3
+	addql	#2,d3		/* (length & 1) + 2 */
+	/* fall through to byte loop */
+
+/* loop via byte's: a0, a1 are pointers, d3 is counter */
+bytes:	clrl	d4		/* set the Z bit */
+	jra	enter3		/* enter loop test first */
+loop3:	cmpmb	a0@+,a1@+	/* compare and increment pointers */
+enter3:	dbne	d3,loop3	/* fast loop */
+	jne	exit3		/* exit if compare failed */
+	clrw	d3
+	subql	#1,d3		/* decrement high word */
+	jcc	loop3		/* continue fast loop */
+exit3:	moveb	a0@-,d0
+	extbl	d0
+	moveb	a1@-,d1
+	extbl	d1
+	subl	d1,d0		/* return(*--b1 - *--b2) */
+	jra	done
+
+done0:	clrl	d0
+done:	unlk	a6		/* done with stack frame */
+	rts			/* all done */
+
+#endif

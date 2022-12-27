@@ -1,0 +1,33 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1989 Carnegie-Mellon University
+ * All rights reserved.  The CMU software License Agreement specifies
+ * the terms and conditions for use and redistribution.
+ */
+/*
+ * HISTORY
+ * $Log:	ipcx.defs,v $
+ * Revision 1.1  90/02/19  21:47:36  bww
+ * 	Mach Release 2.5
+ * 	[90/02/19  21:47:02  bww]
+ * 
+ * Revision 1.2  89/07/04  17:38:37  mrt
+ * 	Cleanup for Mach 2.5
+ * 
+ */
+
+subsystem ipcx 27600;
+
+type port_t = MSG_TYPE_PORT;
+type a_string = (MSG_TYPE_STRING, 2048);
+
+import <servers/ipcx_types.h>;
+
+routine startserver(
+		mPort		: port_t;
+		userid		: a_string;
+		password	: a_string;
+		commandline	: a_string;
+	  OUT	serverkport	: port_t;
+	  OUT	serverdport	: port_t);
+

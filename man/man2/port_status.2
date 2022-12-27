@@ -1,0 +1,100 @@
+.TH port_status 2 1/13/87
+.CM 4
+.SH NAME
+.nf
+port_status  \-  returns the status of a port right
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t port_status(task, port_name, enabled,
+			  num_msgs, backlog, owner, receiver)
+	task_t task;
+	port_name_t port_name;
+	port_set_name_t *enabled;	/* out */
+	int *num_msgs;			/* out */
+	int *backlog;			/* out */
+	boolean_t *owner;		/* out */
+	boolean_t *receiver;		/* out */
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+task
+The task owning the port right in question.
+.TP 15
+.B
+port_name
+.B task
+'s name for the port right.
+.TP 15
+.B
+enabled
+Returns 
+.B task
+'s name for the port set which
+the named port belongs to, or 
+.B PORT_NULL
+if it isn't in a set.
+.TP 15
+.B
+num_msgs
+The number of messages queued on this port.
+.TP 15
+.B
+backlog
+The number of messages which may be queued to this port
+without causing the sender to block.
+.TP 15
+.B
+owner
+Returned as true iff the 
+.B task
+is the owner of the port.
+.TP 15
+.B
+receiver
+Returned as true iff the 
+.B task
+is the receive of the port.
+
+.SH DESCRIPTION
+.B port_status
+returns the current status associated with 
+.B task
+'s
+port right named 
+.B port_name
+.  If 
+.B receiver
+isn't true, then the
+.B enabled
+, 
+.B num_msg
+, and 
+.B backlog
+arguments don't return anything
+meaningful.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B task
+was invalid or 
+.B port_name
+does not name a valid port.
+
+.SH SEE ALSO
+.B port_set_backlog
+,
+.B port_set_status
+

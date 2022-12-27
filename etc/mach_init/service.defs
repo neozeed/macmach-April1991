@@ -1,0 +1,34 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1989 Carnegie-Mellon University
+ * All rights reserved.  The CMU software License Agreement specifies
+ * the terms and conditions for use and redistribution.
+ */
+/*
+ * HISTORY
+ * $Log:	service.defs,v $
+ * Revision 1.1  90/02/19  18:46:00  bww
+ * 	Mach Release 2.5
+ * 	[90/02/19  18:45:49  bww]
+ * 
+ * Revision 1.3  89/04/29  13:38:14  mrt
+ * 	Changed includes for Mach 2.5
+ * 
+ */
+/*
+ *	Interface:	Service server
+ *			Installed as /etc/mach_init
+ */
+
+subsystem service 400;
+#include <mach/std_types.defs>
+
+routine old_service_checkin(
+		service_request	: port_t;
+		service_desired	: port_t;
+	out	service_granted	: port_t=MSG_TYPE_PORT_RECEIVE);
+
+routine service_checkin(
+		service_request	: port_t;
+		service_desired	: port_t;
+	out	service_granted	: port_t=MSG_TYPE_PORT_ALL);

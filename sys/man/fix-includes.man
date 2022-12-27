@@ -1,0 +1,59 @@
+.\"
+.\" Mach Operating System
+.\" Copyright (c) 1989 Carnegie-Mellon University
+.\" All rights reserved.  The CMU software License Agreement specifies
+.\" the terms and conditions for use and redistribution.
+.\"
+.\" HISTORY
+.\" $Log:	fix-includes.man,v $
+.\" Revision 2.2  89/04/08  23:32:29  rpd
+.\" 	Created.
+.\" 	[89/03/14  21:23:17  rpd]
+.\" 
+.TH  FIX-INCLUDES  1 3/14/89
+.CM 4
+.SH NAME
+fix-includes \- standardize cpp directives
+.SH SYNOPSIS
+\fBfix-includes\fR < input > output
+.SH DESCRIPTION
+\fIfix-includes(1)\fR standardizes the use of cpp directives
+in kernel source files.  It is a pure filter, reading from
+stdin and writing to stdout.
+.PP
+\fIfix-includes\fR is especially useful for its treatment of
+include directives.  It will transform them into a form that
+will work in the Mach kernel compilation environment (sys/ instead
+of h/, no -I../sys so "user.h" doesn't work).
+.PP
+It puts cpp directives (lines starting with #) into the following
+format:
+.TP 8
+.B #if, #ifdef, #ifndef, #elif, #else, #endif
+No white-space between # and the directive; a single tab between the
+directive and an argument.
+.TP 8
+.B #if MACH
+Changed to #ifdef MACH.
+.TP 8
+.B #if CMUCS
+Changed to #ifdef CMUCS.
+.TP 8
+.B #define
+No white-space between # and the directive.  If there is one white-space
+character between the directive and its argument, it must be a space.
+.TP 8
+.B #include
+No white-space between # and the directive.  There must be a single space
+between the directive and its argument.  Use <> instead of "".
+Don't use ../.  Don't use h/.  (For example, "../h/user.h" becomes
+<sys/user.h> and "proc.h" becomes <sys/proc.h>.)
+.PP
+When comparing before and after versions of files, the -b and -w options
+to \fIdiff(1)\fR may be useful.
+.SH BUGS
+\fIfix-includes\fR won't transform #include "" to #include <> if it
+doesn't recognize the file involved.  It does have knowledge of files
+in sys/ and most options.
+.SH "SEE ALSO"
+fix-copyright(1), fix-log(1), fix-protection(1), diff(1)

@@ -1,0 +1,52 @@
+#
+# Mach Operating System
+# Copyright (c) 1986 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement
+# specifies the terms and conditions for use and redistribution.
+#  
+######################################################################
+#
+#  Master Macintosh II configuration file (see the master machine independent
+#  configuration file for a description of the file format).
+#
+######################################################################
+# HISTORY
+# $Log:	MASTER.mac2,v $
+# Revision 2.2  90/08/30  10:59:45  bohman
+# 	Created.
+# 	[90/08/29  13:39:55  bohman]
+# 
+######################################################################
+#
+#  CPU TYPE
+#	mac2 = Macintosh II{,x,cx} or SE/30
+#
+# MSTD = [ hw_ast fast_csw ]
+#
+######################################################################
+#
+#  Standard configurations
+#
+# MACMACH = [ MSTD mach unix small macos_emul vfs afs ]
+#
+######################################################################
+#
+
+machine		"mac2"
+cpu		"mac2"
+
+config		mach		swap generic	# <!unix>
+config		vmunix		swap generic	# <unix>
+
+options		MACOS_EMUL			# <macos_emul>
+options		RAMDISK				# <ramdisk>
+
+######################################################################
+#
+#   standard devices
+#
+######################################################################
+device	via1 at cpu csr 0x50000000 init "via1init" vector "level1intr" 0x64
+device	via2 at cpu csr 0x50002000 init "via2init" vector "level2intr" 0x68
+device	scsi0 at cpu csr 0x50010000 init scsiinit
+device	scc0 at cpu csr 0x50004000 init sccinit vector "level4intr" 0x70

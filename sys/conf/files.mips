@@ -1,0 +1,141 @@
+#
+# HISTORY
+# $Log:	files.mips,v $
+# Revision 2.9  90/08/08  17:21:41  mrt
+# 	Dropped silly extra file for gx/gq/ga drivers.
+# 	[90/05/20  15:50:39  af]
+# 
+# 	Added 3max support files.
+# 	[90/05/20  13:48:09  af]
+# 
+# Revision 2.8  90/03/08  23:10:47  af
+# 	Fixed long-standing name clash pm-the-screen <-> pm-pagemap.
+# 	Added some pmap options.
+# 	[90/03/08  22:46:30  af]
+# 
+# Revision 2.7  89/09/22  13:53:58  af
+# 	Added kdb files.
+# 	[89/08/28            af]
+# 
+# Revision 2.6  89/05/31  15:12:04  rvb
+# 	mips/MIPS => mips/MSERIES
+# 	[89/05/31            rvb]
+# 
+# Revision 2.5  89/05/31  12:46:32  rvb
+# 	Move r2350mem.[ch] to MIPS.
+# 
+# 
+# Revision 2.4  89/05/30  13:09:58  rvb
+# 	Put MIPS specific and PMAX specific drivers in subdirectories.
+# 
+# 28-Feb-89  Alessandro Forin (af) at Carnegie-Mellon University
+#	Added Pmax devices.
+# ??-???-??  Robert V. Baron (rvb) at Carnegie-Mellon University
+#	Created.
+#
+
+# This seems missing from other machines ?
+#
+bsd/syscalls.c		standard
+
+# Options
+#
+OPTIONS/ref_bits	optional ref_bits
+OPTIONS/compacted	optional compacted
+OPTIONS/counters	optional counters
+OPTIONS/pmap_pcache	optional pmap_pcache
+
+# Files proper
+#
+mips/entry.s		standard ordered
+mips/autoconf.c		standard
+mips/busses.c		standard
+mips/cache.c		standard
+mips/check_dbg.c	standard
+mips/conf.c		standard 
+mips/context.s		standard
+mips/coproc_control.s	standard
+mips/emulate_instr.s	standard
+mips/fp_intr.s		standard
+mips/hwconf.c		standard
+mips/in_cksum.c		optional inet
+mips/kdb/access.c	optional mach_kdb
+mips/kdb/command.c	optional mach_kdb
+mips/kdb/expr.c		optional mach_kdb
+mips/kdb/format.c	optional mach_kdb
+mips/kdb/input.c	optional mach_kdb
+mips/kdb/kdb_main.c	optional mach_kdb
+mips/kdb/message.c	optional mach_kdb
+mips/kdb/mips_symtab.c	optional mach_kdb
+mips/kdb/mips_trace.c	optional mach_kdb
+mips/kdb/output.c	optional mach_kdb
+mips/kdb/pcs.c		optional mach_kdb
+mips/kdb/print.c	optional mach_kdb
+mips/kdb/runpcs.c	optional mach_kdb
+mips/kdb/sym.c		optional mach_kdb
+mips/kdb/unasm.c	optional mach_kdb
+mips/kdb.c		optional mach_kdb
+mips/kopt.c		standard 
+mips/locore.s		standard
+mips/machdep.c		standard
+mips/mcount.s		optional profiling-routine
+mips/mem.c		standard
+mips/mips_debug.c	standard
+mips/mips_exception.c	standard
+mips/mips_init.c	standard
+mips/mips_ptrace.c	standard
+mips/ns_cksum.c		optional ns
+mips/model_dep.c	standard
+mips/pmap.c		standard
+mips/pcb.c		standard
+mips/softfp.s		standard
+mips/softfp_unusable.s	standard
+mips/startup.c		standard
+mips/sys_machdep.c	standard
+mips/sysmips.c		standard
+mips/tlb.s		standard
+mips/trap.c		standard
+mips/ufs_machdep.c	standard
+mips/usercopy.s		standard
+mips/vm_machdep.c	standard
+# Mips M-Series device drivers
+mips/MSERIES/cp.c		optional cp device-driver
+mips/MSERIES/dkip.c		optional dkip device-driver
+mips/MSERIES/i8254clock.c	optional i8254clock device-driver
+mips/MSERIES/if_enp.c		optional enp device-driver
+mips/MSERIES/r2350mem.c		optional mseries device-driver
+mips/MSERIES/rd.c		optional rd device-driver
+mips/MSERIES/s2681cons.c	optional s2681cons device-driver
+mips/MSERIES/sd.c		optional sd device-driver
+mips/MSERIES/ts.c		optional ts device-driver
+mips/MSERIES/tth.c		optional tthu device-driver
+mips/MSERIES/vme.c		optional vme device-driver
+# PMAX devices drivers
+mips/PMAX/cfb.c			optional kmax3 device-driver
+mips/PMAX/dc_hdw.c		optional dc7085cons device-driver
+mips/PMAX/dc_modem.c		optional dc7085cons device-driver
+mips/PMAX/dc_tty.c		optional dc7085cons device-driver
+mips/PMAX/ga.c			optional kmax3 device-driver | -DBINARY
+mips/PMAX/gq.c			optional kmax3 device-driver | -DBINARY
+mips/PMAX/gx.c			optional kmax3 device-driver | -DBINARY
+mips/PMAX/if_ln.c		optional ln device-driver
+mips/PMAX/if_sl.c		optional sl device-driver
+mips/PMAX/kn02.c		optional kmax3
+mips/PMAX/mc146818clock.c	optional i146818clock device-driver
+mips/PMAX/md.c			optional memd device-driver
+mips/PMAX/pm_graphics.c		optional pmdev device-driver
+mips/PMAX/pm_hdw.c		optional pmdev device-driver
+mips/PMAX/pm_lk201.c		optional pmdev device-driver
+mips/PMAX/pm_ms.c		optional pmdev device-driver
+mips/PMAX/pm_switch.c		optional pmdev device-driver
+mips/PMAX/pm_tty.c		optional pmdev device-driver
+mips/PMAX/qfont.c		optional pmdev device-driver
+mips/PMAX/scsi.c		optional scsi device-driver | -DBINARY
+mips/PMAX/scsi_asc.c		optional scsi device-driver | -DBINARY
+mips/PMAX/scsi_disk.c		optional scsi device-driver | -DBINARY
+mips/PMAX/scsi_sii.c		optional scsi device-driver | -DBINARY
+mips/PMAX/scsi_tape.c		optional scsi device-driver | -DBINARY
+mips/PMAX/scsi_data.c		optional scsi device-driver
+mips/PMAX/super.c		optional pmax
+mips/PMAX/tc.c			optional kmax3
+mips/PMAX/ul.c			optional pmax

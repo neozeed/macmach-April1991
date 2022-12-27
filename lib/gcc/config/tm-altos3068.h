@@ -1,0 +1,1 @@
+../../gcc-1.39/config/tm-altos3068.h

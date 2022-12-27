@@ -1,0 +1,40 @@
+ident		CMU
+options		GENERIC
+options		INET
+options		DLI
+options		BSD_A_OUT
+options		FAST_CSW
+options		HW_AST
+options 	MACH
+options		MACH_COMPAT
+options		MACH_DEBUG
+options		MACH_FASTLINK
+options		MACH_IPC_SIGHACK
+options		MACH_IPC_TCACHE
+options		MACH_IPC_XXXHACK
+options		MACH_NET
+options		MACH_VFS
+options		MACH_XP
+options		STAT_TIME
+timezone	5 dst
+maxdsiz		33554432
+maxusers	16
+pseudo-device	cpus		1
+pseudo-device	cmupty
+pseudo-device	ether
+pseudo-device	inet
+pseudo-device	loop
+pseudo-device	pty	80
+machine		"mac2"
+cpu		"mac2"
+config		vmunix		swap generic
+options		MACOS_EMUL
+device	via1 at cpu csr 0x50000000 init "via1init" vector "level1intr" 0x64
+device	via2 at cpu csr 0x50002000 init "via2init" vector "level2intr" 0x68
+device	scsi0 at cpu csr 0x50010000 init scsiinit
+device	scc0 at cpu csr 0x50004000 init sccinit vector "level4intr" 0x70
+options		CMUCS
+options		CMUCS_DISK
+options		CMU_MACMACH
+options		MM_XXX
+options		MM_BUGFIX

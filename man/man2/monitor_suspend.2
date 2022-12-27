@@ -1,0 +1,52 @@
+.TH monitor_suspend 2 1/11/90
+.CM 4
+.SH NAME
+.nf
+monitor_suspend  \-  suspends specified monitor
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+#include <mach/kernel_event.h>
+
+.nf
+.ft B
+kern_return_t monitor_suspend(target_monitor);
+	monitor_t	target_monitor;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+target_monitor
+The monitor to be suspended.
+
+.SH DESCRIPTION
+Sets the state of 
+.B target_monitor
+to MONITOR_PAUSE.  
+No events are detected when the monitor is in this state
+although any previously detected events may be read
+by 
+.B monitor_read
+.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The monitor has been suspended.
+.TP 25
+KERN_FAILURE
+The monitor state is MONITOR_SHUTDOWN.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B target_monitor
+is not a monitor or its port 
+is no longer valid.
+
+.SH SEE ALSO
+.B monitor_create, monitor_terminate, monitor_resume,
+.B monitor_read, thread_monitor, thread_unmonitor, monitor
+

@@ -1,0 +1,87 @@
+.TH memory_object_data_request 2 12/22/89
+.CM 4
+.SH NAME
+.nf
+memory_object_data_request  \-  request for data from paging object
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t memory_object_data_request(memory_object,memory_control,
+			     offset, length, desired_access)
+	memory_object_t	memory_object;
+	memory_object_control_t
+			memory_control;
+	vm_offset_t	offset;
+	vm_size_t	length;
+	vm_prot_t	desired_access;
+
+
+.fi
+.ft P
+.SH DESCRIPTION
+
+.B memory_object_data_request
+is a request for data from the specified
+memory object, for at least the access specified.  The memory manager is
+expected to return at least the specified data, with as much
+access as it can allow, using 
+.B memory_object_data_provided
+.
+If the memory manager is unable to provide the data (for example, because
+of a hardware error), it may use the 
+.B memory_object_data_error
+call.
+.B memory_object_data_unavailable
+call may be used to tell the kernel
+to supply zero-filled memory for this region.
+
+.SH ARGUMENTS
+.TP 15
+.B
+.B memory_object
+The port that represents the memory object data, as 
+supplied to the kernel in a 
+.B vm_map
+call.
+.TP 15
+.B
+.B memory_control
+The request port to which a response is 
+requested.  [In the event that a memory object has been supplied 
+to more than one the kernel that has made the request.]
+.TP 15
+.B
+.B offset
+The offset within a memory object to which this call refers.
+This will be page aligned.
+.TP 15
+.B
+.B length
+The number of bytes of data, starting at 
+.B offset
+, to which this
+call refers. This will be an integral number of memory object pages.
+.TP 15
+.B
+.B desired_access
+A protection value describing the memory access modes which
+must be permitted on the specified cached data. One or more of:
+.B VM_PROT_READ, VM_PROT_WRITE
+or 
+.B VM_PROT_EXECUTE
+.
+
+.SH DIAGNOSTICS
+.TP 25
+.B KERN_SUCCESS
+Since this routine is called by the kernel, which does not
+wait for a reply message, this value is ignored.
+
+
+.SH SEE ALSO
+.B memory_object_data_provided, memory_object_data_error, memory_object_data_unavailable
+

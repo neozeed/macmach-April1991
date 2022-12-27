@@ -1,0 +1,72 @@
+#
+# Mach Operating System
+# Copyright (c) 1986 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement
+# specifies the terms and conditions for use and redistribution.
+#
+######################################################################
+# HISTORY
+# $Log:	Makefile.mac2,v $
+# Revision 2.2  90/09/04  16:36:32  bohman
+# 	Created.
+# 
+######################################################################
+
+######################################################################
+#BEGIN	Machine dependent Makefile fragment for the Macintosh II
+######################################################################
+
+CC=	cc -m68020
+AS=	as -m68020
+
+LD=	ld
+
+MD=	md
+
+KCC=	${CC}
+KCPP=	${KCC} -E
+
+VOLATILE=
+
+LDFLAGS=-r -d -N -e _start -X
+# LDFLAGS=-N -e _start -X -T 4000
+LIBS=
+
+LDDEPS_PREFIX=
+SWAPDEPS_PREFIX=
+OBJSDEPS=
+
+INCLUDES=	-I$(SOURCE_DIR) ${INCLUDES}
+
+AHEADS=
+
+LDOBJS_PREFIX=locore.o
+LDOBJS_SUFFIX=
+
+#
+#  Special rule to generate the locore.c from ../mac2/locore.c
+#
+LOCORE_DEPS=
+LOCORE_HEADS=
+
+locore.c: $(SOURCE_DIR)/mac2/locore.s ${LOCORE_DEPS}
+	@rm -f $@
+	cp $(SOURCE_DIR)/mac2/locore.s $@
+
+locore.o: assym.s locore.c ${LOCORE_HEADS}
+	${KCC} -E -DLOCORE -I$(SOURCE_DIR)/machine ${SFLAGS} locore.c >locore.i
+	${AS} -o locore.o ${LOCORE_HEADS} locore.i
+	rm locore.i
+
+#
+#  Compilation rules to generate .o from .c for normal files
+#
+C_RULE_1A=${KCC} -c -O ${COPTS} -fno-defer-pop 
+C_RULE_1B=$*.c
+C_RULE_2=
+C_RULE_3=
+C_RULE_4=
+
+######################################################################
+#END	 Machine dependent Makefile fragment for the Macintosh II
+######################################################################

@@ -1,0 +1,41 @@
+#
+# /usr/misc/.bootp/etc/bootptab:
+$
+# Description:
+#	 database for bootp server (/afs/cs/user/misc/.bootp/bin/bootpd)
+#
+# HISTORY
+# $Log:	bootptab,v $
+#Revision 2.2  89/08/24  15:48:54  moore
+#	Created.
+#
+#	 Blank lines and lines beginning with '#' are ignored.
+#
+#	 home directory
+#	[89/08/24  15:48:40  moore]
+#
+
+/
+
+# default bootfile
+
+nosuchfile
+
+# end of first section
+
+%%
+
+#
+# The remainder of this file contains one line per client interface
+# with the information shown by the table headings below.
+# The 'host' name is also tried as a suffix for the 'bootfile'
+# when searching the home directory.  (e.g., bootfile.host)
+#
+# host		htype haddr		iaddr		bootfile
+#
+bogota		1 02:06:8c:56:55:50	128.2.35.104	/dev/null
+redbank		1 02:60:8c:56:56:28	128.2.35.111	/dev/null
+brightwaters	1 08:00:89:b2:23:68	128.2.35.118	/dev/null
+mole		1 02:60:8c:49:29:14	128.2.35.172	/dev/null
+atlantic	1 02:60:8c:56:29:54	128.2.35.102	/dev/null
+

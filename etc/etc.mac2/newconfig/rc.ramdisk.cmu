@@ -1,0 +1,169 @@
+#! /bin/sh
+
+# /etc/rc for MacMach ramdisk, version 02
+
+RAMDISK_VERSION="CMU MacMach installation ramdisk_image version 1.4"
+
+# CMU AFS system varieties
+ALPHA=/afs/andrew.cmu.edu/system/alpha/mac2_01
+BETA=/afs/andrew.cmu.edu/system/beta/mac2_01
+GAMMA=/afs/andrew.cmu.edu/mac2_01
+MACMACH=/afs/andrew.cmu.edu/macmach/mac2_01
+
+# minimum 40MB disk for CMU AFS ANDREW system
+CMUMINDISK=78000
+
+HOME="/"; export HOME
+PATH="/bin:/etc"; export PATH
+[ -f /dev/console ] || reboot -h
+exec </dev/console >/dev/console 2>&1
+stty -tabs crt kill '^u' intr '^c'
+
+echo ""
+echo "$RAMDISK_VERSION"
+echo ""
+echo "For the following questions, press return to use the default in []."
+
+while [ ! "$DEFAULT" ]; do
+  echo ""
+  echo -n "Do you want to install a standard CMU Andrew system? [YES] "
+  read DEFAULT
+  [ "$DEFAULT" ] || DEFAULT="YES"
+  case "$DEFAULT" in
+    Y|y|YES|yes) DEFAULT="YES";;
+    N|n|NO|no) DEFAULT="NO";;
+    *) echo "Please enter YES or NO.";;
+  esac
+done
+
+if [ "$DEFAULT" = "YES" ]; then
+
+  # The standard CMU Andrew system...
+
+  # determine ethernet hardware address
+  ifconfig en0 0.0.0.0
+  HADDR="`bootp -h`"
+  ifconfig en0 down
+
+  echo ""
+  echo "Data Comm (x2635) must allocate a Unix network address for your system."
+  echo "Tell them that your ethernet hardware address is: $HADDR"
+  while [ ! "$ADDRESS" ]; do
+    echo -n "Enter your Unix network address: "
+    read ADDRESS
+  done
+  METHOD="afs"
+  GATEWAY="NONE"
+  RELEASE="$BETA"
+  VARIETY="andrew"
+  SRCDIR="$RELEASE"
+  SCRIPT="$RELEASE/os/etc/newconfig/$METHOD.$VARIETY"
+  SCSIID="search"
+  DESTDIR="/mnt"
+  MODE="INSTALL"
+  MINDISK=$CMUMINDISK
+
+else
+
+  # A non-standard system...
+
+  echo ""
+  echo "MacMach systems can be installed or updated over the network via one of"
+  echo "two methods, AFS or FTP.  Use AFS if you are local to CMU, FTP otherwise."
+  echo "Note that FTP requires a server address, user id and password."
+  echo ""
+  echo "Three released versions of MacMach are available, Alpha, Beta and Gamma."
+  echo "The Gamma release is probably the one you want."
+  echo ""
+  echo "MacMach comes in two varieties, "Andrew" and "MacMach".  The "Andrew""
+  echo "system is for local use at CMU.  It relies on AFS for most of its system"
+  echo "file storage and can run in a 60MB partition.  The "MacMach" system is a"
+  echo "complete standalone system.  The disk partition must be at least 100MB."
+  echo "Use a Macintosh disk utility to set aside the required space as a free"
+  echo "partition before trying to install a system."
+
+  # SH is an undocumented way to get to a single-user shell for maintenance.
+
+  echo ""
+  while [ ! "$METHOD" ]; do
+    echo -n "Which installation/update method do you want, AFS or FTP? [AFS] "
+    read METHOD
+    [ "$METHOD" ] || METHOD="AFS"
+    case "$METHOD" in
+      afs|AFS) METHOD="afs";;
+      ftp|FTP) METHOD="ftp";;
+      sh|SH) echo ""; echo "Entering single user shell."; echo ""; exec /bin/sh;;
+      *) METHOD="";;
+    esac
+  done
+
+  # MACMACH is an undocumented way to get the current experimental version
+  # being developed by the MacMach group.
+
+  echo ""
+  while [ ! "$RELEASE" ]; do
+    echo -n "Which release do you want, ALPHA, BETA or GAMMA? [GAMMA] "
+    read RELEASE
+    [ "$RELEASE" ] || RELEASE="GAMMA"
+    case "$RELEASE" in
+      alpha|ALPHA|Alpha) RELEASE="$ALPHA";;
+      beta|BETA|Beta) RELEASE="$BETA";;
+      gamma|GAMMA|Gamma) RELEASE="$GAMMA";;
+      macmach|MACMACH|MacMach) RELEASE="$MACMACH"
+        echo "Warning: The MACMACH release is experimental and unsupported!";;
+      other|OTHER|Other) RELEASE="OTHER";;
+      *) RELEASE="";;
+    esac
+  done
+
+  # "OTHER" is an undocumented way to specify a non-standard source path.
+  # Later on, newsys will prompt for installation script and source directory.
+
+  if [ "$RELEASE" = OTHER ]; then
+    SCRIPT=""
+    SRCDIR=""
+    MINDISK=""
+  else
+    echo ""
+    while [ ! "$VARIETY" ]; do
+      if [ "$METHOD" = "ftp" ]; then
+        echo "FTP system variety is MACMACH."
+        VARIETY="MACMACH"
+      else
+        echo -n "Which variety do you want, ANDREW or MACMACH? [ANDREW] "
+        read VARIETY
+        [ "$VARIETY" ] || VARIETY="ANDREW"
+      fi
+      case "$VARIETY" in
+        andrew|ANDREW|Andrew)
+          VARIETY="andrew"; SRCDIR="$RELEASE"; MINDISK=$CMUMINDISK;;
+        macmach|MACMACH|MacMach)
+          VARIETY="macmach"; SRCDIR="$RELEASE/os"; MINDISK="";;
+        *) VARIETY="";;
+      esac
+    done
+    SCRIPT="$RELEASE/os/etc/newconfig/$METHOD.$VARIETY"
+  fi
+
+  ADDRESS=""
+  MODE=""
+  SCSIID="search"
+  DESTDIR="/mnt"
+
+fi
+
+# SH is an undocumented way to get to a single-user shell for maintenance.
+
+echo ""
+newsys "$METHOD" "$SCRIPT" "$ADDRESS" "$GATEWAY" "$SCSIID" "$DESTDIR" "$SRCDIR" "$MODE" "$MINDISK" || {
+  echo ""
+  echo "Installation/update failed.  Type return to reboot."
+  read SH
+  case "$SH" in
+    sh|SH) echo ""; echo "Entering single user shell."; echo ""; exec /bin/sh;;
+  esac
+}
+
+echo ""
+echo "Rebooting..."
+reboot

@@ -1,0 +1,30 @@
+These are the MacMach sources.  See /usr/src/.README for checksums.
+
+All system building must be done with a MacMach system, not an Andrew system.
+
+It is best to copy the entire source tree to the local disk as /usr/src.
+
+A seperate object directory, /usr/obj, will be created automatically.
+
+A 600MB disk is suggested for building systems.
+
+See /usr/src/etc/etc.mac2/newconfig/README.INSTALL for more information.
+
+You will want to customize the following:
+
+    /usr/src/VERSION
+    /usr/src/etc/etc.mac2/rc.ramdisk
+    /usr/src/etc/etc.mac2/macmach.proto
+
+Create an installable system in /usr/os by:
+
+    rm -rf /usr/os
+    cd /usr/src
+    make
+
+Create /usr/obj/ramdisk_image by:
+
+    [ connect a scratch disk ]
+
+    cd /usr/obj
+    make ramdisk

@@ -1,0 +1,71 @@
+.TH task_priority 2 8/13/89
+.CM 4
+.SH NAME
+.nf
+task_priority  \-  set scheduling priority for a task
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t task_priority(task, priority, change_threads)
+	task_t		task;
+	int		priority;
+	boolean_t	change_threads;
+
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+task
+Task to set priority for.
+.TP 15
+.B
+priority
+New priority.
+.TP 15
+.B
+change_threads
+Change priority of existing threads if TRUE.
+
+.SH DESCRIPTION
+The priority of a task is used only for creation of new threads; a new thread's
+priority is set to the enclosing task's priority. 
+.B task_priority
+changes this task priority.  It also sets the priorities of all threads
+in the task to this new priority if 
+.B change_threads
+is TRUE.  Existing threads are not affected otherwise.  If this priority
+change violates the maximum priority of some threads, as many threads as
+possible will be changed and an error code will be returned.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B task
+is not a task, or
+.B priority
+is not a valid priority.
+.TP 25
+KERN_FAILURE
+.B change_threads
+was TRUE and the attempt to change the priority of at least one existing
+thread failed because the new priority would have exceeded that thread's
+maximum priority.
+
+.SH BUGS
+Availability limited.
+
+.SH SEE ALSO
+.B thread_priority, processor_set_max_priority
+
+
+

@@ -1,0 +1,238 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# Copyright (c) 1988 Carnegie-Mellon University
+# Copyright (c) 1987 Carnegie-Mellon University
+# Copyright (c) 1986 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#
+#
+# HISTORY
+# $Log:	Makefile.ca,v $
+# Revision 2.17  89/05/11  14:40:41  gm0w
+# 	Moved rdb.ws from OBJSDEPS to LDDEPS_PREFIX.  There is no longer any
+# 	reason to have objects depending directly on rdb.ws, because the
+# 	current version of make won't take objects from the build directory
+# 	and use them in building rdb.
+# 	[89/05/08  21:32:11  rpd]
+# 
+# Revision 2.16  89/02/25  17:39:12  gm0w
+# 	Changes for cleanup.
+# 
+# Revision 2.15  89/01/29  15:00:41  jsb
+# 	Build mach and mach_debug directories before mach_debug_ca.
+# 	(rpd's fix to af's fix)
+# 
+# Revision 2.14  89/01/24  17:57:01  af
+# 	Trigger the building of the ca/ subdir and associated files on locore.s
+# 
+# Revision 2.13  89/01/23  22:15:07  af
+# 	Handle locore.o locally.
+# 	[89/01/16  17:10:03  af]
+# 
+# Revision 2.12  89/01/15  16:19:34  rpd
+# 	Added rules for making the mach_debug_ca interface.
+# 	[89/01/15  14:51:50  rpd]
+# 
+# Revision 2.11  88/12/20  13:48:07  rpd
+# 	Changed SYS_RULE_4 to SYS_RULE_1.
+# 	Fixed to build non-rdb kernels correctly.
+# 	[88/12/07  17:19:10  rpd]
+# 
+# Revision 2.10  88/11/23  16:35:03  rpd
+# 	Put $(VMRDB) in PRELDDEPS instead of OBJSDEPS.
+# 	Objects don't really depend on rdb.ws.
+# 	[88/11/05  13:45:11  rpd]
+# 
+# Revision 2.9  88/09/01  13:53:04  mwyoung
+# 	Force rdb.ws to be built and found in the compilation directory.
+# 
+# Revision 2.8  88/08/06  18:06:45  rpd
+# Changed to build rdb.ws from sources, instead of uudecoding it.
+# 
+# Revision 2.7  88/07/15  15:44:54  mja
+# Augment LDDEPS_PREFIX and SYSDEPS_PREFIX dependency definitions
+# and pass ../conf/fixsyms and ../machine/rdb.h to
+# ../conf/make.ws as parameters 4 and 5 for VPATH.
+# 
+# 10-Jun-88  Michael Young (mwyoung) at Carnegie-Mellon University
+#	Generate libfp.a and rdb.ws in the build directory.
+#	Note that these aren't automatically made from sources,
+#	but are instead decoded.
+#	Fix up dependencies so these files get built before loading.
+#	Add an argument to the "make.ws" script to indicate the
+#	proper source directory.
+#
+# 23-Apr-88  Mike Accetta (mja) at Carnegie-Mellon University
+# 22-Apr-88  Richard Sanzi (sanzi) at Carnegie-Mellon University
+#	Rearranged order of library declarations in LIBS and LIBS_P 
+#	declarations.  Added -Hvolatile declaration to C_RULE_1A_D.
+#	[ V5.1(XF23) ]
+#
+# 28-Mar-88  Michael Young (mwyoung) at Carnegie-Mellon University
+#	Allow kernel source directory to be other than "..".
+#	Consistently use "machine/" rather than "ca/".
+#
+#  7-Dec-87  Richard Sanzi (sanzi) at Carnegie-Mellon University
+#	Added rules for building kFP0.o.  This file is needed for
+#	correctly emulating floating point code.
+#
+# 23-Nov-87  Mike Accetta (mja) at Carnegie-Mellon University
+#	Flush obsolete CC, DEPENDS and MD_SUFFIX definitions; added
+#	conf/fixsyms, conf/make.ws and machine/rdb.h dependencies to
+#	SYSDEPS_PREFIX; correct SYS_RULE_4 to use proper $@ macro
+#	instead of $*; temporarily fix to create links to externally
+#	included files used by kdb until these uses are corrected.
+#	[ V5.1(XF21) ]
+#
+# 10-Oct-87  Mike Accetta (mja) at Carnegie-Mellon University
+#	Changed SYS_RULE_4 to also link kernel images with the version
+#	suffix.
+#	[ V5.1(XF18) ]
+#
+#  1-Oct-87  Richard Sanzi (sanzi) at Carnegie-Mellon University
+#	Use ../lib/libfp.a instead of -lfp.
+#
+# 15-Jul-87  Bill Bolosky (bolosky) at Carnegie-Mellon University
+#	Use libfp instead of libnflk.
+#
+# 24-Apr-87  William Bolosky (bolosky) at Carnegie-Mellon University
+#	Changed to always use metaware c compiler.
+#
+# 28-Mar-87  Mike Accetta (mja) at Carnegie-Mellon University
+#	Modified SYS_RULE_4 to only run the debugger merge script if
+#	the debugger is included in the configuration.
+#	[ V5.1(F8) ]
+#
+#  2-Mar-87  Rich Sanzi (sanzi) at Carnegie-Mellon University
+#	Added C_RULE_2_P, and LIBS_P.
+#
+#  2-Mar-87  Avadis Tevanian (avie) at Carnegie-Mellon University
+#	Change SYS_RULE_3 to SYS_RULE_4 for new Makefile.template.
+#
+# 19-Jan-87  Mike Accetta (mja) at Carnegie-Mellon University
+#	Re-created (for new common makefile organization).
+#	[ V5.1(F1) ]
+#
+
+######################################################################
+#BEGIN	Machine dependent Makefile fragment for the RT
+######################################################################
+
+C2=	OOPS
+
+LDFLAGS=-N -e _start -x -T E0000000
+LIBS_P_DEPS=./libfp_p.a
+LIBS_P=${LIBS_P_DEPS} -lc_p
+LIBS_DEPS=./libfp.a
+LIBS=${LIBS_DEPS} -lc
+
+LDDEPS_PREFIX=${LIBS_DEPS}
+
+AHEADS=
+
+VMRDB=./standca/rdb.ws
+
+${SOBJS}:	assym.s
+OBJSDEPS=
+LDDEPS_PREFIX=$(VMRDB)
+LDOBJS_PREFIX=locore.o
+LDOBJS_SUFFIX=blt.o kFP0.o
+LDDEPS_PREFIX=./libfp.a
+
+C_RULE_2_P=${GPROF.EX} $*.s
+C_RULE_1A_D=${CC} -c -O -Hvolatile ${COPTS} 
+
+SYS_RULE_1=@eval `awk 'NR==1{S=$$1;next;}\
+END {\
+  C = "sh $(SOURCE_DIR)/conf/make.ws $@.sys $(VMRDB) $@";\
+  C = C " $(SOURCE_DIR)/conf/fixsyms $(SOURCE_DIR)/machine/rdb.h";\
+  if (S != "") {\
+    C = C "; ln $@ $@" S; \
+    printf "rm -f $@%s; ", S; \
+  }\
+  printf "echo \"%s\"; %s\n", C, C; \
+}' vers.suffix
+
+SYSDEPS_PREFIX= \
+	$(SOURCE_DIR)/conf/fixsyms \
+	$(SOURCE_DIR)/conf/make.ws \
+	$(SOURCE_DIR)/machine/rdb.h \
+	$(VMRDB)
+
+blt.o: $(SOURCE_DIR)/machine/blt.s
+	$(CPP) $(IDENT) $(SOURCE_DIR)/machine/blt.s > blt.s
+
+	$(AS) $(ASFLAGS) -o blt.o blt.s
+	@mv blt.s #blt.s
+
+kFP0.o:	$(SOURCE_DIR)/machine/kFP0.s
+	$(CPP)	$(IDENT) ${SFLAGS} -DLOCORE $(SOURCE_DIR)/machine/kFP0.s > kFP0.s
+	$(AS) $(ASFLAGS) -o kFP0.o kFP0.s
+	@mv kFP0.s #kFP0.s
+
+#
+#  Special rule to temporarily create links to external include
+#  files used by the debugger until this dependency is eliminated.
+#
+
+kdb.o:	ctype.h setjmp.h
+
+ctype.h setjmp.h:
+	ln -s /usr/include/$@ $@
+
+LOCORE_DEPS=
+LOCORE_HEADS=
+locore.s: ${SOURCE_DIR}/ca/locore.c
+	@rm -f locore.s
+	cp ${SOURCE_DIR}/ca/locore.c locore.s
+	@chmod +w locore.s
+
+#
+#	Generate binary files libfp.a and rdb.ws
+#
+
+./libfp.a:	$(SOURCE_DIR)/lib/libfp.a.enc
+	${DECODE} $?
+	ranlib $@
+
+SAMAKEFILE=$(SOURCE_DIR)/standca/Makefile
+
+./standca/rdb.ws:	standca ctype.h varargs.h $(SAMAKEFILE) ALWAYS
+	$(MAKE) -f $(SAMAKEFILE) SOURCE_DIR=$(SOURCE_DIR) OBJECTDIR=standca ./rdb.ws
+
+standca:
+	mkdir standca
+	touch standca/Makedep
+	touch standca/M.d
+
+varargs.h:
+	ln -s /usr/include/$@ $@
+
+#
+#  Mach IPC-based interfaces
+#
+
+MACH_DEBUG_CA_DEFSFILES=\
+	$(SOURCE_DIR)/mach_debug/ca/mach_debug_ca_types.defs \
+	$(SOURCE_DIR)/mach_debug/ca/mach_debug_ca.defs
+
+MACH_DEBUG_CA_GENFILES=\
+	./mach_debug/ca/mach_debug_ca_server.c
+
+MACH_DEBUG_CA_MKFILE=	$(SOURCE_DIR)/mach_debug/ca/Makefile
+
+$(MACH_DEBUG_CA_GENFILES) : migdebugmachinefiles
+
+migdebugmachinefiles :: $(MACH_DEBUG_CA_DEFSFILES) $(MACH_DEBUG_CA_MKFILE)
+	rm -rf ./mach_debug/ca; \
+	mkdir ./mach_debug/ca; \
+	cp -p $(MACH_DEBUG_CA_DEFSFILES) ./mach_debug/ca/; \
+	cp -p $(MACH_DEBUG_CA_MKFILE) ./mach_debug/ca/; \
+	cd ./mach_debug/ca; make; \
+	touch ../../migdebugmachinefiles
+
+######################################################################
+#END	 Machine dependent Makefile fragment for the RT
+######################################################################

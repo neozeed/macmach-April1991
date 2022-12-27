@@ -1,0 +1,40 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#  
+#
+# HISTORY
+# $Log:	MASTER.sun4.local,v $
+# Revision 2.3  90/08/08  17:17:00  mrt
+# 	Added cab (controller acceleration board) device, optional under
+# 	cab. It is used on Nectar machines.
+# 	[90/08/07            rds]
+# 
+# Revision 2.2  89/07/11  13:28:52  jjc
+# 	Copied from Sun 3.
+# 	[89/06/29            jjc]
+# 
+#
+
+#  MACH = [ STD M ANY ]
+#  ------- ---- -------
+#
+#  Mach Private Names
+#  ---- ---------
+#
+#  MDG		= [ STD medium WS EXP gcc ]
+#
+#
+
+# allow cab to act as network device
+options		CABIF						# <cab>
+
+controller	vme32d32 1 at nexus ?				# <cab>
+controller	vme32d32 2 at nexus ?				# <cab>
+controller	vme32d32 3 at nexus ?				# <cab>
+
+device          cab0 at vme32d32 ? csr 0xfe000000		# <cab>
+			priority 3 vector cabintr 0xf0		# <cab>
+

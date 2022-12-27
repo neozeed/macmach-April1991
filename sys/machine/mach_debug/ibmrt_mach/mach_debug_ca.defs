@@ -1,0 +1,67 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1989 Carnegie-Mellon University
+ * Copyright (c) 1988 Carnegie-Mellon University
+ * All rights reserved.  The CMU software License Agreement specifies
+ * the terms and conditions for use and redistribution.
+ */
+/*
+ * HISTORY
+ * $Log:	mach_debug_ca.defs,v $
+ * Revision 2.7  89/05/01  18:10:21  rpd
+ * 	Don't define KERNEL_SERVER here; it's passed in now.
+ * 
+ * Revision 2.6  89/03/09  20:25:43  rpd
+ * 	More cleanup.
+ * 
+ * Revision 2.5  89/02/25  18:43:05  gm0w
+ * 	Changes for cleanup.
+ * 
+ * Revision 2.4  89/02/15  22:59:37  rpd
+ * 	Moved to mach_debug/ca/.
+ * 
+ * Revision 2.3  89/01/15  16:18:55  rpd
+ * 	Updated includes for new mach/ directory.
+ * 	[89/01/15  14:50:12  rpd]
+ * 
+ * Revision 2.2  89/01/12  07:40:17  rpd
+ * 	Renamed fpa_counters calls, type with ibmrt_fpa_counters.
+ * 	[89/01/12  06:41:58  rpd]
+ * 	
+ * 	Created.
+ * 	[89/01/12  04:16:22  rpd]
+ * 
+ */
+/*
+ *	Matchmaker definitions file for Mach kernel
+ *	IBM RT debugging interface.
+ */
+
+#ifdef	KERNEL
+#include <romp_fpa_count.h>
+#else
+#define ROMP_FPA_COUNT		1
+#endif	KERNEL
+
+subsystem mach_debug_ca 4000;
+
+#include <mach/mach_types.defs>
+#include <mach_debug/ca/mach_debug_ca_types.defs>
+
+#if	ROMP_FPA_COUNT
+/*
+ *	Retrieve fpa counters.
+ */
+routine host_ibmrt_fpa_counters(
+		task		: task_t;	/* should be a host port */
+	out	counters	: ibmrt_fpa_counters_t);
+
+/*
+ *	Resets the fpa counters.
+ */
+routine host_ibmrt_fpa_counters_reset(
+		task		: task_t);	/* should be a host port */
+#else	ROMP_FPA_COUNT
+skip;	/* host_fpa_counters */
+skip;	/* host_fpa_counters_reset */
+#endif	ROMP_FPA_COUNT

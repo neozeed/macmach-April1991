@@ -1,0 +1,274 @@
+.\"
+.\" Mach Operating System
+.\" Copyright (c) 1989 Carnegie-Mellon University
+.\" Copyright (c) 1988 Carnegie-Mellon University
+.\" All rights reserved.  The CMU software License Agreement specifies
+.\" the terms and conditions for use and redistribution.
+.\"
+.\" HISTORY
+.\" $Log:	machtree.man,v $
+.\" Revision 2.6  89/03/17  15:51:05  mrt
+.\" 	Updated for recent changes in machtree. Updated the examples to
+.\" 	use modern configurations. changed section number from 8 to 1.
+.\" 	[89/03/17            rpd]
+.\" 
+.\" Revision 2.5  89/02/26  13:51:10  gm0w
+.\" 	Changes for cleanup.
+.\" 
+.\" Revision 2.4  88/12/20  13:52:47  rpd
+.\" 	Documented new -dir option and new default directory.
+.\" 	Documented new OBJS/@sys subdirectories.
+.\" 	[88/12/08  15:21:57  rpd]
+.\" 	
+.\" 	Documented change in default directories (ALL -> MI).
+.\" 	Documented new locations of kernel source and archives.
+.\" 	[88/12/08  11:28:42  rpd]
+.\" 	
+.\" 	Cosmetic changes.
+.\" 	[88/11/26  21:32:56  rpd]
+.\" 
+.\" Revision 2.3  88/10/11  11:37:32  rpd
+.\" 	Cleaned up log mess created by bci.
+.\" 
+.\" Revision 2.2  88/10/11  10:22:22  rpd
+.\" 	Fixed up header comments.
+.\" 	[88/10/11  09:40:05  rpd]
+.\" 	
+.\" 	Added some paragraphs to BUGS.
+.\" 	[88/10/11  09:35:42  rpd]
+.\" 
+.TH  MACHTREE  1 9/8/88
+.CM 4
+.SH NAME
+machtree \- checks out Mach kernel source trees
+.SH SYNOPSIS
+\fBmachtree\fR [switches] [specs]
+.SH DESCRIPTION
+\fImachtree(1)\fR checks out Mach kernel source trees.  Run in an empty
+directory, \fImachtree\fR will prepare the directory for compilation
+using \fImake(1)\fR and modification using \fIbco(1)\fR and \fIbci(1)\fR.
+.PP
+The command line
+specifies sets of directories which are to be checked out.
+Possible sets include
+.TP 8
+.B ALL
+Check out all source directories.
+.TP 8
+.B MI
+Check out all machine-independent source directories.
+.TP 8
+.B ca
+Check out all IBM PC/RT source directories.
+.TP 8
+.B vax
+Check out all DEC VAX source directories.
+.TP 8
+.B sun3
+Check out all Sun-3 source directories.
+.TP 8
+.B mmax
+Check out all Encore Multimax source directories.
+.TP 8
+.B sqt
+Check out all Sequent Balance source directories.
+.PP
+If multiple sets are specified, \fImachtree\fR
+takes the union of all directories specified by the sets.
+If no directories are specified, then \fImachtree\fR processes ".".
+.PP
+The basic parameters controlling which sources get checked out are the
+RCS subdirectory (normally a symbolic link to an RCS tree elsewhere)
+and the RCSconfig file.  If \fImachtree\fR doesn't find these, it will
+prompt the user for their creation, providing sensible defaults for
+its questions.  When creating an RCSconfig file, \fImachtree\fR asks
+for a \fIbase version\fR and a \fIbranch name\fR.  The base version,
+which must be recorded in the kernel VERSIONS file, is the kernel
+version to use as a base for building and modifications.  The most
+recent version is the default.  The branch name identifies the RCS branch
+off of the mainline in which to make modifications.  One's login name
+must be a prefix of the branch name, and by custom the base version is
+also made part of the branch name.  For example, the default branch
+name for a branch off of version X45 is rpd_X45.  Branch names must be
+unique, so rpd might use rpd_X45_fixes, rpd_X45_hack, etc, for multiple
+branches off of X45.
+.PP
+\fImachtree\fR creates a custom Makeconf file and prepares the directory
+for compilation.  \fImachtree\fR determines if the current directory
+is in AFS and works appropriately.  If in AFS, \fImachtree\fR creates
+an object subdirectory, named OBJS, with subdirectories rt_mach, vax_mach,
+and sun3_mach,
+which will contain any build subdirectories.
+It defines OBJECTDIR appropriately in Makeconf.  Also, when in AFS
+\fImachtree\fR creates a MACHINE subdirectory of symbolic links and uses
+AFS's conditional symbolic link facility for linking machine, mach/machine,
+and mach_debug/machine dynamically.
+If not in AFS, Makeconf
+doesn't define OBJECTDIR and builds occur in the traditional place, with
+build directories directly in the current directory.  The machine links
+are hard-wired to the particular directories.
+.PP
+The custom Makeconf file can also define CONFIG, providing a default
+configuration to build; CONFIG_SUFFIX, used to force configuring in
+build directories; and VPATH, which gives \fImake(1)\fR a path
+to look for source files it doesn't find in the current tree.
+.PP
+\fImachtree\f interprets the following options:
+.TP 8
+.B \-dir \fIdir\fR
+Specifies an additional directory to process.
+.TP 8
+.B \-co
+Checks out files in directories.  This is the default.
+.TP 8
+.B \-noco
+Doesn't check out files in directories.  Builds a skeleton
+source tree.
+.TP 8
+.B \-q
+Doesn't write informative messages to stdout; still
+writes error messages to stderr.
+.TP 8
+.B \-v
+Writes informative progress messages to stdout.  This is the default.
+.TP 8
+.B \-i
+Prompts when creating the RCS link and RCSconfig file.
+This is the default.
+.TP 8
+.B \-f
+Doesn't ask any questions, but always use the default answer.
+.TP 8
+.B \-afs
+Forces \fImachtree\fR to make an AFS tree.
+.TP 8
+.B \-noafs
+Forces \fImachtree\fR to make a non-AFS tree.
+.TP 8
+.B \-vpath \fIpath\fR
+Specifies a value for VPATH to put in Makeconf.
+.TP 8
+.B \-csuf \fIsuffix\fR
+Specifies a value for CONFIG_SUFFIX to put in Makeconf.
+.TP 8
+.B \-a
+Specifies a value of .always for CONFIG_SUFFIX.  This value
+will force every full build to reconfigure.
+.TP 8
+.B \-c \fIconfig\fR
+Specifies a value for CONFIG to put in Makeconf.  This determines
+the default configuration.  The default value is STD+WS+EXP.
+.TP 8
+.B \-b \fIversion\fR
+Specifies a base version to use when creating RCSconfig.
+It defaults to the last version in the VERSIONS file.
+.TP 8
+.B \-n \fIname\fR
+Specifies a branch name to use when creating RCSconfig.
+It defaults to userid_version.  (For example, rpd_X45.)
+.TP 8
+.B \-help
+Prints a summary of the switches.
+
+.SH EXAMPLES
+.PP
+Check out sources to build an RT configuration which defaults to STD+ANY:
+.PP
+.nf
+	machtree -c STD+ANY MI ca
+.fi
+.PP
+Quietly check out X45 sources for Sun and VAX configurations:
+.PP
+.nf
+	machtree -q -f -b X45 MI sun3 vax
+.fi
+
+.SH BUILDING
+.PP
+If one uses make with no arguments, it will build the default configuration
+specified in the Makeconf file.  The configuration may also be specified
+on the command line to make.  For example,
+.PP
+.nf
+	make CONFIG=STD+WS
+.fi
+.PP
+makes the STD+WS configuration.
+.PP
+The Makefile has specific targets as well:
+.TP 12
+.B doconf
+Just rebuilds the configuration file in the build directory
+for the configuration.
+.TP 12
+.B config
+Reconfigures, using the configuration file and the config program.
+.TP 12
+.B kernel
+Rebuilds the kernel.
+.TP 12
+.B buildconf
+Rebuilds the standard configurations.  (See the conf/buildconf.* files
+in the source tree for lists of standard configurations.)
+.PP
+make will avoid reconfiguring if it doesn't see any changed dependencies.
+Specifying CONFIG_SUFFIX=.always forces reconfiguration.  This is necessary
+when one renames a build directory, to start building a configuration
+from another configuration's objects.
+.PP
+To just rebuild the STD+WS configuration:
+.PP
+.nf
+	make CONFIG=STD+WS kernel
+.fi
+.PP
+To move from STD+WS to STD+ANY (assuming an AFS tree):
+.PP
+.nf
+	mv OBJS/@sys/{STD+WS,STD+ANY}
+	make CONFIG=STD+ANY CONFIG_SUFFIX=.always
+.fi
+.PP
+To check out and build the latest Vax STD+ANY+EXP configuration,
+no questions asked:
+.PP
+.nf
+	machtree -f -c STD+ANY+EXP MI vax && make
+.fi
+.SH FILES
+/afs/cs.cmu.edu/source_mach/rcs/kernel \- The kernel RCS tree.
+.PP
+/afs/cs.cmu.edu/source_mach/latest/kernel/VERSIONS \- File recording
+kernel versions and the dates at which they were checked in.
+.PP
+/afs/cs.cmu.edu/source_mach/latest/kernel/src/machtree.sh \- The latest
+version of the \fImachtree\fR program.
+.PP
+conf/buildconf.* \- Files listing the standard configurations
+for each machine type.
+
+.SH BUGS
+\fImachtree\fR requires a modified version of \fIrcsco(1)\fR that
+knows about RCSconfig files.
+.PP
+One must be properly authenticated to AFS and have read access to the
+desired kernel source directories.  If \fImachtree\fR detects a possible
+access problem, it will print a warning message and skip the directory.
+.PP
+Using VPATH is ill-tested and something of a black art.
+.PP
+Renaming build directories is risky, because one is trusting \fImake\fR to find
+all the relevant dependencies.  It is safe when changing device configurations,
+but not for changing options used by mach.defs or other Mig files.
+.PP
+Expect problems when trying to check out and build kernels older than X46.
+.PP
+Sometimes you will see warning messages from rcsco.  These are due to files
+in the archive which don't belong in the checked-out kernel.  Files which
+only exist on a branch and haven't been checked back into the mainline,
+files which were created after the version you are trying to check out, and
+files which were deleted before your version but not marked as defunct can
+cause these warning messages.  They may be safely ignored.
+.SH "SEE ALSO"
+make(1), rcsco(1), bci(1)

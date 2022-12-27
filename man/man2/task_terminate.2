@@ -1,0 +1,52 @@
+.TH task_terminate 2 9/19/86
+.CM 4
+.SH NAME
+.nf
+task_terminate  \-  destroys specified task
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t task_terminate(target_task)
+	task_t		target_task;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+target_task
+The task to be destroyed.
+
+.SH DESCRIPTION
+.B task_terminate
+destroys the task specified by 
+.B target_task
+and
+all its threads. All resources that are used only by this task are
+freed. Any port to which this task has receive and ownership rights
+is destroyed.
+
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The task has been killed.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B target_task
+is not a task.
+
+.SH SEE ALSO
+.B task_create, task_suspend, task_resume,
+.B thread_terminate, thread_suspend
+
+
+.SH BUGS
+Not implemented yet.
+
+

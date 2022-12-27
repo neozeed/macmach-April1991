@@ -1,0 +1,45 @@
+.TH host_processor_set_priv 2 2/2/89
+.CM 4
+.SH NAME
+.nf
+host_processor_set_priv  \-  Get control port for processor set
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+.nf
+.ft B
+kern_return_t host_processor_set_priv(host_priv, set_name, set);
+	host_priv_t		host_priv;
+	processor_set_name_t	set_name;
+	processor_set_t		*set;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+.B host_priv
+The privileged host port for the host on which this processor
+set resides.
+.TP 15
+.B
+.B set_name
+The name port for this set.
+.TP 15
+.B
+.B set
+Returns the control port for this set.
+
+.SH DESCRIPTION
+This call allows a privileged application to obtain the control port
+for an existing processor set from its name port.  The privileged host
+port is required.
+
+.SH BUGS
+Availability limited.
+
+.SH SEE ALSO
+.B host_ports, processor_set_default, processor_set_create
+

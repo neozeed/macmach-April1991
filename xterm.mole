@@ -1,0 +1,3 @@
+#! /bin/sh
+echo "Starting xterm to mole..."
+xterm -display mole.andrew.cmu.edu:0.1 -fn 12x24 -sb -sl 100 -n xterm[$$] -T $USER@`hostname`[$$] -vb -wf -bg wheat -geometry =80x35+0+0

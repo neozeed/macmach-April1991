@@ -1,0 +1,210 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#
+#
+# HISTORY
+# $Log:	files.ca,v $
+# Revision 2.15  90/07/03  16:36:55  mrt
+# 	Added cfs/ramd.c, cfs/dtc.c, and cfs/dtcdiv.s. 
+# 	[90/05/23            dcs]
+# 
+# Revision 2.14  89/03/09  04:18:04  rpd
+# 	Moved apa8c, ap files to end.
+# 
+# Revision 2.13  89/02/25  17:40:49  gm0w
+# 	Changes for cleanup.
+# 
+# Revision 2.12  89/01/23  22:17:29  af
+# 	Handle locore.o locally.
+# 	[89/01/16  17:22:07  af]
+# 
+# Revision 2.11  89/01/12  07:43:18  rpd
+# 	Added mach_debug_ca, ./ca/mach_debug_ca_server.c.
+# 	[89/01/12  04:37:07  rpd]
+# 
+# Revision 2.10  89/01/04  13:35:45  rpd
+# 	Added romp_fpa_count option.
+# 	[89/01/01  15:00:43  rpd]
+# 	
+# 	Removed caif/if_ec.c line; the file doesn't exist.
+# 	[88/12/30  21:52:07  rpd]
+# 
+# Revision 2.9  88/12/20  13:49:07  rpd
+# 	Added romp_sc_rtfl.
+# 	[88/12/07  17:19:48  rpd]
+# 
+# Revision 2.8  88/12/19  02:40:55  mwyoung
+# 	Coalesce mach_exception into mach.
+# 	[88/12/14            mwyoung]
+# 
+# Revision 2.7  88/11/23  16:35:56  rpd
+# 	Added romp_135 option.
+# 	[88/11/04  17:55:40  rpd]
+# 
+# Revision 2.6  88/10/27  10:45:00  rpd
+# 	Removed the romp_shared_seg option.
+# 	[88/10/26  14:40:01  rpd]
+# 
+# Revision 2.5  88/10/01  21:52:14  rpd
+# 	Changed cs_kdb to cmucs_kdb.
+# 	[88/10/01  21:15:56  rpd]
+# 	
+# 	Added the romp_tbcompat option.
+# 	[88/09/27  22:04:50  rpd]
+# 
+# Revision 2.4  88/09/07  15:47:57  rpd
+# 	Picked up mpel change from Rich Sanzi.
+# 	[88/09/05  20:42:09  rpd]
+# 
+# Revision 2.2.1.1  88/08/26  13:57:46  sanzi
+# 	Added cacons/mpeltty.c optional mpel device-driver.
+# 	
+#  6-Feb-88  Richard Sanzi (sanzi) at Carnegie-Mellon University
+#	Added entry for cache.c.
+#
+# 29-Jan-88  Richard Sanzi (sanzi) at Carnegie-Mellon University
+#	Added mach_exception files.
+#
+# 18-Sep-87  Richard Sanzi (sanzi) at Carnegie-Mellon University
+#	Added entry for cbuf.c.
+#
+# 12-Sep-87  Richard Sanzi (sanzi) at Carnegie-Mellon University
+#	Added entry for scsi device driver.
+#
+# 15-Jul-87  Bill Bolosky (bolosky) at Carnegie-Mellon University
+#	Changed mono.c to monotty.c and added lptty.c
+#
+#  3-Jul-87  Bill Bolosky (bolosky) at Carnegie-Mellon University
+#	Added romp_apc option (new processor).  Deleted romp_fpa
+#	option; the various fpa's are always supported now.
+#	Added float.c and emul.c as standard files, mc881.c optional
+#	on romp_apc.
+#
+# 23-Jun-87  William Bolosky (bolosky) at Carnegie-Mellon University
+#	Added romp_shared_seg option.
+#
+# 08-May-87  Mike Accetta (mja) at Carnegie-Mellon University
+#	Installed KDB modules and sorted entire list.
+#	[ V5.1(XF11) ]
+#
+# 27-Apr-87  Bill Bolosky (bolosky) at Carnegie-Mellon University
+#	Removed useless cs_no_squeek option.
+#
+#  2-Apr-87  Avadis Tevanian (avie) at Carnegie-Mellon University
+#	Added caio/tty_tb.c as the romp tablet driver (it is different
+#	than the one provided by 4.3).
+#
+# 28-Mar-87  Mike Accetta (mja) at Carnegie-Mellon University
+#	Removed obsolete LOCK_KEY option and what appeared to be unused
+#	VAX devices tied to /dev/null.
+#	[ V5.1(F8) ]
+#
+
+OPTIONS/debounce	optional debounce
+OPTIONS/mach_debug_ca	optional mach_debug_ca
+OPTIONS/romp_135	optional romp_135
+OPTIONS/romp_apc	optional romp_apc
+OPTIONS/romp_ascksum	optional romp_ascksum
+OPTIONS/romp_cache	optional romp_cache
+OPTIONS/romp_debug	optional romp_debug
+OPTIONS/romp_dualcall	optional romp_dualcall
+OPTIONS/romp_fpa_count	optional romp_fpa_count
+OPTIONS/romp_nfl	optional romp_nfl
+OPTIONS/romp_rdb	optional romp_rdb
+OPTIONS/romp_sc_rtfl	optional romp_sc_rtfl
+OPTIONS/romp_sgp	optional romp_sgp
+OPTIONS/romp_show_load	optional romp_show_load
+OPTIONS/romp_tbcompat	optional romp_tbcompat
+./locore.s		standard ordered
+ca/autoconf.c		standard device-driver
+ca/clock.c		standard device-driver
+ca/conf.c		standard
+ca/emul.c		standard
+ca/float.c		standard
+ca/fpa.c		standard device-driver
+ca/in_cksum.c		optional inet
+ca/kdb/kdb.c		optional mach_kdb
+ca/kdb/kdb_access.c	optional mach_kdb
+ca/kdb/kdb_command.c	optional mach_kdb
+ca/kdb/kdb_expr.c	optional mach_kdb
+ca/kdb/kdb_format.c	optional mach_kdb
+ca/kdb/kdb_input.c	optional mach_kdb
+ca/kdb/kdb_main.c	optional mach_kdb
+ca/kdb/kdb_message.c	optional mach_kdb
+ca/kdb/kdb_opset.c	optional mach_kdb
+ca/kdb/kdb_output.c	optional mach_kdb
+ca/kdb/kdb_pcs.c	optional mach_kdb
+ca/kdb/kdb_print.c	optional mach_kdb
+ca/kdb/kdb_runpcs.c	optional mach_kdb
+ca/kdb/kdb_setup.c	optional mach_kdb
+ca/kdb/kdb_sym.c	optional mach_kdb
+ca/kdb/kdb_trace.c	optional mach_kdb
+ca/kdb/kdb_unasm.c	optional mach_kdb
+ca/machdep.c		standard device-driver
+ca/mc881.c		optional romp_apc
+ca/mem.c		standard device-driver
+ca/pcb.c		standard
+ca/pmap.c		standard
+ca/romp_init.c		standard
+ca/scksum.s		optional romp_ascksum
+ca/sed.c		standard device-driver
+ca/trap.c		standard device-driver
+ca/ufs_machdep.c	standard
+ca/cache.c		optional romp_cache
+ca/undefine.c		standard
+ca/romp_exception.c	standard
+cacons/aed.c		optional aed device-driver
+cacons/aedloc.c		optional aed device-driver
+cacons/aedtty.c		optional aed device-driver
+cacons/apa16loc.c	optional apasixteen device-driver
+cacons/apa16tty.c	optional apasixteen device-driver
+cacons/apa8loc.c	optional apaeight device-driver
+cacons/apa8tty.c	optional apaeight device-driver
+cacons/mpeltty.c	optional mpel device-driver
+cacons/apa_fontblt.c	standard
+cacons/buf_emul.c	standard
+cacons/bus.c		standard
+cacons/cons.c		standard
+cacons/ibm_emul.c	standard
+cacons/kbd_emul.c	standard device-driver
+cacons/keyboard.c	standard
+cacons/kls.c		standard
+cacons/lptty.c		standard
+cacons/monotty.c	optional mono device-driver
+cacons/screen_conf.c	standard
+cacons/sprintf.c	standard
+cacons/std_emul.c	standard device-driver
+cacons/x_emul.c		standard 
+caif/if_lan.c      	optional lan device-driver
+caif/if_un.c		optional un device-driver
+caio/adunload.c		optional hd device-driver 
+caio/asy.c		optional asy device-driver
+caio/dma.c		standard device-driver
+caio/fd.c		optional fd device-driver
+caio/hd.c		optional hd device-driver
+caio/lp.c		optional lp device-driver
+caio/mouse.c		optional ms device-driver
+caio/psp.c		optional psp device-driver
+caio/speaker.c		standard
+caio/st.c		optional st device-driver
+caio/tty_mouse.c	optional ms
+caio/tty_tb.c		optional romp_tb
+caio/scsi.c		optional sc device-driver
+caio/cbuf.c		standard
+./mach_debug/ca/mach_debug_ca_server.c	optional mach_debug_ca
+#
+# Unsupported devices/files.
+#
+cacons/apa8cloc.c	optional apaeightc device-driver
+cacons/apa8ctty.c	optional apaeightc device-driver
+caio/tty_apldisc.c	optional ap device-driver
+caio/tty_approto.c 	optional ap device-driver
+#
+# Devices used by the Coda research group
+#
+cfs/ramd.c		optional ramd device-driver
+cfs/dtc.c		optional dtc device-driver
+cfs/dtcdiv.s		optional dtc

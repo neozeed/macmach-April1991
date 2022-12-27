@@ -1,0 +1,77 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1989 Carnegie-Mellon University
+ * All rights reserved.  The CMU software License Agreement specifies
+ * the terms and conditions for use and redistribution.
+ */
+/*
+ * HISTORY
+ * $Log:	netmemory.defs,v $
+ * Revision 1.1  90/02/19  21:48:14  bww
+ * 	Mach Release 2.5
+ * 	[90/02/19  21:47:02  bww]
+ * 
+ * Revision 1.4  89/08/27  15:12:29  mrt
+ * 	changed import of kern/mach_types.h to mach/mach_types.h.
+ * 	[89/08/27            mrt]
+ * 
+ * Revision 1.3  89/08/24  17:47:06  mrt
+ * 	Cleanup
+ * 
+ * Revision 1.2  89/04/29  22:35:53  mrt
+ * 	Fixed includes for Mach 2.5
+ * 
+ *  17-Jun-88 Joseph Barrera (jsb) at Carnegie-Mellon University
+ *	Added statistics gathering calls.
+ *	Based on Alessandro Forin's statistics.defs.
+ *
+ *   5-Nov-87 Joseph Barrera (jsb) at Carnegie-Mellon University
+ *	Created.
+ */
+/*
+ *	File:	netmemory.defs
+ *	Author:	Joseph S. Barrera III
+ *
+ *	Copyright (C) 1989, Joseph S. Barrera III
+ *
+ *	Mig interface for the netmemory server.
+ *
+ */
+
+subsystem netmemory 4200;
+
+
+type int = MSG_TYPE_INTEGER_32;
+type pointer_t = ^array [] of MSG_TYPE_BYTE;
+type port_t = MSG_TYPE_PORT;
+
+type vm_offset_t = int;
+type vm_size_t = int;
+
+import <mach/mach_types.h>;
+import "netmemory_defs.h";
+
+routine	netmemory_create(
+		server_port		: port_t;
+		object_size		: vm_size_t;
+	out	paging_object		: port_t;
+	out	control_port		: port_t);
+
+routine	netmemory_destroy(
+		control_port		: port_t);
+
+routine netmemory_cache(
+		server_port		: port_t;
+		paging_object		: port_t;
+	out	local_paging_object	: port_t);
+
+routine	paging_object_server_statistics(
+		object_server		: port_t;
+	out	rusage			: pointer_t;
+	out	faults_total		: pointer_t);
+
+routine	netmemory_cover(
+		server_port		: port_t;
+		object_data		: pointer_t;
+	out	paging_object		: port_t;
+	out	control_port		: port_t);

@@ -1,0 +1,69 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1989 Carnegie-Mellon University
+ * Copyright (c) 1988 Carnegie-Mellon University
+ * Copyright (c) 1987 Carnegie-Mellon University
+ * All rights reserved.  The CMU software License Agreement specifies
+ * the terms and conditions for use and redistribution.
+ */
+/*
+ * HISTORY
+ * $Log:	err_us.sub,v $
+NONERevision 1.1  90/02/19  18:07:46  bww
+NONE	Mach Release 2.5
+NONE	[90/02/19  18:07:07  bww]
+NONE
+ * Revision 1.2  89/05/05  18:41:08  mrt
+ * 	09-Apr-88	Douglas Orr (dorr) at Carnegie-Mellon University
+ * 
+ *	add mig codes
+ * 
+ * 09-Mar-88	Douglas Orr (dorr) at Carnegie-Mellon University
+ *	created.
+ */
+/*
+ * File:	err_us.sub
+ * Purpose:
+ *	Generic error code interface
+ */
+
+
+static char 	* err_codes_loader[] = {
+	NO_SUCH_ERROR,
+	"(us/loader) mapped file open error",			/* 1 */
+	"(us/loader) mapped file write error",			/* 2 */
+	"(us/loader) mapped file read error",			/* 3 */
+	"(us/loader) mapped file storage allocation error",	/* 4 */
+	"(us/loader) mapped file invalid open mode",		/* 5 */
+	"(us/loader) mapped file value out of range",		/* 6 */
+	"(us/loader) region not found",				/* 7 */
+	"(us/loader) overlapping regions",			/* 8 */
+	"(us/loader) bad object module format",			/* 9 */
+	"(us/loader) invalid mach-o op code",			/* a */
+	"(us/loader) internal inconsistency",			/* b */
+	"(us/loader) load module end of file",			/* c */
+	"(us/loader) target not aligned",			/* d */
+	"(us/loader) cpu initialization error",			/* e */
+	"(us/loader) a.out format not currently supported",	/* f */
+};
+
+
+
+/*	err_us subsystems      	*/
+static struct error_subsystem err_us_sub[] = {
+	/* us/0; */
+	{
+		"(us/?)",
+		0,
+	},
+	/* us/1; mach loader */
+	{
+		"(us/loader)",
+		errlib_count(err_codes_loader),
+		err_codes_loader,
+	}
+};
+
+
+
+

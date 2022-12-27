@@ -1,0 +1,79 @@
+.TH vm_write 2 1/13/87
+.CM 4
+.SH NAME
+.nf
+vm_write  \-  allows a task's memory to be written by another task
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t vm_write(target_task, address, data, data_count)
+	vm_task_t	target_task;
+	vm_address_t	address;
+	pointer_t	data;
+	int		data_count;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+target_task
+Task whose memory is to be written.
+.TP 15
+.B
+address
+Starting address in task to be affected
+(must be a page boundary).
+.TP 15
+.B
+data
+An array of bytes to be written.
+.TP 15
+.B
+data_count
+The size of the 
+.B data
+array
+(must be an integral number of pages).
+
+.SH DESCRIPTION
+.B vm_write
+allows a task's virtual memory to be written
+by another task. Use 
+.B vm_page_size
+or 
+.B vm_statistics
+to find out the
+virtual page size.
+
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+Memory written.
+.TP 25
+KERN_INVALID_ARGUMENT
+Either the address does not start on a page
+boundary or the size is not an integral number of pages.
+.TP 25
+KERN_PROTECTION_FAILURE
+The address region in the target task
+is protected against writing.
+.TP 25
+KERN_INVALID_ADDRESS
+Illegal or non_allocated address specified or
+there is not 
+.B data_count
+of allocated memory starting at 
+.B address
+.
+
+.SH SEE ALSO
+.B vm_copy, vm_protect, vm_read, vm_statistics
+
+

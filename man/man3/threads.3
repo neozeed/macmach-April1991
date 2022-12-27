@@ -1,0 +1,21 @@
+.TH THREADS 3 3/1/86
+.CM 4
+.SH NAME
+C-Threads \- support for parallel programming in C under MACH
+.SH "SYNOPSIS"
+.B "cc ... -lthreads -lmach"
+.SH "DESCRIPTION"
+The
+.I "C Threads"
+runtime library provides
+concurrent threads of control,
+shared variables,
+mutual exclusion,
+and synchronization via condition variables.
+For further details, see
+.I "C Threads,"
+by Eric Cooper and Richard Draves.
+.SH "FILES"
+.ta 32n
+/usr/mach/doc/threads.{doc,PS}	C Threads document
+/usr/mach/lib/libthreads.a	C Threads runtime library

@@ -1,0 +1,130 @@
+.TH vm_wire 2 1/20/90
+.CM 4
+.SH NAME
+.nf
+vm_wire  \-  control pageability of memory
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t vm_wire (host_priv, task, start, end, prot)
+	host_priv_t	host_priv;
+	task_t		task;
+	vm_address_t	start,end;
+	vm_prot_t	prot;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+host_priv
+The privileged host port for the host on which task resides
+.TP 15
+.B
+task
+The task whose memory is to be affected
+.TP 15
+.B
+start,end
+First and last addresses of the memory region to be affected.
+.TP 15
+.B
+prot
+Types of accesses that must not cause page faults.
+
+.SH DESCRIPTION
+
+.B vm_wire
+allows privileged applications to control memory pageability.  The semantics
+of a successful
+.B vm_wire
+operation are that memory in the range from 
+.B start
+to 
+.B end
+in 
+.B task
+will not cause page faults for any accesses included in 
+.B prot
+.  Data
+memory can be made non-pageable (wired) with a
+.B prot
+argument of
+.B VM_PROT_READ|VM_PROT_WRITE.
+A special case is that
+.B VM_PROT_NONE
+makes the memory pageable.  Machines with hardware restrictions on address
+aliasing (e.g. IBM PC/RT, HP-PA) may have to reload mappings to wired memory
+and flush caches if more than one virtual mapping corresponding to the same
+physical memory is used.  The mappings will usually be reloaded from a fast
+software cache, but if this overhead is a problem aliasing of
+wired memory should be avoided on these architectures.
+
+The kernel maintains an internal limit on how
+much memory may be wired to protect itself from attempts to wire all of
+physical memory or more.  Attempting to wire more memory than this limit
+allows will fail.  The limit is a limit on address space, so wiring
+shared memory twice counts against the limit twice.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B host_priv
+is not the privileged host port for
+.B task
+'s host, or 
+.B task
+is not a task, or 
+.B start
+and 
+.B end
+do
+not define a valid address range in 
+.B task
+, or 
+.B prot
+is not a valid
+memory protection.
+.TP 25
+KERN_RESOURCE_SHORTAGE
+Some kernel resource limit, most likely that on the
+amount of memory that can be wired down, has been exceeded.
+.TP 25
+KERN_FAILURE
+Some memory in the range from 
+.B start
+to 
+.B end
+does not
+exist.
+.TP 25
+KERN_PROTECTION_FAILURE
+Some memory in the range from 
+.B start
+to 
+.B end
+does not allow all accesses specified by 
+.B prot
+
+.SH BUGS
+The limit on wired memory should discount for sharing.  The kernel may
+choose to wire for write access even if that is not specified in
+.B prot
+causing unexpected copies to be made.  This behavior
+can be avoided by setting the maximum protection on the memory to read-only.
+Statistics interface to obtain wire limit and count against that limit 
+(
+.B vm_wire_statistics
+) not available yet.  Availability limited.  
+
+.SH SEE ALSO
+.B thread_wire, vm_wire_statistics, host_priv_self
+

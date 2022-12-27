@@ -1,0 +1,155 @@
+.TH thread_special_ports 2 1/20/88
+.CM 4
+.SH NAME
+.nf
+thread_get_special_port  \-  returns a special port of a thread
+thread_set_special_port  \-  set a special port of a thread
+thread_self  \-  returns calling thread's kernel port
+thread_reply  \-  returns calling thread's reply port
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t thread_get_special_port(thread, which_port, special_port)
+	thread_t 	thread;
+	int 		which_port;
+	port_t 		*special_port;
+
+
+.fi
+.ft P
+.nf
+.ft B
+kern_return_t thread_set_special_port(thread, which_port, special_port)
+	thread_t 	thread;
+	int 		which_port;
+	port_t 		special_port;
+
+
+.fi
+.ft P
+.nf
+.ft B
+thread_t thread_self()
+
+
+.fi
+.ft P
+.nf
+.ft B
+port_t thread_reply()
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+thread
+The thread for which to get the port
+.TP 15
+.B
+which_port
+the port that is requested. Is one of 
+.B THREAD_REPLY_PORT
+or 
+.B THREAD_EXCEPTION_PORT
+.
+.TP 15
+.B
+special_port
+the value of the port that is being requested or
+being set.
+
+.SH DESCRIPTION
+
+.B get_special_port
+returns send rights to one of a set of special ports 
+for the thread specified by 
+.B thread
+. In the case of getting the thread's
+own 
+.B thread_reply_port
+, receive and ownership rights are also given to the
+thread.
+
+.B set_special_port
+sets one of a set of special ports for the thread specified
+by 
+.B thread
+. 
+
+.B thread_self
+returns the port to which kernel calls for the 
+currently executing thread should be directed.
+Currently, 
+.B thread_self
+returns the 
+.B thread kernel port
+which
+is a port for which the kernel has receive rights
+and which it uses to identify a thread. In the future it may be
+possible for one thread to interpose a port as another's thread's
+kernel port. At that time, 
+.B thread_self
+will still return the
+port to which the executing thread should direct kernel calls,
+but it may  no longer be a port on which the kernel has receive rights.
+
+If one thread, the controller,  has send access to the kernel port of 
+another thread, the subject thread, then the controller thread can perform
+kernel
+operations for the subject thread. Normally only the thread itself and its
+parent task will have access to
+the thread kernel port, but any thread may pass rights to its kernel
+port to any other thread.
+
+.B thread_reply
+returns receive, ownership and send rights to the 
+.B reply port
+
+of the calling thread. The 
+reply port is a port to which the thread has receive
+rights. It is used to receive any initialization messages
+and as a reply port for early remote procedure calls.
+
+The following macros to call 
+.B thread_get/set_special_port
+for a specific
+port are defined in 
+.B <mach/thread_special_ports.h>
+: 
+.B thread_get_reply_port
+,
+.B thread_set_reply_port
+, 
+.B thread_get_exception_port
+and 
+.B thread_set_exception_port
+.
+
+A thread also has access to its task's special ports.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The port was returned or set.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B thread
+is not a thread or 
+.B which_port
+is an invalid port selector.
+
+.SH SEE ALSO
+.B task_special_ports,thread_create
+
+.SH BUGS
+.B THREAD_KERNEL_PORT
+may be added to the set of ports that
+.B thread_set_special_port
+accepts.
+

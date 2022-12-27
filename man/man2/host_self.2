@@ -1,0 +1,51 @@
+.TH host_self 2 8/13/89
+.CM 4
+.SH NAME
+.nf
+host_self  \-  get host port
+host_priv_self  \-  get privileged host port
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+host_t host_self()
+
+
+.fi
+.ft P
+.nf
+.ft B
+host_priv_t host_priv_self()
+
+
+.fi
+.ft P
+.SH DESCRIPTION
+
+.B host_self
+returns send rights to the host port for the host on which the call is
+executed.  This port can only be used to obtain information about the
+host.
+
+.B host_priv_self
+returns send rights to the privileged host port for the host on which the
+call is executed.  This port is used to control physical resources on
+that host. It is needed for the operations that wire-down
+memory pagaes and the call that returns the 
+processor ports which in turn allow control of specific processors.
+Currently, this port is only returned if the caller is the Unix 
+super-user. Otherwise 
+.B PORT_NULL
+is returned.
+
+.SH SEE ALSO
+.B host_processors, host_info, host_kernel_version
+
+.SH BUGS
+Availability limited.
+.B host_priv_self
+should be replaced by a real authentication mechanism.
+

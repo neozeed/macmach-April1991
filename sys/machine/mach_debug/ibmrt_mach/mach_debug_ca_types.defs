@@ -1,0 +1,46 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1989 Carnegie-Mellon University
+ * Copyright (c) 1988 Carnegie-Mellon University
+ * All rights reserved.  The CMU software License Agreement specifies
+ * the terms and conditions for use and redistribution.
+ */
+/*
+ * HISTORY
+ * $Log:	mach_debug_ca_types.defs,v $
+ * Revision 2.6  89/03/09  20:25:49  rpd
+ * 	More cleanup.
+ * 
+ * Revision 2.5  89/02/25  18:43:11  gm0w
+ * 	Changes for cleanup.
+ * 
+ * Revision 2.4  89/02/15  22:59:56  rpd
+ * 	Moved to mach_debug/ca/.
+ * 
+ * Revision 2.3  89/01/15  16:19:10  rpd
+ * 	Updated includes for the new mach/ directory.
+ * 	[89/01/15  14:50:40  rpd]
+ * 
+ * Revision 2.2  89/01/12  07:40:32  rpd
+ * 	Renamed fpa_counters_t as ibmrt_fpa_counters_t.
+ * 	[89/01/12  06:42:35  rpd]
+ * 	
+ * 	Created.
+ * 	[89/01/12  04:17:18  rpd]
+ * 
+ */
+/*
+ *	Matchmaker type definitions file for Mach kernel
+ *	IBM RT debugging interface.
+ */
+
+#ifndef	_MACH_DEBUG_CA_MACH_DEBUG_CA_TYPES_DEFS_
+#define _MACH_DEBUG_CA_MACH_DEBUG_CA_TYPES_DEFS_
+
+#include <mach/std_types.defs>
+
+type ibmrt_fpa_counters_t = struct[25] of int;
+
+import <mach_debug/ca/mach_debug_ca_types.h>;
+
+#endif	_MACH_DEBUG_CA_MACH_DEBUG_CA_TYPES_DEFS_

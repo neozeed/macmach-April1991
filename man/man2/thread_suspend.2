@@ -1,0 +1,59 @@
+.TH thread_suspend 2 1/22/88
+.CM 4
+.SH NAME
+.nf
+thread_suspend  \-  suspends specified thread
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t thread_suspend(target_thread);
+	thread_t	target_thread;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+target_thread
+The thread to be suspended.
+
+.SH DESCRIPTION
+
+Increments the thread's suspend count and prevents the thread
+from executing any more user level instructions. In this context
+a user level instruction is either a machine instruction executed
+in user mode or a system trap instruction including page faults. 
+Thus if a thread is currently executing within a system trap
+the kernel code may continue to execute until it reaches the
+system return code or it may supend within the kernel code. In either
+case, when the thread is resumed the
+system trap will return. This could cause unpredictible results if
+the user did a suspend and then altered the user state of the thread
+in order to change its direction upon a resume. The call 
+.B thread_abort
+is provided to allow the user to abort any system call that is in progress
+in a predictable way.
+
+The suspend count may become
+greater than one with the effect that it will take more 
+than one resume call to restart the thread.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The thread has been suspended.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B target_thread
+is not a thread.
+
+.SH SEE ALSO
+.B task_suspend, task_resume,
+.B thread_info, thread_state,
+.B thread_resume, thread_terminate, thread_abort
+

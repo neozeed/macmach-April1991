@@ -1,0 +1,74 @@
+#! /bin/sh -
+
+# /etc/rc.local for MacMach BSD 4.3
+
+# See /etc/rc.package and /etc/rc.andrew for CMU -- ANDREW stuff.
+
+# This script contains site-specific startup actions and daemons.
+# Assume that stdin is /dev/null and that stdout and stderr are /dev/console.
+
+# Set up the default /etc/motd.
+if [ ! -r /etc/motd ]; then
+  (
+    echo ""
+    echo "            Welcome to `hostname`"
+    echo ""
+  ) >/etc/motd
+fi
+chmod 444 /etc/motd
+
+# Start up the local daemons.
+echo -n "local daemons:"
+
+# if its configuration file exists, start up inetd
+if [ -r /etc/inetd.conf ]; then
+  inetd & echo -n " inetd"
+fi
+
+# if its raw accounting file exists, turn on accounting
+if [ -r /usr/adm/acct ]; then
+  /etc/accton /usr/adm/acct & echo -n " accton"
+fi
+
+# if its options are specified, start up routed
+#ROUTEDOPT="-q"
+if [ "$ROUTEDOPT" ]; then
+  /etc/routed $ROUTEDOPT & echo -n " routed"
+fi
+
+# if its configuration file exists, start up named
+if [ -r /etc/named.boot ]; then
+  /etc/named & echo -n " named"
+fi
+
+# if its spool directory exists, start up rwhod
+if [ -d /usr/spool/rwho ]; then
+  /etc/rwhod & echo -n " rwhod"
+fi
+
+# if its configuration file exists, start up lpd
+if [ -r /etc/printcap ]; then
+  /usr/lib/lpd & echo -n " lpd"
+fi
+
+# if its options are specified, start up timed
+#TIMEDOPT="-M"
+if [ "$TIMEDOPT" ]; then
+  /etc/timed $TIMEDOPT & echo -n " timed"
+fi
+
+# if its configuration file exists, start up sendmail
+if [ -r /usr/lib/sendmail.cf ]; then
+  rm -f /usr/spool/mqueue/lf*;
+  /usr/lib/sendmail -bd -q30m & echo -n " sendmail"
+fi
+
+# if its configuration file exists, start up bootpd
+if [ -f /etc/bootptab ]; then
+  /etc/bootpd & echo -n " bootpd";
+fi
+echo ""
+
+# some more CMU -- ANDREW stuff
+[ -r /etc/rc.andrew ] && . /etc/rc.andrew
+

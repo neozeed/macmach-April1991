@@ -1,0 +1,1 @@
+#define GENERIC 1

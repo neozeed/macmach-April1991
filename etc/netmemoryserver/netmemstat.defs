@@ -1,0 +1,55 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1989 Carnegie-Mellon University
+ * All rights reserved.  The CMU software License Agreement specifies
+ * the terms and conditions for use and redistribution.
+ */
+/*
+ * HISTORY
+ * $Log:	netmemstat.defs,v $
+ * Revision 1.1  90/02/19  21:48:26  bww
+ * 	Mach Release 2.5
+ * 	[90/02/19  21:47:02  bww]
+ * 
+ * Revision 1.3  89/08/24  17:47:15  mrt
+ * 	Cleanup
+ * 
+ * Revision 1.2  89/04/29  22:37:11  mrt
+ * 	Fixed includes for Mach 2.5
+ * 
+ *
+ *  28-Jun-88 Joseph Barrera (jsb) at Carnegie-Mellon University
+ *	Added paging_object_copy, resulting in this module becoming
+ *	really misnamed.
+ *
+ *  17-Jun-88 Joseph Barrera (jsb) at Carnegie-Mellon University
+ *	Added types for data being returned; seperated master case
+ *	from object case.
+ *
+ *  25-May-88 Alessandro Forin (af) at Carnegie-Mellon University
+ *	Created.
+ */
+/*
+ *	File:	netmemstat.defs
+ *	Author:	Joseph S. Barrera III
+ *
+ *	Copyright (C) 1989, Joseph S. Barrera III
+ *
+ *	Mig interface for statistics measuring routines.
+ *
+ */
+
+subsystem netmemstat 4220;
+
+type int = MSG_TYPE_INTEGER_32;
+type boolean_t = MSG_TYPE_BOOLEAN;
+type pointer_t = ^array [] of MSG_TYPE_BYTE;
+type port_t = MSG_TYPE_PORT;
+
+import <mach/mach_types.h>;
+import "netmemory_defs.h";
+
+routine	paging_object_statistics(
+		paging_object		: port_t;
+	out	faults_per_page		: pointer_t;
+	out	faults_total		: pointer_t);

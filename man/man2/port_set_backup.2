@@ -1,0 +1,111 @@
+.TH port_set_backup 2 7/17/89
+.CM 4
+.SH NAME
+.nf
+port_set_backup  \-  changes a port's backup port
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t port_set_backup(task, primary, backup, previous)
+	task_t task;
+	port_name_t primary;
+	port_t backup;
+	port_t *previous;	/* out */
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+task
+The task owning the named port right.
+.TP 15
+.B
+primary
+
+.B task's
+name for the primary port.
+.TP 15
+.B
+backup
+The new backup port to be set.
+.TP 15
+.B
+previous
+The previous backup port.
+
+.SH DESCRIPTION
+A backup port provides a automatic mechanism to transfer port receive rights to
+another task or thread in the event of a primary port's attempted death.
+To be more precise, if a primary port has a backup
+port, and the primary would have been destroyed by the deallocation
+of its receive rights, then instead the receive right for the primary port
+is sent in a notify message 
+.B (NOTIFY_PORT_DESTROYED
+) to the backup port.
+
+A newly allocated port does not have a backup port. The 
+.B port_set_backup
+call changes the backup of the 
+.B primary
+port. The target
+.B task
+must hold receive rights for the 
+.B primary
+port. The caller
+supplies send rights for the new 
+.B backup
+port to which notification
+will be sent. The caller receives send rights for the 
+.B previous
+backup port or 
+.B PORT_NULL
+if the target did not have a backup.
+.B port_set_backup
+works atomically, so that if one backup port is exchanged
+for another, the primary port is never left without a backup.
+
+When the primary port is sent in a notify message to the backup port, the
+primary port is left without a backup port.
+When the task receives the notification and the receive
+rights to the primary port, it may wish to use 
+.B port_set_backup
+to
+reestablish the same or a different backup port. If the backup port 
+is destroyed before the primary, then the primary port
+is left without a backup. (A subsequent 
+.B port_set_backup
+call would return
+.B PORT_NULL
+).
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_NOT_RECEIVER
+.B primary
+doesn't name receive rights in 
+.B task
+.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B task
+was invalid or 
+.B primary
+or 
+.B backup
+do not name a valid port.
+
+.SH SEE ALSO
+.B port_deallocate
+
+
+
+

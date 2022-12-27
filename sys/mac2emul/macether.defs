@@ -1,0 +1,59 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1991 Carnegie-Mellon University
+ * Copyright (c) 1990 Carnegie-Mellon University
+ * Copyright (c) 1989 Carnegie-Mellon University
+ * Copyright (c) 1988 Carnegie-Mellon University
+ * All rights reserved.  The CMU software License Agreement specifies
+ * the terms and conditions for use and redistribution.
+ */
+/*
+ * HISTORY
+ */
+
+/*
+ *	Apple Macintosh II Mach (macmach)
+ *
+ *	File: mac2emul/macether.defs
+ *	Author: David E. Bohman II (CMU macmach)
+ */
+
+/*
+ * This file defines the raw ethernet
+ * interface for the kernel server. It is
+ * #included by macserver.defs
+ */
+
+import	<mac2emul/macether_types.h>;
+
+type ether_address_t = array [ 6 ] of char;
+
+type ether_packet_t = array [ * : 1518 ] of char;
+
+routine mac_ether_send(
+		request_port	: port_t;
+		packet		: ether_packet_t);
+
+routine mac_ether_recv(
+		request_port	: port_t;
+	    out packet		: ether_packet_t);
+
+routine mac_ether_add_protocol(
+		request_port	: port_t;
+		protocol	: short);
+
+routine mac_ether_delete_protocol(
+		request_port	: port_t;
+		protocol	: short);
+
+routine mac_ether_address(
+		request_port	: port_t;
+	    out address		: ether_address_t);
+
+routine mac_ether_add_multicast(
+		request_port	: port_t;
+		address		: ether_address_t);
+
+routine mac_ether_delete_multicast(
+		request_port	: port_t;
+		address		: ether_address_t);

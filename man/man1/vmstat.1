@@ -1,0 +1,57 @@
+.TH VMSTAT 1 5/21/86
+.CM 4
+.SH NAME
+vmstat \- show Mach virtual memory statistics
+.SH SYNOPSIS
+vmstat [ interval ]
+.SH DESCRIPTION
+.I vmstat
+displays Mach virtual memory statistics.
+If the optional
+.I interval
+is specified, then
+.I vmstat
+will display the statistics every
+.I interval
+seconds.  In this case, each line of output displays the
+.I change
+in each statistic (so, an interval count of 1 displays the values per
+second).  However, the first line of output following each banner
+displays the system wide totals for each statistic.
+The following values are displayed:
+.br
+.IP "\fBfree\fR" 1.5i
+the total number of free pages in the system
+.IP "\fBactive\fR"
+the total number of pages currently in use and pageable.
+.IP "\fBreclaimable\fR"
+the total number of pages on the reclaim list.
+.IP "\fBwired\fR"
+the total number of pages wired down.
+That is, pages that
+can not be paged out.
+.IP "\fBfaults\fR"
+the number of times the "vm_fault" routine has been called.
+.IP "\fBcopy\fR"
+the number of faults that caused a page to be copied (generally
+caused by copy-on-write faults).
+.IP "\fBreclaimed\fR"
+the number of pages that have been faulted while on the reclaim list.
+.IP "\fBpageins\fR"
+the number of requests for pages from a pager (such the the inode pager).
+.IP "\fBpageouts\fR"
+the number of pages that have been paged out.
+.i0
+.DT
+.PP
+.br
+If
+.I interval
+is not specified, then vmstat displays all accumlated statistics along with the
+page size and the object cache performance.
+.SH "SEE ALSO"
+vm_statistics(2)
+.SH HISTORY
+.TP
+21-May-86  Avadis Tevanian (avie) at Carnegie-Mellon University
+Created.

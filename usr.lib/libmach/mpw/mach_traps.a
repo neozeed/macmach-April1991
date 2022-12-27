@@ -1,0 +1,216 @@
+* these are the MACH kernel calls
+*
+* MacMach version 01; bsd4.3-tahoe; Mach/2.6 #5.1(X129); CMU-MACMACH 013
+*
+* this is essentially the result of doing "cc -E mach_traps.S", removing
+* the "_" prefixes and replacing ".globl" with "PROC EXPORT ... ENDPROC"
+
+* make sure that the lower case identifiers are exported as such
+	CASE ON
+
+task_self: PROC EXPORT
+	PEA	-10
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+thread_reply: PROC EXPORT
+	PEA	-11
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+task_notify: PROC EXPORT
+	PEA	-12
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+thread_self: PROC EXPORT
+	PEA	-13
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+msg_send_old: PROC EXPORT
+	PEA	-14
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+msg_receive_old: PROC EXPORT
+	PEA	-15
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+msg_rpc_old: PROC EXPORT
+	PEA	-16
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+msg_send_trap: PROC EXPORT
+	PEA	-20
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+msg_receive_trap: PROC EXPORT
+	PEA	-21
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+msg_rpc_trap: PROC EXPORT
+	PEA	-22
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+htg_unix_syscall: PROC EXPORT
+	PEA	-52
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+
+inode_swap_preference: PROC EXPORT
+	PEA	-40
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+init_process: PROC EXPORT
+	PEA	-41
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+map_fd: PROC EXPORT
+	PEA	-43
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+rfs_make_symlink: PROC EXPORT
+	PEA	-44
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+mach_swapon: PROC EXPORT
+	PEA	-45
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+host_self: PROC EXPORT
+	PEA	-55
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+host_priv_self: PROC EXPORT
+	PEA	-56
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+swtch_pri: PROC EXPORT
+	PEA	-59
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+swtch: PROC EXPORT
+	PEA	-60
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+thread_switch: PROC EXPORT
+	PEA	-61
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+mach_sctimes_0: PROC EXPORT
+	PEA	-70
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+mach_sctimes_1: PROC EXPORT
+	PEA	-71
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+mach_sctimes_2: PROC EXPORT
+	PEA	-72
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+mach_sctimes_3: PROC EXPORT
+	PEA	-73
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+mach_sctimes_4: PROC EXPORT
+	PEA	-74
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+mach_sctimes_5: PROC EXPORT
+	PEA	-75
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+mach_sctimes_6: PROC EXPORT
+	PEA	-76
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+mach_sctimes_7: PROC EXPORT
+	PEA	-77
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+mach_sctimes_8: PROC EXPORT
+	PEA	-78
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+mach_sctimes_9: PROC EXPORT
+	PEA	-79
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+mach_sctimes_10: PROC EXPORT
+	PEA	-80
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+mach_sctimes_11: PROC EXPORT
+	PEA	-81
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+mach_sctimes_port_alloc_dealloc: PROC EXPORT
+	PEA	-82
+	TRAP	#0
+	RTS
+	ENDPROC
+ 
+	END

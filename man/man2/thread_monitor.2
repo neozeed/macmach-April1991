@@ -1,0 +1,69 @@
+.TH thread_monitor 2 1/11/90
+.CM 4
+.SH NAME
+.nf
+thread_monitor  \-  enables specified thread for monitoring
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+#include <mach/kernel_event.h>
+
+.nf
+.ft B
+kern_return_t thread_monitor(target_monitor,unique_id,target_thread)
+    	monitor_t	 	target_monitor;
+    	int			unique_id;
+    	thread_t		target_thread;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+target_monitor
+The monitor which will observe 
+.B target_thread
+.TP 15
+.B
+unique_id
+An id for thread identification outside kernel.
+.TP 15
+.B
+target_thread
+The thread which will be monitored.
+
+.SH DESCRIPTION
+.B thread_monitor
+enables 
+.B target_thread
+for monitoring by
+.B target_monitor
+argument.  The caller is responsible for keeping
+.B unique_id
+unique among all threads that 
+.B target_monitor
+observes. 
+.B target_thread
+can be observed by only one monitor at a
+time.  
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The thread has been enabled to be observed by monitor.
+.TP 25
+KERN_FAILURE
+The monitor state is MONITOR_SHUTDOWN or thread is not active.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B target_monitor
+is not a monitor, 
+.B target_thread
+is not a thread, or the monitor port is not valid.
+
+.SH SEE ALSO
+.B monitor_create, monitor_terminate, monitor_resume,
+.B monitor_suspend, monitor_read, thread_unmonitor, monitor
+

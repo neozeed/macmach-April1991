@@ -1,0 +1,84 @@
+.TH memory_object_data_provided 2 12/18/89
+.CM 4
+.SH NAME
+.nf
+memory_object_data_provided  \-  gives kernel data for memory object
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t memory_object_data_provided(memory_control,
+				offset, data, data_count, lock_value)
+	memory_object_control_t
+			memory_control;
+	vm_offset_t	offset;
+	pointer_t	data;
+	int		data_count;
+	vm_prot_t	lock_value;
+
+
+
+.fi
+.ft P
+.SH DESCRIPTION
+.B memory_object_data_provided
+supplies the kernel with data for the
+specified memory object.  Ordinarily, memory managers should only provide data in
+reponse to 
+.B memory_object_data_request
+calls from the kernel. 
+The 
+.B lock_value
+specifies what type of access will 
+.B not
+be allowed
+to the data range. The lock values must be one or more of the set: 
+.B VM_PROT_NONE, VM_PROT_READ, VM_PROT_WRITE, VM_PROT_EXECUTE
+and
+.B VM_PROT_ALL
+as defined in 
+.B <mach/vm_prot.h>
+. 
+
+.SH ARGUMENTS
+.TP 15
+.B
+memory_control
+The port, provided by the kernel 
+in a 
+.B memory_object_init
+call, to which cache management requests may be issued.
+.TP 15
+.B
+offset
+An offset within a memory object, in bytes.  This must be
+page aligned.
+.TP 15
+.B
+data
+Data that is being provided to the kernel. This is a pointer
+to the data.
+.TP 15
+.B
+data_count
+The amount of data to be provided.  Must be an integral number
+of memory object pages.
+.TP 15
+.B
+lock_value
+A protection value indicating those forms of access that should
+.B not
+be permitted to the specified cached data.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+This routine does not receive a reply message (and consequently
+has no return value), so only message transmission errors apply.
+
+.SH SEE ALSO
+.B memory_object_data_request, memory_object_data_error, memory_object_lock_request
+

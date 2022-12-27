@@ -1,0 +1,81 @@
+Script started on Wed Apr 24 10:52:07 1991
+macmach% make vmunix
+
+=== building new kernel at: Wed Apr 24 10:52:12 EDT 1991
+cd /usr/obj/sys;  LPATH="/lib:/usr/lib:"; export LPATH;  if [ -f afs/afs_buffer.c ]; then  make CONFIG=MACMACH;  else  make CONFIG=MACMACH-afs;  fi
+sh: /usr/obj/sys: bad directory
+*** Exit 1
+Stop.
+macmach% make OBJDIR=/usr/src vmunix
+
+=== building new kernel at: Wed Apr 24 10:52:29 EDT 1991
+cd /usr/src/sys;  LPATH="/lib:/usr/lib:"; export LPATH;  if [ -f afs/afs_buffer.c ]; then  make CONFIG=MACMACH;  else  make CONFIG=MACMACH-afs;  fi
+[ generating MACMACH-afs/make ]
+[ generating MACMACH-afs/Makeconf ]
+[ generating MACMACH-afs/MACMACH-afs from conf/MASTER{,.mac2}{,.local} ]
+[ generating MACMACH-afs/Makefile.top-level ]
+[ generating ./bin/config ]
+cd src/config && make ../../bin/config 
+cd ../../src/config
+`../../bin/config' is up to date.
+[ configuring in MACMACH-afs ]
+../bin/config -c ../conf  MACMACH-afs
+[ making MACMACH-afs ]
+rm -rf ./mach
+mkdir ./mach
+cp -p ../mach/std_types.defs  ../mach/mach_types.defs  ../mach/mach.defs  ../mach/mach_host.defs  ../mach/exc.defs  ../mach/memory_object.defs  ../mach/memory_object_default.defs  ../mach/device_types.defs  ../mach/device.defs  ../mach/monitor.defs ./mach/
+cp -p ../mach/Makefile ./mach/
+cd ./mach && make && touch ../migfiles
+LPATH=$LPATH:/usr/mach/lib PATH=$PATH:/usr/mach/bin mig -I.. -DKERNEL -DKERNEL_SERVER -i -server mach_server.c -header mach_interface.h mach.defs
+egrep 'Routine ' < mach_interface.h | sed -e 's/.*Routine \([a-z_]*\).*/#define \1 \1_EXTERNAL/' > mach_user_internal.h
+LPATH=$LPATH:/usr/mach/lib PATH=$PATH:/usr/mach/bin mig -I.. -DKERNEL -DKERNEL_USER -header memory_object_user.h -user memory_object_user.c -server memory_object_server.c memory_object.defs
+LPATH=$LPATH:/usr/mach/lib PATH=$PATH:/usr/mach/bin mig -I.. -DKERNEL -DKERNEL_USER -user memory_object_default_user.c -server memory_object_default_server.c memory_object_default.defs
+LPATH=$LPATH:/usr/mach/lib PATH=$PATH:/usr/mach/bin mig -I.. -DKERNEL -user exc_user.c -server exc_server.c exc.defs
+LPATH=$LPATH:/usr/mach/lib PATH=$PATH:/usr/mach/bin mig -I.. -DKERNEL -DKERNEL_SERVER -server mach_host_server.c mach_host.defs
+LPATH=$LPATH:/usr/mach/lib PATH=$PATH:/usr/mach/bin mig -I.. -DKERNEL -user device_user.c -server device_server.c device.defs
+LPATH=$LPATH:/usr/mach/lib PATH=$PATH:/usr/mach/bin mig -I.. -DKERNEL -DKERNEL_SERVER -server monitor_server.c monitor.defs
+rm -rf ./mach_debug
+mkdir ./mach_debug
+cp -p ../mach_debug/mach_debug_types.defs  ../mach_debug/mach_debug.defs ./mach_debug/
+cp -p ../mach_debug/Makefile ./mach_debug/
+cd ./mach_debug && make && touch ../migdebugfiles
+LPATH=$LPATH:/usr/mach/lib PATH=$PATH:/usr/mach/bin mig -I.. -DKERNEL -DKERNEL_SERVER -server mach_debug_server.c -user /dev/null -header /dev/null mach_debug.defs
+cc -m68020 -c -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL  ../machine/genassym.c
+cc -m68020 genassym.o
+./a.out > assym.s; rm -f a.out
+cp ../mac2/locore.s locore.c
+cc -m68020 -E -DLOCORE -I../machine -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -DASSEMBLER locore.c >locore.i
+as -m68020 -o locore.o  locore.i
+rm locore.i
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/cmu_syscalls.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/init_main.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/init_sysent.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/kern_acct.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/kern_clock.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/kern_descrip.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/kern_exec.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/kern_exit.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/kern_fork.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/kern_mman.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/kern_proc.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/kern_prot.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/kern_resource.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/kern_sig.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/kern_subr.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/kern_synch.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/kern_time.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/kern_xxx.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/mach_process.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/mach_signal.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/quota_sys.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/subr_log.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/subr_prf.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/subr_rmap.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/subr_xxx.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/sys_generic.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/sys_socket.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/tty.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/tty_cmupty.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/tty_conf.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MACMACH -DMM_XXX -DMM_BUGFIX -DKERNEL -fno-defer-pop ../bsd/tty_pty.c;  ;  ;  
+cc -m68020 -c -O -MD -I.. -I. -I../sys -DCMU -DINET -DMACH -DCMUCS -DCMU_MA

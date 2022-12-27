@@ -1,0 +1,50 @@
+.TH task_suspend 2 9/19/86
+.CM 4
+.SH NAME
+.nf
+task_suspend  \-  suspends specified task
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t task_suspend(target_task)
+	task_t		target_task;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+target_task
+The task to be suspended.
+
+.SH DESCRIPTION
+Increments the task's suspend count and stops all
+threads in the task. As long as the suspend count is
+positive newly created threads will not run.
+This call does not return until all threads are suspended.
+
+The count
+may become greater than one, with the effect that it
+will take more than one resume call to restart the task.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The task has been suspended.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B target_task
+is not a task.
+
+.SH SEE ALSO
+.B task_create, task_terminate, task_resume, task_info,
+.B thread_suspend
+
+
+
+

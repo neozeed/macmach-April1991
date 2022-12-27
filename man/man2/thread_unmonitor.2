@@ -1,0 +1,54 @@
+.TH thread_unmonitor 2 1/11/90
+.CM 4
+.SH NAME
+.nf
+thread_unmonitor  \-  disables specified thread from monitoring
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+#include <mach/kernel_event.h>
+
+.nf
+.ft B
+kern_return_t thread_unmonitor(target_monitor, target_thread)
+    	monitor_t	  	target_monitor;
+    	thread_t		target_thread;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+target_monitor
+The monitor which observes 
+.B target_thread
+.TP 15
+.B
+target_thread
+The thread which will be disabled.
+
+.SH DESCRIPTION
+.B thread_unmonitor
+disables 
+.B target_thread
+from being monitored by 
+.B target_monitor
+.  
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The thread has been disabled from monitoring.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B target_monitor
+is a valid monitor, 
+.B target_thread
+is not a thread, or the monitor port is not valid.
+
+.SH SEE ALSO
+.B monitor_create, monitor_terminate, monitor_resume,
+.B monitor_suspend, monitor_read, thread_monitor, monitor
+

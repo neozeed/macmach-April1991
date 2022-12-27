@@ -1,0 +1,281 @@
+#! /bin/sh
+
+# /etc/rc for MacMach BSD 4.3
+
+# See /etc/rc.network for network startup.
+# See /etc/rc.afs and /etc/rc.nfs for fileserver startup.
+# See /etc/rc.package and /etc/rc.andrew for CMU -- ANDREW stuff.
+# See /etc/rc.local for local daemons.
+# Look in /etc/newconfig for saved configuration files.
+
+# This script conditions the system before it enters multi-user mode.
+# If /install exists, the installation procedure is run instead.
+#   1) check file systems (if "/fastboot" does not exist)
+#   2) recover passwd file if needed
+#   2) start up network (/etc/rc.network)
+#   3) mount local and remote file systems
+#   4) verify system file checksums with fixit
+#   5) check quotas
+#   6) save log files (copy * to *.old)
+#   7) clear out temporary directories
+#   8) reset modes for pty devices
+#   9) start up daemons (syslogd, update, cron, mach, /etc/rc.local)
+# The output from stdout and stderr is sent to the console.  The AUTOBOOT flag
+# is set by the argument "autoboot".  This is a signal from /etc/init that an
+# operator is not present during the boot.   During AUTOBOOT, if an error is
+# encountered, /etc/rc will exit with a value of 1 to signal /etc/init to
+# restart.  Otherwise, the operator is given the chance to ignore the error
+# and continue.  The operator also has the option of entering a shell to fix
+# the problem.  When AUTOBOOT is not set, the operator is given the option of
+# skipping the initial file system check.  The network access is started by
+# the /etc/rc.network script.  When all tasks have completed, /etc/rc exits
+# with a value of 0 to signal /etc/init to enter multi-user mode.  When the
+# AUTOBOOT flag is not set, the file "/etc/nologin" is created to prevent
+# user logins.
+
+# NOTE: all servers and daemons are given /dev/null for their stdin
+
+# initial environment, /etc/init provides none
+# assume that /bin and /etc exist in the root partition
+HOME="/"; export HOME
+PATH="/bin:/etc"; export PATH
+
+# /etc/init will call /etc/rc with or without the argument "autoboot"
+# other arguments are ignored
+# if not AUTOBOOT, assume manual boot from single-user state
+AUTOBOOT="$1"; [ "$AUTOBOOT" = "autoboot" ] || AUTOBOOT=""
+export AUTOBOOT
+
+# if no console, make one
+[ -d /dev ] || mkdir /dev
+[ -f /dev/console ] || {
+  mknod /dev/console c 0 0
+  echo "NOTE: /dev/console was missing" >/dev/console
+}
+
+# /etc/init sets up stdin, stdout and stderr as "/", read-only
+# make stdin, stdout and stderr be /dev/console
+exec </dev/console >/dev/console 2>&1
+
+# this message is displayed when impossible errors happen
+WIZARD="This should not happen, call a Wizard!"
+export WIZARD
+
+# this "function" is used for boot-time errors
+# if not AUTOBOOT, solicit shell command
+# if exit non-zero, /etc/init will restart
+RESTART='
+  test "$AUTOBOOT" && { echo "autoboot: failed"; exit 1; };
+  echo "enter a shell command, exit 0 to continue, exit 1 to restart";
+  echo -n "# ";
+  sh -t </dev/console || { echo "restarting..."; sleep 10; exit 1; };
+  echo "";
+  echo "continuing..."
+'
+
+# announce /etc/rc entry
+echo ""
+[ "$AUTOBOOT" ] && echo "/etc/rc: $AUTOBOOT"
+
+# make sure that /etc/fstab exists
+[ -f /etc/fstab ] || {
+  echo "Missing /etc/fstab."
+  eval "$RESTART"
+  [ -f /etc/fstab ] || exit 1
+}
+
+# if AUTOBOOT, do "fsck -p"
+CHECK="$AUTOBOOT"
+FASTBOOT="/fastboot"
+WARNING="WARNING: Non-fsck'ed file systems can cause kernel panic's."
+if [ "$CHECK" -a -f $FASTBOOT ]; then
+  echo -n "fastboot: "
+  CHECK=""
+elif [ ! "$CHECK" ]; then
+  echo "$WARNING"
+  echo -n "fsck file systems? (y/n) "
+  read X; if [ "$X" = "Y" -o "$X" = "y" ]; then CHECK="$X"; fi
+fi
+rm -f $FASTBOOT
+if [ "$CHECK" ]; then
+  echo "fsck'ing file systems:"
+  cat /etc/fstab | while read X; do echo "  $X"; done
+  fsck -p
+  case $? in
+    0) echo "file systems ok"
+      ;;
+    2) sleep 10
+      exit 1
+      ;;
+    4) echo "NOTE: root fixed, rebooting (no sync)"
+      sleep 10
+      /etc/reboot -q -n
+      ;;
+    8) echo "ERROR: \"fsck -p\" failed"
+      echo "$WIZARD"
+      eval "$RESTART"
+      ;;
+    12) echo "ERROR: \"fsck -p\" interrupted"
+      echo "$WARNING"
+      echo "You should reboot and start over."
+      eval "$RESTART"
+      ;;
+    *) echo "ERROR: \"fsck -p\" returned \"$?\""
+      echo "$WIZARD"
+      eval "$RESTART"
+      ;;
+  esac
+else
+  echo "skipping fsck"
+  echo "$WARNING"
+fi
+
+# recover passwd file if needed
+if [ -s /etc/ptmp ]; then
+  if [ -s /etc/passwd ]; then
+    ls -l /etc/passwd /etc/ptmp
+    rm -f /etc/ptmp # should really remove the shorter
+  else
+    echo "passwd file recovered from ptmp"
+    mv /etc/ptmp /etc/passwd
+  fi
+elif [ -r /etc/ptmp ]; then
+  echo "removing passwd lock file"
+  rm -f /etc/ptmp
+fi
+
+# startup local and external network
+. /etc/rc.network
+
+# mount local file systems
+echo "mounting file systems"
+umount -a >/dev/null 2>&1
+mount -a || {
+  echo "ERROR: \"mount -a\" failed"
+  echo "$WIZARD"
+  eval "$RESTART"
+}
+df
+
+# full PATH now that local file systems are mounted
+PATH=/bin:/etc:/usr/ucb:/usr/bin ; export PATH
+
+# set swapping preferences
+# "/etc/swapon" specified because of bug in mach-swapon *sigh*
+/etc/swapon /usr/pagingfile
+
+# Apply fixit to .README or .README.Z, if it exists
+# Write errors to .STATUS, disable check if .STATUS already exists
+# Check both / and /usr/src
+ERRORS="/tmp/ERRORS$$"
+for X in "" "/usr/src"; do
+  README="$X/.README"
+  STATUS="$X/.STATUS"
+  CAT=""
+  [ -r $README.Z ] && CAT="zcat $README.Z"
+  [ -r $README ] && CAT="cat $README"
+  [ -r $STATUS ] && CAT=""
+  [ "$CAT" ] && {
+    rm -f $ERRORS
+    echo -n "$README: "
+    eval "$CAT" | fixit -fix | grep -v ': fixed' | \
+      while read LINE; do echo "$LINE" >>$ERRORS; done
+    {
+      echo -n "Checksums last verified "
+      date
+      echo -n "sum $README was "
+      eval "$CAT" | sum
+      [ -r $ERRORS ] && {
+        echo "Errors found with FIXIT(1):"
+        cat $ERRORS
+      }
+      echo "Remove $STATUS and reboot to verify checksums again."
+    } >$STATUS
+    [ -r $ERRORS ] && {
+      rm $ERRORS
+      cat $STATUS
+      echo "ERROR: Some files are incorrect."
+      echo "$WIZARD";
+      eval "$RESTART";
+    }
+  }
+  [ -r $STATUS ] && cat $STATUS
+  [ -r $README -a ! -r $README.Z ] && compress -v $README
+done
+
+# if external network, start up NFS
+[ "$NETNAME" -a -r /etc/rc.nfs ] && . /etc/rc.nfs
+
+# if external network, start up AFS
+[ "$NETNAME" -a -r /etc/rc.afs ] && . /etc/rc.afs
+
+# run package to update system files [ CMU -- ANDREW stuff ]
+[ -r /etc/rc.package ] && . /etc/rc.package
+
+# check quotas
+echo -n "checking quotas:"
+quotacheck -a -p
+echo " done."
+quotaon -a
+
+# save old log files
+[ -r /usr/adm/syslog.log ] && {
+  echo "saving /usr/adm/syslog.log"
+  mv /usr/adm/syslog.log /usr/adm/syslog.log.old
+}
+cp /dev/null /usr/adm/syslog.log
+[ -r /usr/adm/messages ] && {
+  echo "saving /usr/adm/messages"
+  mv /usr/adm/messages /usr/adm/messages.old
+}
+cp /dev/null /usr/adm/messages
+
+# preserve editory files
+echo "preserving editor files"
+(cd /tmp; /usr/lib/ex3.7preserve -a)
+
+# clear temporary directories
+echo "clearing /tmp"
+(cd /tmp; find . ! -name . ! -name lost+found ! -name quotas -exec rm -rf {} \; )
+echo "clearing /usr/tmp"
+(cd /usr/tmp; rm -rf *)
+echo "clearing /usr/spool/at/past"
+(cd /usr/spool/at/past; rm -f *)
+echo "clearing /usr/spool/uucp/LCK.* /usr/spool/uucp/STST/*"
+(cd /usr/spool/uucp; rm -f LCK.* STST/*)
+
+# reset modes for pty devices
+echo "resetting modes for pty devices"
+chmod 666 /dev/tty[pqrs]*
+
+# start up daemons, stdin is /dev/null, stdout and stderr are console
+echo -n "standard daemons:"
+rm -f /dev/log; syslogd </dev/null & echo -n " syslogd"
+update </dev/null & echo -n " update"
+cron </dev/null & echo -n " cron"
+if [ -f /etc/mach_init ]; then
+  echo " netmsgserver envmgr ipcexecd netmemoryserver"
+  /etc/netmsgserver </dev/null >/dev/null 2>&1 &
+  /etc/envmgr </dev/null >/dev/null 2>&1 &
+  /etc/ipcexecd </dev/null >/dev/null 2>&1 &
+  /etc/netmemoryserver </dev/null >/dev/null 2>&1 &
+fi
+echo ""
+
+# startup local daemons -- ignore any failures here
+[ -r /etc/rc.local ] && sh /etc/rc.local </dev/null
+
+# allow logins only if AUTOBOOT
+NOLOGIN="/etc/nologin"
+if [ "$AUTOBOOT" ]; then
+  echo "allowing user logins..."
+  rm -f $NOLOGIN
+else
+  echo "Only root logins are permitted at this time." > $NOLOGIN
+  echo "Remove $NOLOGIN to allow regular user logins." >> $NOLOGIN
+  cat $NOLOGIN
+fi
+
+# normal exit
+# /etc/init will now enter multi-user mode
+exit 0

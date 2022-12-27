@@ -1,0 +1,78 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# Copyright (c) 1988 Carnegie-Mellon University
+# Copyright (c) 1987 Carnegie-Mellon University
+# Copyright (c) 1986 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#  
+#
+# HISTORY
+# $Log:	MASTER.vax.local,v $
+# Revision 2.8  90/07/20  10:04:09  mrt
+# 	Defined EXP configuration to include kernel monitoring hooks.
+# 	[90/07/20            mrt]
+# 
+# Revision 2.7  89/03/09  05:40:35  rpd
+# 	Removed gfb (Gruss Frame Buffer) device.
+# 
+# Revision 2.6  89/02/25  17:39:06  gm0w
+# 	Changes for cleanup.
+# 
+# Revision 2.5  88/10/18  00:29:13  mwyoung
+# 	Upgrade MBI, MQBUS, MSBI to include EXP and use ra vs ora.
+# 	[88/10/17            rvb]
+# 
+# Revision 2.4  88/08/30  00:03:31  mwyoung
+# 	Moved Mach private names here.
+# 	
+# 	Use standard tags to define MACH now that the UMD ra driver can
+# 	be used everywhere.
+# 
+# Revision 2.3  88/07/16  00:50:44  mwyoung
+# Create standard MACH configuration.
+# 
+#
+# 13-Oct-87  Mike Accetta (mja) at Carnegie-Mellon University
+#	DEFAULT is now the common microVax case; flush EXTRA.
+#	[ V5.1(XF18) ]
+#
+# 15-Aug-87  Mike Accetta (mja) at Carnegie-Mellon University
+#	Flush LINT_VAX configuration.
+#	[ V5.1(XF16) ]
+#
+#  6-Apr-87  Avadis Tevanian (avie) at Carnegie-Mellon University
+#	Created.
+#
+
+######################################################################
+#
+#  Master VAX configuration file (see the master machine independent
+#  configuration file for a description of the file format) for local
+#  site modification.
+#
+######################################################################
+#  
+#  CMU CS/RI Facilities Production Configurations:
+#  --- ----- ---------- ---------- ---------------
+#
+#  MACH    = [ ANY L 16 ]
+#
+#  EXP = [ km ]
+#
+#  Mach Private Names
+#  ---- ---------
+#  MBI		= [STD multi16 medium EXP]
+#  MQBUS	= [STD         medium EXP]
+#  MSBI		= [STD	       medium VAXSBI EXP]
+#
+#  MBI  	= [ emul ni ra vaxbi]
+#  MQBUS	= [ emul qe ra vax6xx qv qd]
+#  MSBI		= [ VAXSBI ]
+#  MDG		= [ MACHBI ]
+#
+######################################################################
+#
+
+options		COMPAT		# <compat>

@@ -1,0 +1,32 @@
+.\"
+.\" Mach Operating System
+.\" Copyright (c) 1989 Carnegie-Mellon University
+.\" All rights reserved.  The CMU software License Agreement specifies
+.\" the terms and conditions for use and redistribution.
+.\"
+.\" HISTORY
+.\" $Log:	fix-log.man,v $
+.\" Revision 2.2  89/04/08  23:32:35  rpd
+.\" 	Created.
+.\" 	[89/03/14  21:23:44  rpd]
+.\" 
+.TH  FIX-LOG  1 3/14/89
+.CM 4
+.SH NAME
+fix-log \- standardize HISTORY/Log
+.SH SYNOPSIS
+\fBfix-log\fR < input > output
+.SH DESCRIPTION
+\fIfix-log(1)\fR standardizes the RCS Log directive
+in kernel source files.  It is a pure filter, reading from
+stdin and writing to stdout.
+.PP
+\fIfix-log\fR searches for HISTORY directives in the input
+and ensures that they are followed by appropriate Log directives.
+It deduces the file's comment leader from the HISTORY line.
+.PP
+\fIfix-log\fR returns an exit status of zero if everything looks OK, and
+non-zero if something is wrong.  (For example, the output file
+has zero or more than one Log directives.)
+.SH "SEE ALSO"
+fix-copyright(1), fix-includes(1), fix-protection(1)

@@ -1,0 +1,106 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1989 Carnegie-Mellon University
+ * Copyright (c) 1988 Carnegie-Mellon University
+ * Copyright (c) 1987 Carnegie-Mellon University
+ * All rights reserved.  The CMU software License Agreement specifies
+ * the terms and conditions for use and redistribution.
+ */
+/*
+ * HISTORY
+ * $Log:	err_server.sub,v $
+ * Revision 1.7  90/01/24  23:11:39  mrt
+ * 	Added error codes for cpu_server
+ * 	[90/01/17            dlb]
+ * 
+ * Revision 1.6  89/06/13  16:07:01  mrt
+ * 	Changed to use the zeroth error number.
+ * 	[89/05/18            mrt]
+ * 
+ * Revision 1.5  89/05/09  22:17:29  mrt
+ * 	Added string for "(server/env_mgr) variable not found "
+ * 
+ * 
+ * Revision 1.4  89/05/07  12:41:59  mrt
+ * 	Cleanup for Mach 2.5 and added new ENV_PORT_NULL error message.
+ * 	[89/05/07            mrt]
+ * 
+ *
+ * 12-Jul-88	Joseph Barrera (jsb) at Carnegie-Mellon University
+ *	Added codes for netmemory server.
+ *
+ * 09-Mar-88	Douglas Orr (dorr) at Carnegie-Mellon University
+ *	created.
+ */
+/*
+ * File:	err_server.sub
+ * Purpose:
+ *	Generic error code interface
+ */
+
+static char * err_codes_netname[] = {
+		"(server/netname) name is not yours",
+		"(server/netname) name not checked in",
+		"(server/netname) no such host",
+		"(server/netname) host not found",
+};
+static char * err_codes_env_mgr[] = {
+		"(server/env_mgr) variable not found ",
+		"(server/env_mgr) wrong type of variable ",
+		"(server/env_mgr) unknown port ",
+		"(server/env_mgr) read only environment ",
+		"(server/env_mgr) no more connections available ",
+		"(server/env_mgr) port table full ",
+		"(server/env_mgr) attempting to enter a null port ",
+};
+static char * err_codes_execd[] = {
+		"(server/execd) could not find file to run ",
+		"(server/execd) userid or password incorrect ",
+		"(server/execd) fork failed ",
+};
+static char * err_codes_netmemory[] = {
+		"(server/netmemory) successful ",
+		"(server/netmemory) invalid argument ",
+		"(server/netmemory) resource shortage ",
+};
+static char * err_codes_cpu_server[] = {
+		"(server/cpu_server) invalid argument ",
+		"(server/cpu_server) request exceeds limits ",
+		"(server/cpu_server) request is active ",
+};
+
+/*	err_us subsystems      	*/
+static struct error_subsystem err_server_sub[] = {
+	/* server/0; */
+	{
+		"(server/netname)",
+		errlib_count(err_codes_netname),
+		err_codes_netname,
+	},
+	/* server/1; */
+	{
+		"(server/env_mgr)",
+		errlib_count(err_codes_env_mgr),
+		err_codes_env_mgr,
+	},
+	/* server/2; */
+	{
+		"(server/execd)",
+		errlib_count(err_codes_execd),
+		err_codes_execd,
+	},
+	/* server/3; */
+	{
+		"(server/netmemory)",
+		errlib_count(err_codes_netmemory),
+		err_codes_netmemory,
+	},
+	/* server/4; */
+	{
+		"(server/cpu_server)",
+		errlib_count(err_codes_cpu_server),
+		err_codes_cpu_server,
+	}
+};
+
+

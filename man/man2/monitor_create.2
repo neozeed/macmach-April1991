@@ -1,0 +1,112 @@
+.TH monitor_create 2 1/11/90
+.CM 4
+.SH NAME
+.nf
+monitor_create  \-  creates new monitor within named task
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+#include <mach/kernel_event.h>
+
+.nf
+.ft B
+kern_return_t monitor_create(owner_task, new_monitor, buffer_size)
+	task_t		owner_task;
+	monitor_t	*new_monitor;	/* out */
+        int		*buffer_size;   /* out */	
+
+
+.fi
+.ft P
+.SH DESCRIPTION
+.B monitor_create
+creates a new monitor within the task
+specified by 
+.B owner_task
+argument. 
+.B buffer_size
+is the
+requested size (in number of events) for the monitor kernel buffer
+used to hold context-switch events.  When 
+.B monitor_create
+returns,
+.B buffer_size
+is maximum number of events that kernel buffer may
+hold before it overflows.  When the monitor is created send rights to 
+its monitor kernel port are given to it and returned in 
+.B new_monitor
+
+to the caller.  The new  monitor is returned in a suspended state.
+To get a new monitor to run, first 
+.B monitor_create
+is called to get
+the new monitor's identifier,(
+.B monitor
+). Then 
+.B monitor_resume
+is
+called to get the monitor to execute.
+
+.SH ARGUMENTS
+.TP 15
+.B
+owner_task
+The task which is to contain the new monitor.
+.TP 15
+.B
+new_monitor
+The new monitor.
+.TP 15
+.B
+buffer_size
+The size (in number of events) of the monitor buffer in kernel.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+A new monitor has been created.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B parent_task
+is not a valid task.
+
+.SH BUGS
+Currently, there is no internal protection guarding against requesting
+too much memory for buffers.  It is suggested that no more than a half
+megabyte should be requested.  A rule of thumb is that the greater the
+thread-to-processor ratio, 
+.I t
+, of one's computation, the more
+context-switches there will be.  Assume that when 
+.I t
+> 1.0, there
+will be ten context-switches per second.  The size of the internal
+buffers then depends on how often they are read.  Each time the
+buffers are read, (see 
+.B monitor_read
+) at most 
+.I n
+=
+.B sizeof(kern_mon_data_t
+) x 
+.B MONITOR_MIG_BUF_SIZE
+bytes are
+retrieved.  Assume that once one 
+.I monitor_read
+is made to read the
+buffers, the user repeats the call until the buffers are empty.  In
+such case, if the user makes bursts of 
+.B monitor_read
+calls once
+every 
+.I d
+seconds, a good buffer size would be .I n
+).
+
+.SH SEE ALSO
+.B monitor_resume, monitor_terminate, monitor_suspend,
+.B monitor_read, thread_monitor, thread_unmonitor, monitor
+
+
+

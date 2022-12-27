@@ -1,0 +1,62 @@
+.TH port_set_deallocate 2 9/19/86
+.CM 4
+.SH NAME
+.nf
+port_set_deallocate  \-  destroys a port set
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t port_set_deallocate(task, set_name)
+	task_t task;
+	port_set_name_t set_name;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+task
+The task owning the port set to be destroyed.
+.TP 15
+.B
+set_name
+.B task
+'s name for the doomed port set.
+
+.SH DESCRIPTION
+.B port_set_deallocate
+requests that the target task's
+port set be destroyed.
+
+If the port set is non-empty, any members are first removed.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_FAILURE
+.B set_name
+is 
+.B task
+'s port set
+used for implementing the obsolete 
+.B port_enable
+and 
+.B port_disable
+calls.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B task
+was invalid or 
+.B set_name
+does not name a valid port set.
+
+.SH SEE ALSO
+.B port_set_allocate
+

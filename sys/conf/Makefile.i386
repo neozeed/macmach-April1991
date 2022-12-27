@@ -1,0 +1,66 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#  
+#
+# HISTORY
+# $Log:	Makefile.i386,v $
+# Revision 2.6  89/09/25  12:20:10  rvb
+# 	uprt.s -> start.s
+# 	[89/09/23            rvb]
+# 
+# Revision 2.5  89/04/07  14:58:25  rvb
+# 	We don't need INCLUDES any more.
+# 	[89/04/07            rvb]
+# 
+# Revision 2.4  89/04/05  12:57:12  rvb
+# 	Some changes for gcc, and locore is a .s
+# 	[89/03/21            rvb]
+# 
+# Revision 2.3  89/02/25  17:39:18  gm0w
+# 	Changes for cleanup.
+# 
+# Revision 2.2  89/01/23  22:15:23  af
+# 	Created.
+# 	[89/01/16  17:11:51  af]
+# 
+
+###############################################################################
+#BEGIN	Machine dependent Makefile fragment for the i386
+###############################################################################
+
+#tmp
+CFLAGS= ${COPTS}
+
+SYS_RULE_1=
+SYS_RULE_2=
+SYS_RULE_3=
+SYS_RULE_4=
+
+#LIBS_P=-lc_p
+LIBS=/lib/fgcc-gnulib
+
+LDOBJS_PREFIX= locore.o
+LOCORE_DEPS=	assym.s ../machine/start.s \
+		../machine/locore.s ../machine/cswitch.s
+LOCORE_HEADS=
+
+locore.s: ${LOCORE_DEPS}
+	cat ${LOCORE_DEPS} >locore.tmp
+	mv locore.tmp locore.s
+	@echo The hack below should get fixed sometime.
+	cp /dev/null ioconf.c
+
+locore.o: assym.s locore.s ${LOCORE_HEADS}
+	${S_RULE_1A}-DLOCORE -I../machine ${S_RULE_1B}; \
+	${S_RULE_2}; \
+	${S_RULE_3}
+
+LDFLAGS=-e pstart ../i386/vuifile
+SWAPSYS=echo add debugging symbols; unixsyms a.out
+
+###############################################################################
+#END	Machine dependent Makefile fragment for the i386
+###############################################################################

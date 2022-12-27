@@ -1,0 +1,31 @@
+#! /bin/sh -
+
+# /etc/rc.afs for MacMach BSD 4.3
+
+# This script starts up the AFS daemons if /usr/vice exists.
+VICE="/usr/vice"
+AFSD="$VICE/etc/afsd"
+FS="$VICE/etc/fs"
+ROOT="root.afs.readonly"
+if [ -d $VICE ]; then
+  if [ ! -d /afs ]; then
+    echo "creating /afs directory"
+    mkdir /afs
+    chmod 777 /afs
+    chown 0.0 /afs
+  fi
+  if [ ! -d $VICE/cache ]; then
+    echo "creating $VICE/cache directory"
+    mkdir $VICE/cache
+    chmod 700 $VICE/cache
+  fi
+  echo "afsd"
+  $AFSD -rootvol $ROOT || {
+    echo "afsd failed"
+    eval "$RESTART"
+  }
+  $FS wscell
+  $FS checkservers
+  $FS checkbackups
+  $FS mariner
+fi

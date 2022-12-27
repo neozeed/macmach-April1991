@@ -1,0 +1,101 @@
+.TH port_insert 2 4/13/87
+.CM 4
+.SH NAME
+.nf
+port_insert_send  \-  gives a task send rights for a port
+port_insert_receive  \-  gives a task receive/ownership rights for a port
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t port_insert_send(task, my_port, his_name)
+	task_t task;
+	port_t my_port;
+	port_name_t his_name;
+
+
+.fi
+.ft P
+.nf
+.ft B
+kern_return_t port_insert_receive(task, my_port, his_name)
+	task_t task;
+	port_t my_port;
+	port_name_t his_name;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+task
+The task getting the new rights.
+.TP 15
+.B
+my_port
+Rights supplied by the caller.
+.TP 15
+.B
+his_name
+The name by which 
+.B task
+will know the new rights.
+
+.SH DESCRIPTION
+.B port_insert_send
+and 
+.B port_insert_receive
+give a task rights
+with a specific name.  If 
+.B task
+already has rights named 
+.B his_name
+,
+or has some other name for 
+.B my_port
+, then the operation will fail.
+.B his_name
+can't be a distinguished value like 
+.B PORT_NULL
+.
+
+.B port_insert_send
+inserts send rights, and 
+.B port_insert_receive
+inserts receive and ownership rights.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_NAME_EXISTS
+.B task
+already has a right named 
+.B his_name
+.
+.TP 25
+KERN_FAILURE
+.B task
+already has rights to 
+.B my_port
+.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B task
+was invalid or 
+.B new_name
+was an invalid name.
+
+.SH BUGS
+There is no way to insert just receive rights or just ownership rights.
+
+.SH SEE ALSO
+.B port_extract_send
+,
+.B port_extract_receive
+

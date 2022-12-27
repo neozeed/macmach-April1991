@@ -1,0 +1,73 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# Copyright (c) 1988 Carnegie-Mellon University
+# Copyright (c) 1987 Carnegie-Mellon University
+# Copyright (c) 1986 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#  
+#
+# HISTORY
+# $Log:	MASTER.mmax,v $
+# Revision 2.5  89/10/11  13:54:25  dlb
+# 	Add SIMPLE_CLOCK here, tripped by <dpc> tag.
+# 	Add MMAX_KDB option as standard replacement for CMUCS_KDB.
+# 	Change system name to machmm.
+# 	Put device configuration back in MASTER.mmax.local.  This file
+# 	       should not know about slots or device unit numbers.
+# 
+# Revision 2.4  89/02/25  17:38:25  gm0w
+# 	Changes for cleanup.
+# 
+#  5-Jun-88  Michael Young (mwyoung) at Carnegie-Mellon University
+#	Use new Accetta-style naming.  Use "MACHMM+apc" or "MACHMM+dpc"
+#	instead of MACHMM_DPC or MACHMM_APC.
+#
+# 13-Apr-88  David Black (dlb) at Carnegie-Mellon University
+#	APC changes.
+#
+#  6-Apr-87  Avadis Tevanian (avie) at Carnegie-Mellon University
+#	Moved device configurations to MASTER.mmax.local.
+#
+# 27-Mar-87  David Black (dlb) at Carnegie-Mellon University
+#	Build mach instead of vmunix.
+#
+# 23-Feb-87  David L. Black (dlb) at Carnegie-Mellon University
+#	Added missing config vmunix line
+#
+# 17-Jan-87  Mike Accetta (mja) at Carnegie-Mellon University
+#	Created (although never tested).
+#	[ V5.1(F1) ]
+#
+
+#
+#  Master Multi-Max configuration file (see the master machine independent
+#  configuration file for a description of the file format).
+#
+#
+#  Multi-Max (PSEUDO-)DEVICES (select any combination)
+#
+#
+#  CPU TYPE (select exactly one)
+#
+#	dpc = Multimax DPC cpus. (32032)
+#	apc = Multimax APC cpus. (32332)
+#
+#  
+#  Configurations:
+#
+#	ANY = [ emc ]
+#
+#
+
+options		MMAX_APC	# APC processor changes		#<apc>
+options		MMAX_ETLB	# more than 16Meg physmem	#<dpc>
+options		MMAX_KDB	# debugger support
+options		MMAX_SAFE_ICU	# National chip bug workarounds	#<apc>
+options		SIMPLE_CLOCK	# clock doesn't roll over	#<dpc>
+
+machine		mmax
+cpu		"MULTIMAX"
+
+config		machmm		swap generic

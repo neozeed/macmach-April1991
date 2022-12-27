@@ -1,0 +1,22 @@
+.TH slot_info 2 3/25/87
+.CM 4
+.SH NAME
+.nf
+slot_info \- get information about a logical slot in a Mach host
+.SH SYNOPSIS
+.nf
+#include <mach.h>
+
+kernel_return_t slot_info(task, slot, info)
+	task_t			task;
+	int			slot;
+	machine_slot_data_t	info;
+.SH DESCRIPTION
+The
+.I slot_info
+call returns the slot information corresponding to the specified logical slot.
+For each slot the processor cpu type is given and
+utilization statistics for that processor.
+This information is displayed by the
+.I hostinfo(1)
+program.

@@ -1,0 +1,76 @@
+#ifdef notdef /*
+
+# /usr/src/COPYRIGHTS for MacMach
+
+# This is a general purpose copyright notice for MacMach sources.
+# If you find any file in /usr/src that is missing a copyright,
+# it is probably covered by one of the following...
+
+# Most of this system is from the Tahoe release of BSD 4.3
+# Copyright (c) 1988 Regents of the University of California.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms are permitted
+# provided that the above copyright notice and this paragraph are
+# duplicated in all such forms and that any documentation,
+# advertising materials, and other materials related to such
+# distribution and use acknowledge that the software was developed
+# by the University of California, Berkeley.  The name of the
+# University may not be used to endorse or promote products derived
+# from this software without specific prior written permission.
+# THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+# IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+# WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+# The CMU contributions are:
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+
+# Portions of this system (gcc, gas, gdb, bison...) are
+# Copyright (C) 1987, 1988 Free Software Foundation, Inc.
+# See /usr/src/usr.bin/emacs/info/COPYING for more details.
+
+# The X11 contributions are (see X11/COPYRIGHTS):
+#
+#         X Window System, Version 11
+#                  Release 4
+#
+#            contents copyrighted by
+#
+#
+#     Massachusetts Institute of Technology
+#	      Adobe Systems, Inc.
+#	     Apollo Computer Inc.
+#	     Apple Computer, Inc.
+#		  AT&T, Inc.
+#		  Don Bennett
+#	       Bigelow & Holmes
+#		Bitstream, Inc.
+#		 Adam de Boor
+#		Cognition Corp.
+#	 Digital Equipment Corporation
+#    Evans & Sutherland Computer Corporation
+#		   Franz Inc
+#	    Hewlett-Packard Company
+#		IBM Corporation
+#	Network Computing Devices, Inc.
+#	 O'Reilly and Associates, Inc.
+#		Dale Schumacher
+#		Marvin Solomon
+#		  Sony Corp.
+#		      SRI
+#	    Sun Microsystems, Inc.
+#		Tektronix, Inc.
+#	Texas Instruments Incorporated
+#		UniSoft Systems
+#  The Regents of the University of California
+#	    University of Wisconsin
+#		  Larry Wall
+#	     Wyse Technology, Inc.
+
+# Finally, since the MacMach project was funded by Apple Computer,
+# they also have some sort of a copyright.
+
+#endif */

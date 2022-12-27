@@ -1,0 +1,1 @@
+../../gcc-1.39/config/tm-att386.h

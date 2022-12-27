@@ -1,0 +1,15 @@
+#if defined(LIBC_SCCS) && !defined(lint)
+static char sccsid[] = "@(#)modf.c MacMach 4/26/90";
+#endif LIBC_SCCS and not lint
+
+/* modf() is an inline function in math.h */
+
+#define __LIBM__
+
+#include <math.h>
+
+double modf(value, iptr)
+double value, *iptr;
+{
+  return modf_68881(value, iptr);
+}

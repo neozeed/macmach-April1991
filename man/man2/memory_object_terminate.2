@@ -1,0 +1,65 @@
+.TH memory_object_terminate 2 12/19/89
+.CM 4
+.SH NAME
+.nf
+memory_object_terminate  \-  request to terminate memory object
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t memory_object_terminate(memory_object, memory_control,
+			     memory_object_name)
+	memory_object_t	memory_object;
+                      memory_object_control_t 
+			memory_control;
+	               memory_object_name_t 
+			memory_object_name;
+
+
+.fi
+.ft P
+.SH DESCRIPTION
+.B memory_object_terminate
+indicates that the has completed its use of the given memory object.  All rights to the
+memory object control and name ports are included, so that the
+memory manager can destroy them (using 
+.B port_deallocate
+)
+after doing appropriate bookkeeping.  The kernel will terminate a memory
+object only after all address space mappings of that memory object have
+been deallocated, or upon explicit request by the memory manager.
+
+.SH ARGUMENTS
+.TP 15
+.B
+.B memory_object
+The port that represents the memory object data, as 
+supplied to the kernel in a 
+.B vm_map
+call.
+.TP 15
+.B
+.B memory_control
+The request port to which a response is 
+requested.  [In the event that a memory object has been supplied 
+to more than one the kernel that has made the request.]
+.TP 15
+.B
+.B memory_object_name
+A port used by the kernel to refer to the 
+memory object data in reponse to 
+.B vm_region
+calls.
+
+.SH DIAGNOSTICS
+.TP 25
+.B KERN_SUCCESS
+Since this routine is called by the kernel, which does not
+wait for a reply message, this value is ignored.
+
+.SH SEE ALSO
+.B memory_object_destroy, port_deallocate
+

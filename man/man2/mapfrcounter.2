@@ -1,0 +1,85 @@
+.TH mapfrcounter 2 8/13/89
+.CM 4
+.SH NAME
+.nf
+mapfrcounter  \-  obtain access to free-running counter
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+int	ret
+
+ret = mapfrcounter(address, anywhere);
+	vm_address_t	*address;
+	boolean_t	anywhere;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+address
+Requested address to map counter at.  Contains actual 
+address on return.
+.TP 15
+.B
+req_address
+Requested address to map counter at.
+.TP 15
+.B
+anywhere
+If TRUE, indicates counter may be mapped anywhere in address space.
+
+.SH DESCRIPTION
+Multimax systems contain a 32-bit free-running microsecond counter that
+can be used for timing measurements. 
+.B mapfrcounter
+maps that counter into the address space of a task/process to allow it to
+be accessed directly in memory; it returns a pointer that can be used
+to read values from the counter (i.e. counter_val = **address).  -1 is
+returned if the call fails. 
+.B errno
+can then be consulted for the actual error code.  Mapping the counter requires
+an entire 
+.B vm_page_size
+page of memory; the offset of the counter within this page is defined by
+hardware and cannot be changed.  If address is supplied it will be
+rounded down to a page boundary to determine the start of the page
+containing the counter.  The page containing the counter is mapped read only
+with SHARED inheritance; i.e. any task/process created from this task will
+also be able to access the counter at the same address.  The 
+.B address
+argument is ignored if 
+.B anywhere
+is TRUE.  Thus a simple way to 
+map the counter is: address = 0; mapfrcounter(&address, TRUE);  
+
+The memory access to read the counter takes approximately 3 microseconds
+(this is not indicative of the speed of main memory, but rather of the speed
+of the hardware that implements the counter), and users are warned that all
+accesses to the counter on the same machine will serialize; contention
+delays may result if the counter is accessed too frequently.  A safe rule of
+thumb is that if all threads/tasks in a parallel program will access the
+counter, then timing of entities smaller than 100 microseconds is not
+recommended.  In addition synchronized accesses (e.g.  all threads access
+the counter after completing a global barrier synchronization) should be
+avoided at all costs (if this happens, some thread could be delayed by 50
+microseconds due to serialization).  If a timestamp is required at
+a synchronization point, it should be read by one thread and placed in
+memory for the others to access later.
+
+.SH DIAGNOSTICS
+.TP 25
+EFAULT
+The mapping operation failed.  Most likely reason is that an attempt
+was made to map the counter into memory that already exists.
+
+.SH BUGS
+Only available on Multimax systems.  See above information on access
+serialization.  May not be incorporated into the C library.
+
+

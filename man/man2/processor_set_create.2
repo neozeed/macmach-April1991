@@ -1,0 +1,71 @@
+.TH processor_set_create 2 8/13/89
+.CM 4
+.SH NAME
+.nf
+processor_set_create  \-  create a new processor set
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t processor_set_create(host, new_set, new_name)
+	host_t 			host;
+	processor_set_t		*new_set;
+	processor_set_name_t	*new_name;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+host
+The host on which the new set is to be created.  Either the host
+port or the privileged host port may be used.
+.TP 15
+.B
+new_set
+Port used for performing operations on the new set.
+.TP 15
+.B
+new_name
+Port used to identify the new set and obtain information about it.
+
+.SH DESCRIPTION
+.B processor_set_create
+creates a new processor set and returns 
+the two ports associated with it.  The port returned in 
+.B new_set
+is the actual port representing the set.  It is used to perform
+operations such as assigning processors, tasks, or threads.
+The port returned in 
+.B new_name
+identifies the set, and is used to obtain information about the set.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B host
+was not a host.
+.TP 25
+KERN_INVALID_ADDRESS
+.B new_set
+and/or 
+.B new_name
+point to inaccessible memory.
+.TP 25
+KERN_FAILURE
+The operating system does not support processor allocation.
+
+.SH BUGS
+Availability limited.
+
+.SH SEE ALSO
+.B processor_set_destroy, processor_set_info, processor_assign, task_assign,
+.B thread_assign
+

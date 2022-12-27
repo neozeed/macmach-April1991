@@ -1,0 +1,75 @@
+.TH thread_create 2 1/22/88
+.CM 4
+.SH NAME
+.nf
+thread_create  \-  creates new thread within named task
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t thread_create(parent_task, child_thread)
+	task_t		parent_task;
+	thread_t	*child_thread;	/* out */
+
+
+.fi
+.ft P
+.SH DESCRIPTION
+.B thread_create
+creates a new thread within the task
+specified by 
+.B parent_task
+.
+The new thread has no processor state, and has a suspend count of 1.
+To get a new thread to run, first 
+.B thread_create
+is called to get
+the new thread's identifier,(
+.B child_thread
+). Then 
+.B thread_set_state
+is called to set a processor state, and finally 
+.B thread_resume
+is
+called to get the thread scheduled to execute.
+
+When the thread is created send rights to its thread kernel port are
+given to it and returned to the caller in 
+.B child_thread
+. 
+The new thread's  exception port is set to 
+.B PORT_NULL
+.
+
+.SH ARGUMENTS
+.TP 15
+.B
+parent_task
+The task which is to contain the new thread.
+.TP 15
+.B
+child_thread
+The new thread.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+A new thread has been created.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B parent_task
+is not a valid task.
+.TP 25
+KERN_RESOURCE_SHORTAGE
+Some critical kernel resource is not
+available.
+
+.SH SEE ALSO
+.B task_create, task_threads, thread_terminate, thread_suspend,
+.B thread_resume, thread_special_ports, thread_set_state
+
+
+

@@ -1,0 +1,227 @@
+#ifdef CSOURCE
+
+#if defined(LIBC_SCCS) && !defined(lint)
+static char sccsid[] = "@(#)bcopy.c MacMach 5.1";
+#endif LIBC_SCCS and not lint
+
+/* assume long is 32 bits, short is 16 bits */
+
+char *memcpy(dst, src, length)
+register char *dst, *src;
+register int length;
+{
+  char *saved = dst;
+
+  bcopy(src, dst, length);
+  return saved;
+}
+
+bcopy(src, dst, length)
+register char *src, *dst;
+register int length;
+{
+  if (length > 0 && src != dst) {
+    /* non-trivial */
+    if ((unsigned long)dst < (unsigned long)src) {
+      /* loop forwards */
+      if (length >= 16) {
+        if (!(((long)src | (long)dst) & 3)) {
+	  /* loop via long's */
+          register long *a1 = (long *)dst;
+          register long *a2 = (long *)src;
+          register int n = length >> 2;
+          while (n--) *a1++ = *a2++;
+          length &= 3;
+          dst = (char *)a1;
+          src = (char *)a2;
+        }
+        else if (!(((long)src | (long)dst) & 1)) {
+          /* loop via short's */
+          register short *a1 = (short *)dst;
+          register short *a2 = (short *)src;
+          register int n = length >> 1;
+          while (n--) *a1++ = *a2++;
+          length &= 1;
+          dst = (char *)a1;
+          src = (char *)a2;
+        }
+      }
+      /* loop via bytes */
+      while (length--) *dst++ = *src++;
+    }
+    else {
+      /* loop backwards */
+      src += length;
+      dst += length;
+      if (length >= 16) {
+        if (!(((long)src | (long)dst) & 3)) {
+          /* loop via long's */
+          register long *a1 = (long *)dst;
+          register long *a2 = (long *)src;
+          register int n = length >> 2;
+          while (n--) *--a1 = *--a2;
+          length &= 3;
+          dst = (char *)a1;
+          src = (char *)a2;
+        }
+        else if (!(((long)src | (long)dst) & 1)) {
+          /* loop via short's */
+          register short *a1 = (short *)dst;
+          register short *a2 = (short *)src;
+          register int n = length >> 1;
+          while (n--) *--a1 = *--a2;
+          length &= 1;
+          dst = (char *)a1;
+          src = (char *)a2;
+        }
+      }
+      /* loop via bytes */
+      while (length--) *--dst = *--src;
+    }
+  }
+  return(0);
+}
+
+#else
+
+#if defined(LIBC_SCCS)
+	.asciz "@(#)bcopy.s MacMach 5.1"
+	.even
+#endif /* LIBC_SCCS and not lint */
+
+#include "DEFS.h"
+
+	.text
+
+ENTRY(memcpy)
+	link	a6,#0		/* set up stack frame */
+	movel	d2,sp@-		/* save d2 */
+	movel	a6@(8),d2	/* d2 = dst */
+	movel	a6@(16),sp@-	/* src */
+	movel	d2,sp@-		/* dst */
+	movel	a6@(12),sp@-	/* length */
+	jbsr _bcopy		/* preserves d2 */
+	movel	d2,d0		/* return dst */
+	movel	a6@(-4),d2	/* restore d2 */
+	unlk	a6		/* finished with stack frame */
+	rts			/* all done */
+
+ENTRY(bcopy)
+	link	a6,#0		/* set up stack frame */
+	moveml #0x3830,sp@-	/* save d2, d3, d4, a2, a3 */
+	movel	a6@(8),d2	/* d2 = src */
+	movel	a6@(12),d1	/* d1 = dst */
+	movel	a6@(16),d3	/* d3 = length */
+	jle	done		/* if length <= 0 */
+	cmpl	d2,d1
+	jeq	done		/* if src = dst */
+	cmpl	d1,d2
+	jls	back
+
+/* loop forwards */
+	movel	d1,a0		/* a0 = dst */
+	movel	d2,a1		/* a1 = src */
+	moveq	#15,d4
+	cmpl	d3,d4
+	jge	fbyte		/* if length <= 16 */
+	movel	d2,d0
+	orl	d1,d0		/* d0 = src | dst */
+	moveq	#3,d4
+	andl	d0,d4
+	jne	fshort		/* if (src | dst) & 3 */
+
+/* forward loop via long's */
+	movel	d3,d0
+	asrl	#2,d0		/* length >> 2 */
+	jra	enter1		/* enter loop test first */
+loop1:	movel	a1@+,a0@+	/* copy and increment pointers */
+enter1:	dbra	d0,loop1	/* fast loop */
+	clrw	d0
+	subql	#1,d0		/* decrement high word */
+	jcc	loop1		/* continue fast loop */
+	moveq	#3,d4
+	andl	d4,d3		/* length & 3 */
+	jra	fbyte
+
+fshort:	btst	#0,d0
+	jne	fbyte		/* if (src | dst) & 1 */
+
+/* forward loop via short's */
+	movel	d3,d0
+	asrl	#1,d0		/* length >> 1 */
+	jra	enter2		/* enter loop test first */
+loop2:	movew	a1@+,a0@+	/* copy and increment pointers */
+enter2:	dbra	d0,loop2	/* fast loop */
+	clrw	d0
+	subql	#1,d0		/* decrement high word */
+	jcc	loop2		/* continue fast loop */
+	moveq	#1,d4
+	andl	d4,d3		/* length & 1 */
+	/* fall through to byte loop */
+
+/* forward loop via byte's */
+fbyte:	jra	enter3		/* enter loop test first */
+loop3:	moveb	a1@+,a0@+	/* copy and increment pointers */
+enter3:	dbra	d3,loop3	/* fast loop */
+	clrw	d3
+	subql	#1,d3		/* decrement high word */
+	jcc	loop3		/* continue fast loop */
+	jra	done
+
+/* loop backwards */
+back:	addl	d3,d2
+	addl	d3,d1
+	movel	d1,a0		/* a0 = dst + length */
+	movel	d2,a1		/* a1 = src + length */
+	moveq	#15,d4
+	cmpl	d3,d4
+	jge	bbyte		/* if length <= 16 */
+	movel	d2,d0
+	orl	d1,d0		/* d0 = src | dst */
+	moveq	#3,d4
+	andl	d0,d4
+	jne	bshort		/* if (src | dst) & 3 */
+
+/* backwards loop via long's */
+	movel	d3,d0
+	asrl	#2,d0		/* length >> 2 */
+	jra	enter4		/* enter loop test first */
+loop4:	movel	a1@-,a0@-	/* decrement pointers and copy */
+enter4:	dbra	d0,loop4	/* fast loop */
+	clrw	d0
+	subql	#1,d0		/* decrement high word */
+	jcc	loop4		/* continue fast loop */
+	moveq	#3,d4
+	andl	d4,d3		/* length & 3 */
+	jra	bbyte
+
+bshort:	btst	#0,d0		/* if (src | dst) & 1 */
+	jne	bbyte
+
+/* backwards loop via short's */
+	movel	d3,d0
+	asrl	#1,d0		/* length >> 1 */
+	jra	enter5		/* enter loop test first */
+loop5:	movew	a1@-,a0@-	/* decrement pointers and copy */
+enter5:	dbra	d0,loop5	/* fast loop */
+	clrw	d0
+	subql	#1,d0		/* decrement high word */
+	jcc	loop5		/* continue fast loop */
+	moveq	#1,d4
+	andl	d4,d3		/* length & 1 */
+	/* fall through to byte loop */
+
+/* backwards loop via bytes */
+bbyte:	jra	enter6		/* enter loop test first */
+loop6:	moveb	a1@-,a0@-	/* decrement pointers and copy */
+enter6:	dbra	d3,loop6	/* fast loop */
+	clrw	d3
+	subql	#1,d3		/* decrement high word */
+	jcc	loop6		/* continue fast loop */
+
+done:	clrl	d0		/* return zero */
+	moveml a6@(-20),#0xc1c	/* restore d2, d3, d4, a2, a3 */
+	unlk	a6		/* finished with stack frame */
+	rts			/* all done */
+
+#endif

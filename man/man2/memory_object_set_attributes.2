@@ -1,0 +1,85 @@
+.TH memory_object_set_attributes 2 12/19/89
+.CM 4
+.SH NAME
+.nf
+memory_object_set_attributes  \-  indicate how kernel should handle object
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t memory_object_set_attributes(memory_control,
+				object_ready, may_cache_object,
+				copy_strategy)
+	memory_object_control_t
+			memory_control;
+	boolean_t	object_ready;
+	boolean_t	may_cache_object;
+	memory_object_copy_strategy_t
+			copy_strategy;
+
+
+.fi
+.ft P
+.SH DESCRIPTION
+
+.B memory_object_set_attributes
+controls how the the memory object.  The kernel will only make data or unlock requests when
+the ready attribute is asserted.  If the caching attribute is asserted, the
+kernel is permitted (and encouraged) to maintain
+cached data for this memory object even after no virtual address space
+contains this data.
+
+There are three possible caching strategies: 
+.B MEMORY_OBJECT_COPY_NONE
+which specifies that nothing special should be done when data in the
+object is copied; 
+.B MEMORY_OBJECT_COPY_CALL
+which specifies that the
+memory manager should be notified via a 
+.B memory_object_copy
+call before
+any part of the object is copied; and 
+.B MEMORY_OBJECT_COPY_DELAY
+which
+guarantees that the memory manager does not externally modify the data
+so that the kernel can use its normal copy-on-write algorithms.  
+.B MEMORY_OBJECT_COPY_DELAY
+is the strategy most commonly used.
+
+.SH ARGUMENTS
+.TP 15
+.B
+memory_control
+The port, provided by the kernel 
+in a 
+.B memory_object_init
+call, to which cache management requests may be issued.
+.TP 15
+.B
+object_ready
+When set, the kernel may issue new data and unlock requests on the
+associated memory object.
+.TP 15
+.B
+may_cache_object
+If set, the kernel may keep data 
+associated with this
+memory object, even after virtual memory references to it are gone.
+.TP 15
+.B
+copy_strategy
+How the kernel should copy regions of the associated
+memory object.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+This routine does not receive a reply message (and consequently
+has no return value), so only message transmission errors apply.
+
+.SH SEE ALSO
+.B memory_object_init, memory_object_copy, memory_object_attributes
+

@@ -1,0 +1,45 @@
+.TH thread_terminate 2 9/19/86
+.CM 4
+.SH NAME
+.nf
+thread_terminate  \-  destroys specified thread
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t thread_terminate(target_thread)
+	thread_t	target_thread;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+target_thread
+The thread to be destroyed.
+
+.SH DESCRIPTION
+.B thread_terminate
+destroys the thread specified by 
+.B target_thread
+.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The thread has been killed.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B target_thread
+is not a thread.
+
+.SH SEE ALSO
+.B task_terminate, task_threads, thread_create,
+.B thread_resume, thread_suspend
+
+
+

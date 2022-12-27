@@ -1,0 +1,120 @@
+#
+# Mach Operating System
+# Copyright (c) 1986 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement
+# specifies the terms and conditions for use and redistribution.
+#
+######################################################################
+# HISTORY
+# $Log:	Makefile.sun4,v $
+# Revision 2.3  90/07/27  17:48:17  mrt
+# 	Link setjmp.h, signal.h, stdio.h, and strings.h to 
+# 	/usr/cs/include instead of /usr/include.
+# 	[90/05/17            jjc]
+# 
+# Revision 2.2  89/07/11  13:28:59  jjc
+# 	Added strings.h to list of header files needed by kdb.
+# 	Moved kernel from 0xFF004000 down to 0xFE004000.
+# 	Created from Sun 3 version.
+# 	[88/05/31            jjc]
+# 
+######################################################################
+#BEGIN	Machine dependent Makefile fragment for the SUN4
+######################################################################
+
+CC=	cc
+C2=
+AS=	as
+
+LD=	/bin/ld
+LDFLAGS=-e _start -N -p -X -T FE004000
+LIBS=/lib/libc.a
+
+#INLINE= ./inline
+#
+#LDDEPS_PREFIX=${INLINE}
+#SWAPDEPS_PREFIX=${INLINE}
+#OBJSDEPS=${INLINE}
+#
+#
+#  Special rules to build the ${INLINECMD} program.  These are moved
+#  here from the separate makefile since the program is configuration
+#  dependent (e.g. with conditional compilation). 
+#
+#INLINE_SRC =
+#
+#INLINE_OBJ =
+#
+#${INLINE}: ${INLINE_OBJ}
+#	cp /usr/lib/inline ${INLINE}
+
+
+AHEADS=
+LDOBJS_PREFIX=locore.o
+
+#
+#  Special rule to temporarily create links to external include
+#  files used by the debugger until this dependency is eliminated.
+#
+
+${SOBJS}:	assym.s
+
+access.o:	a.out.h ctype.h setjmp.h signal.h stab.h strings.h varargs.h
+
+a.out.h ctype.h  stab.h varargs.h:
+	rm -f $@
+	ln -s /usr/include/$@ $@
+
+setjmp.h signal.h stdio.h strings.h:
+	rm -f $@
+	ln -s /usr/cs/include/$@ $@
+
+#
+#  Compilation rules to generate .o from .c for normal files
+#  (use the ${INLINE} filter)
+#
+#C_RULE_1A=${CC} -c -S -O ${COPTS} 
+#C_RULE_1B=$*.c
+#C_RULE_2=${C2} $*.s | ${INLINE} >$*.i
+#C_RULE_3=${AS} -o $*.o $*.i
+#C_RULE_4=rm -f $*.[is]
+#
+#
+#  Compilation rules to generate .o from .c for driver files
+#  (use the ${INLINE} filter)
+#	??
+#
+
+#
+#  Compilation rules to generate .o from .c for profiling routine files
+#	use ed instead of ex.
+#  (use the ${INLINE} filter)
+#  and for the present always use cc so we can know the register layout
+#
+#C_RULE_1A_P=cc -c -S ${COPTS_P} 
+#C_RULE_2_P=ed - $*.s < ${GPROF.EX}
+#C_RULE_3_P=${C2} $*.s | ${INLINE} >$*.i
+#C_RULE_4_P=${AS} -o $*.o $*.i;rm -f $*.[is]
+
+#
+#	OVERRIDES FOR GCC
+#
+
+#CC=	gcc
+#GAS=	gas
+#CPP=	cc -ES
+#VOLATILE=
+#FORCE_VOLATILE=-fvolatile 
+#C_RULE_1A=${CC} -c -S -O ${COPTS} -fno-function-cse -fno-defer-pop 
+#C_RULE_2=${INLINE} $*.s | ${GAS} -o $*.o --
+#C_RULE_3=rm -f $*.s
+#C_RULE_4=
+#DEPENDS=
+#
+#	when INLINE goes away (also flush the build above)
+#C_RULE_1A=${CC} -c -O ${COPTS} -fno-function-cse 
+#C_RULE_2=
+#
+######################################################################
+#END	 Machine dependent Makefile fragment for the SUN4
+######################################################################

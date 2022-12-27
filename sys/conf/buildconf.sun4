@@ -1,0 +1,19 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#
+#
+# HISTORY
+# $Log:	buildconf.sun4,v $
+# Revision 2.3  90/04/30  15:20:48  jjc
+# 	Just make one configuration.
+# 	[90/04/30  15:18:05  jjc]
+# 
+# Revision 2.2  90/04/30  13:50:25  jjc
+# 		Created from buildconf.sun3.
+# 	[90/04/30            jjc]
+# 
+
+STD+ANY

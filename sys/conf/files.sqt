@@ -1,0 +1,100 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#
+#
+# HISTORY
+# $Log:	files.sqt,v $
+# Revision 2.3  89/03/09  04:52:58  rpd
+# 	Removed the non-existent sqt/utime.c file.
+# 
+# Revision 2.2  89/02/25  17:41:16  gm0w
+# 	Changes for cleanup.
+# 
+#  3-Dec-87  Robert Baron (rvb) at Carnegie-Mellon University
+#	make mach_vm standard vs optional
+#
+# 14-Jul-87  Robert Baron (rvb) at Carnegie-Mellon University
+#	Added cadm.c and some judicious "device-driver" flags
+#
+# 24-Jun-87  Robert Baron (rvb) at Carnegie-Mellon University
+#	Be very careful to use device-driver options to force /lib/c2 -i
+#	to kill memory reference optimization.
+#
+
+# well, the option sl at cmu is not intended to 
+# include the sequent multibus sl "thing", besides
+# we don't even have source for it, so comment it out.
+#	mdb/mdb_...		for mdb debugger
+#	sqt/stack.c		added stack trace code 
+#	sqt/locore.s		standard fastobj
+# But the new make technology can't deal with a .s for locore
+# So the Makefile.sqt must do things so that locore.s is treated
+# as though it were the first fastobj.
+#
+sqt/slic.c		standard fastobj device-driver
+sqt/gate.s		standard fastobj
+sqt/cpclr.s		standard fastobj
+sqt/cswitch.s		standard fastobj
+sqt/setjmp.s		standard fastobj
+sqt/misc.s		standard fastobj
+sqt/userio.s		standard fastobj
+sqt/trap.c		standard fastobj
+sqt/fbits.s		standard fastobj
+sqt/slock.s		standard fastobj
+sqt/autoconf.c		standard device-driver
+sqt/cadm.c		standard device-driver
+sqt/clock.c		standard device-driver
+sqt/consio.c		standard
+sqt/icode.s		standard
+sqt/in_cksum.c		optional bbnnet
+sqt/in_cksum.c		standard
+sqt/machdep.c		standard device-driver
+sqt/mapsys.c		standard
+sqt/mdb_dis.c		optional mach_db
+sqt/mdb_hole.s		optional mach_db
+sqt/mdb_stack.c		optional mach_db
+sqt/mem.c		standard
+sqt/ns_cksum.c		optional ns
+sqt/pcb.c		standard device-driver
+sqt/phys.c		standard device-driver
+sqt/pmap.c		standard device-driver
+sqt/sema.c		standard
+sqt/sqt_sys.c		standard device-driver
+sqt/stack.c		standard
+sqt/start.s		standard
+sqt/startup.c		standard
+sqt/stub.c		standard
+sqt/ufs_machdep.c	standard
+sqt/vm_machdep.c	standard
+sqtconf/conf.c		standard
+sqtconf/conf_co.c	optional co
+sqtconf/conf_generic.c	optional generic
+sqtconf/conf_if_se.c	optional se
+sqtconf/conf_led.c	standard
+sqtconf/conf_sd.c	optional sd
+#sqtconf/conf_sl.c	optional sl
+sqtconf/conf_st.c	optional st
+sqtconf/conf_ts.c	optional ts
+sqtconf/conf_vec.c	standard
+sqtconf/conf_xp.c	optional xp
+sqtconf/conf_xt.c	optional xt
+sqtconf/conf_zd.c	optional zd
+sqtmbad/dkbad.c		optional xp
+sqtmbad/mbad.c		standard device-driver
+#sqtmbad/sl.c		optional sl device-driver
+sqtmbad/st.c		optional st device-driver
+sqtmbad/xp.c		optional xp device-driver
+sqtmbad/xt.c		optional xt device-driver
+sqtif/enet.c		optional enet
+sqtif/if_se.c		optional se device-driver
+sqtif/netintr.c		standard
+sqtsec/co.c		optional co device-driver
+sqtsec/sec.c		standard
+sqtsec/sd.c		optional sd device-driver
+sqtsec/sm.c		optional sm device-driver
+sqtsec/ts.c		optional ts device-driver
+sqtzdc/zd.c		optional zd device-driver
+sqtzdc/zdinit.c		optional zd device-driver

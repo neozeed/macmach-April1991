@@ -1,0 +1,103 @@
+#! /bin/sh
+
+# /etc/rc for MacMach ramdisk, version 02
+
+RAMDISK_VERSION="MacMach installation ramdisk_image version 1.6"
+
+# macmach.cc.cmu.edu system varieties
+ALPHA=/users/macmach/alpha
+GAMMA=/users/macmach/gamma
+# 74MB is an 80MB disk with a minimum 2MB MacOS partition
+BINMIN="74"
+SRCMIN="290"
+FTP_SERVER="128.2.35.117"
+export FTP_SERVER
+METHOD="FTP"
+ADDRESS=""
+MODE=""
+SCSIID="search"
+DESTDIR="/mnt"
+
+HOME="/"; export HOME
+PATH="/bin:/etc"; export PATH
+[ -f /dev/console ] || reboot -h
+exec </dev/console >/dev/console 2>&1
+stty -tabs crt kill '^u' intr '^c'
+
+echo ""
+echo "$RAMDISK_VERSION"
+echo ""
+echo "For the following questions, press return to use the default in []."
+echo ""
+echo "MacMach systems can be installed or updated over the network via FTP."
+echo "Note that FTP requires a server address, user id and password."
+echo "Two released versions of MacMach are available, Alpha and Gamma."
+echo "The Gamma release is probably the one you want."
+echo "MacMach requires at least ${BINMIN}MB of disk space, ${SRCMIN}MB if the system"
+echo "sources are to be installed.  Use a standard Macintosh disk utility"
+echo "to set aside the required space as a free partition before trying to"
+echo "install a system."
+
+# SH is an undocumented way to get to a single-user shell for maintenance.
+
+echo ""
+while [ ! "$RELEASE" ]; do
+  echo -n "Which release do you want, ALPHA, or GAMMA? [GAMMA] "
+  read RELEASE; [ "$RELEASE" ] || RELEASE="GAMMA"
+  case "$RELEASE" in
+    alpha|ALPHA|Alpha) RELEASE="$ALPHA";;
+    gamma|GAMMA|Gamma) RELEASE="$GAMMA";;
+    other|OTHER|Other) RELEASE="OTHER";;
+    sh|SH) echo ""; echo "Entering single user shell."; echo ""; exec /bin/sh;;
+    *) RELEASE="";;
+  esac
+done
+
+# "OTHER" is an undocumented way to specify a non-standard source path.
+# Later on, newsys will prompt for installation script and source directory.
+
+if [ "$RELEASE" = "OTHER" ]; then
+  SCRIPT=""
+  SRCDIR=""
+  MINDISK=""
+  FTP_SERVER=""
+else
+  SRCDIR="$RELEASE"
+  SCRIPT="$RELEASE/etc/newconfig/ftp.macmach"
+  echo ""
+  echo "Normally, system sources are not included in an installation."
+  echo "They take up a lot of space and are protected under various"
+  echo "copyrights.  If you have the space, and are allowed to, you"
+  echo "can have /usr/src installed/updated at this time."
+  while true; do
+    echo -n "Ok to include /usr/src? [NO] "
+    read USRSRC; [ "$USRSRC" ] || USRSRC="NO"
+    case "$USRSRC" in
+      Y|y|YES|yes) USRSRC="YES"; break;;
+      N|n|NO|no) USRSRC=""; break;;
+      *) echo "Please enter YES or NO.";;
+    esac
+  done
+  export USRSRC
+  if [ "$USRSRC" ]; then
+    MINDISK=`expr \( $SRCMIN \* 1024 \* 1024 \) / 512`
+  else
+    MINDISK=`expr \( $BINMIN \* 1024 \* 1024 \) / 512`
+  fi
+fi
+
+# SH is an undocumented way to get to a single-user shell for maintenance.
+
+echo ""
+newsys "$METHOD" "$SCRIPT" "$ADDRESS" "$GATEWAY" "$SCSIID" "$DESTDIR" "$SRCDIR" "$MODE" "$MINDISK" || {
+  echo ""
+  echo "Installation/update failed.  Type return to reboot."
+  read SH
+  case "$SH" in
+    sh|SH) echo ""; echo "Entering single user shell."; echo ""; exec /bin/sh;;
+  esac
+}
+
+echo ""
+echo "Rebooting..."
+reboot

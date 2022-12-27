@@ -1,0 +1,82 @@
+.TH port_names 2 4/13/87
+.CM 4
+.SH NAME
+.nf
+port_names  \-  return information about a task's port name space
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t port_names(task,
+			 portnames, portnamesCnt,
+			 port_types, port_typesCnt)
+	task_t task;
+	port_name_array_t *portnames;	/* out array */
+	unsigned int *portnamesCnt;	/* out */
+	port_type_array_t *port_types;	/* out array */
+	unsigned int *port_typesCnt;	/* out */
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+task
+The task whose port name space is queried.
+.TP 15
+.B
+portnames
+The names of the ports and port sets in the task's
+port name space, in no particular order.
+.TP 15
+.B
+portnamesCnt
+The number of names returned.
+.TP 15
+.B
+port_types
+The type of each corresponding name.  Indicates what kind
+of right the task holds for the port or port set.
+.TP 15
+.B
+port_typesCnt
+Should be the same as portnamesCnt.
+
+.SH DESCRIPTION
+.B port_names
+returns the currently valid ports and port set names of
+.B task
+. 
+For each
+name, it also returns what type of rights 
+.B task
+holds. 
+.B portnames
+and 
+.B port_types
+are arrays that are automatically allocated when the 
+reply message is received. The user may wish to 
+.B vm_deallocate
+them
+when the data is no longer needed.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B task
+was invalid.
+
+.SH SEE ALSO
+.B port_type
+,
+.B port_status
+,
+.B port_set_status
+

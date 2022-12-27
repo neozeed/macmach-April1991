@@ -1,0 +1,62 @@
+.TH port_deallocate 2 9/19/86
+.CM 4
+.SH NAME
+.nf
+port_deallocate  \-  removes a task's rights for a port
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t port_deallocate(task, port_name)
+	task_t task;
+	port_name_t port_name;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+task
+The task from which to remove the port rights.
+.TP 15
+.B
+port_name
+.B task
+'s name for the rights to be removed.
+
+.SH DESCRIPTION
+.B port_deallocate
+requests that the target task's
+rights for a port be removed.
+
+If 
+.B task
+has receive rights for the port, and the port is
+a member of a port set, the port is removed from the port set.
+
+If the target task is
+both the receiver and owner for the port, then the port
+is destroyed and all other tasks with send access 
+are notified of the port's destruction. If the task is only
+the receiver for the port, receive rights are sent to the
+owner. If the task is only the owner of the port, ownership
+rights are sent to the receiver.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B task
+was invalid or 
+.B port_name
+does not name a valid port.
+
+.SH SEE ALSO
+.B port_allocate
+

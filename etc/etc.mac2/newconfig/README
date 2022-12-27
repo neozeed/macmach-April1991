@@ -1,0 +1,14 @@
+These are the system configuration files.  They are installed
+into the /etc/newconfig directory.  Note that a pre-existing
+/etc/newconfig will be saved as /etc/oldconfig and that any
+pre-existing /etc/oldconfig will be lost.  The individual files
+may be put in place by hand, or use "make config" to do them all.
+It is a good idea to edit the versions in /etc/newconfig and use
+"make config" to put them in place.  This keeps the "essence" of
+your system in a single place and makes upgrades easier.
+
+Note that /.hostname, /etc/fstab and /etc/hosts are exceptions
+in that "make config" will never install them, although it does
+put copies of them in /etc/newconfig.
+
+Use "make dev" to install device files into /dev.

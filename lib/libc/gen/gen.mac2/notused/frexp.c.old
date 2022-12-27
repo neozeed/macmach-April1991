@@ -1,0 +1,16 @@
+#if defined(LIBC_SCCS) && !defined(lint)
+static char sccsid[] = "@(#)frexp.c MacMach 4/26/90";
+#endif LIBC_SCCS and not lint
+
+/* frexp() is an inline function in math.h */
+
+#define __LIBM__
+
+#include <math.h>
+
+double frexp(value, eptr)
+double value;
+int *eptr;
+{
+  return frexp_68881(value, eptr);
+}

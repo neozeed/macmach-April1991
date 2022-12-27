@@ -1,0 +1,117 @@
+#! /bin/sh
+
+# make devices for MacMach
+
+SAVEDDIR=`pwd`
+
+if [ "$1" ]; then
+  cd $1
+else
+  cd /dev
+fi
+
+while read DEVICE TYPE MAJOR MINOR OWNER GROUP MODE; do
+  rm -f $DEVICE
+  mknod $DEVICE $TYPE $MAJOR $MINOR
+  chown ${OWNER}.${GROUP} $DEVICE
+  chmod $MODE $DEVICE
+  ls -l $DEVICE
+done <<@EOF@
+console c 0 0 root bin 666
+tty c 2 0 root bin 666
+mem c 3 0 root kmem 640
+kmem c 3 1 root kmem 640
+null c 3 2 root bin 666
+map c 3 3 root kmem 646
+kb0 c 4 0 root bin 666
+scn0 c 5 0 root bin 666
+scn1 c 5 1 root bin 666
+scn2 c 5 2 root bin 666
+scn3 c 5 3 root bin 666
+sony0 c 9 0 root bin 666
+sony1 c 9 1 root bin 666
+sony2 c 9 2 root bin 666
+rsd0x c 7 0 root operator 640
+rsd1x c 7 32 root operator 640
+rsd2x c 7 64 root operator 640
+rsd3x c 7 96 root operator 640
+rsd4x c 7 128 root operator 640
+rsd5x c 7 160 root operator 640
+rsd6x c 7 192 root operator 640
+sd0a b 0 0 root operator 640
+sd0c b 0 2 root operator 640
+sd0g b 0 6 root operator 640
+rsd0a c 6 0 root operator 640
+rsd0c c 6 2 root operator 640
+rsd0g c 6 6 root operator 640
+sd1a b 0 32 root operator 640
+sd1c b 0 34 root operator 640
+sd1g b 0 38 root operator 640
+rsd1a c 6 32 root operator 640
+rsd1c c 6 34 root operator 640
+rsd1g c 6 38 root operator 640
+sd2a b 0 64 root operator 640
+sd2c b 0 66 root operator 640
+sd2g b 0 70 root operator 640
+rsd2a c 6 64 root operator 640
+rsd2c c 6 66 root operator 640
+rsd2g c 6 70 root operator 640
+sd3a b 0 96 root operator 640
+sd3c b 0 98 root operator 640
+sd3g b 0 102 root operator 640
+rsd3a c 6 96 root operator 640
+rsd3c c 6 98 root operator 640
+rsd3g c 6 102 root operator 640
+sd4a b 0 128 root operator 640
+sd4c b 0 130 root operator 640
+sd4g b 0 134 root operator 640
+rsd4a c 6 128 root operator 640
+rsd4c c 6 130 root operator 640
+rsd4g c 6 134 root operator 640
+sd5a b 0 160 root operator 640
+sd5c b 0 162 root operator 640
+sd5g b 0 166 root operator 640
+rsd5a c 6 160 root operator 640
+rsd5c c 6 162 root operator 640
+rsd5g c 6 166 root operator 640
+sd6a b 0 192 root operator 640
+sd6c b 0 194 root operator 640
+sd6g b 0 198 root operator 640
+rsd6a c 6 192 root operator 640
+rsd6c c 6 194 root operator 640
+rsd6g c 6 198 root operator 640
+ptyp0 c 21 0 root bin 666
+ptyp1 c 21 1 root bin 666
+ptyp2 c 21 2 root bin 666
+ptyp3 c 21 3 root bin 666
+ptyp4 c 21 4 root bin 666
+ptyp5 c 21 5 root bin 666
+ptyp6 c 21 6 root bin 666
+ptyp7 c 21 7 root bin 666
+ptyp8 c 21 8 root bin 666
+ptyp9 c 21 9 root bin 666
+ptypa c 21 10 root bin 666
+ptypb c 21 11 root bin 666
+ptypc c 21 12 root bin 666
+ptypd c 21 13 root bin 666
+ptype c 21 14 root bin 666
+ptypf c 21 15 root bin 666
+ttyp0 c 20 0 root bin 666
+ttyp1 c 20 1 root bin 666
+ttyp2 c 20 2 root bin 666
+ttyp3 c 20 3 root bin 666
+ttyp4 c 20 4 root bin 666
+ttyp5 c 20 5 root bin 666
+ttyp6 c 20 6 root bin 666
+ttyp7 c 20 7 root bin 666
+ttyp8 c 20 8 root bin 666
+ttyp9 c 20 9 root bin 666
+ttypa c 20 10 root bin 666
+ttypb c 20 11 root bin 666
+ttypc c 20 12 root bin 666
+ttypd c 20 13 root bin 666
+ttype c 20 14 root bin 666
+ttypf c 20 15 root bin 666
+@EOF@
+
+cd $SAVEDDIR

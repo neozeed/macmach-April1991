@@ -1,0 +1,85 @@
+.TH port_restrict 2 4/13/87
+.CM 4
+.SH NAME
+.nf
+port_unrestrict  \-  adds a port to the task's set of default ports
+port_restrict  \-  deletes ports from a set of default ports
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+.nf
+.ft B
+kern_return_t port_unrestrict (target_task, my_port)
+	task_t		target_task;
+	port_t		my_port;
+
+
+.fi
+.ft P
+.nf
+.ft B
+kern_return_t port_restrict (target_task, my_port)
+	task_t		target_task;
+	port_t		my_port;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+target_task
+The task whose set of unrestricted ports list is to be
+affected.
+.TP 15
+.B
+my_port
+The port to be unrestricted or restricted.
+
+.SH DESCRIPTION
+Any port for which a task has receive rights is either
+.B unrestricted
+or 
+.B restricted
+. 
+.B unrestricted
+ports are those
+ports which will be used for a 
+.B msg_receive
+request with
+the 
+.B msg_local_port
+field of the message header set to the special value 
+.B PORT_DEFAULT
+. Messages from 
+.B restricted
+ports can only 
+be received by explicitly
+setting the 
+.B msg_local_port
+field to the specific port value.
+When a port is first allocated or received in a message
+it is restricted by default.
+
+.B port_unrestrict
+adds 
+.B my_port
+to a task's set of unrestricted ports.
+.B port_restrict
+removes 
+.B my_port
+from this set.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The port is unrestricted or restricted.
+.TP 25
+KERN_NOT_RECEIVER
+The target task is not the receiver for this port.
+
+.SH SEE ALSO
+.B msg_receive, port_status, port_allocate
+
+

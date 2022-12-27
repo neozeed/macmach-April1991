@@ -1,0 +1,64 @@
+.TH task_threads 2 9/19/86
+.CM 4
+.SH NAME
+.nf
+task_threads  \-  gets thread_kernel_ports for a task
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t task_threads(target_task, thread_list, thread_count)
+	task_t		target_task;
+	thread_array_t	*thread_list;	/* out, ptr to array */
+	int		*thread_count;	/* out */
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+target_task
+The task to be affected.
+.TP 15
+.B
+thread_list
+The set of threads contained within 
+.B target_task
+; no
+particular ordering is guaranteed. 
+.TP 15
+.B
+thread_count
+The number of threads in the 
+.B thread_list
+.
+
+.SH DESCRIPTION
+.B task_threads
+gets send rights to  the  kernel port for each thread
+contained in 
+.B target_task
+. 
+.B thread_list
+is an array that is
+created as a result of this call. The caller may wish to 
+.B vm_deallocate
+this array when the data is no longer needed.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B target_task
+is not a task.
+
+.SH SEE ALSO
+.B thread_create, thread_terminate, thread_suspend
+
+

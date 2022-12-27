@@ -1,0 +1,40 @@
+#if defined(LIBC_SCCS)
+	.asciz "@(#)insque.s MacMach 5.1"
+	.even
+#endif /* LIBC_SCCS and not lint */
+
+#include "DEFS.h"
+
+	.text
+
+/*
+ * insque -- vax insque instruction
+ */
+
+/*
+struct vaxque {
+  struct vaxque	*vq_next;
+  struct vaxque	*vq_prev;
+};
+
+insque(e, prev)
+register struct vaxque *e, *prev;
+{
+  e->vq_prev = prev;
+  e->vq_next = prev->vq_next;
+  prev->vq_next->vq_prev = e;
+  prev->vq_next = e;
+}
+*/
+
+ENTRY(insque)
+	link	a6, #0		/* set up stack frame */
+	movel	a6@(8), a0	/* e */
+	movel	a6@(12), a1	/* prev */
+	movel	a1@,a0@		/* e->next = prev->next */
+	movel	a1,a0@(4)	/* e->prev = prev */
+	movel	a0,a1@		/* prev->next = e */
+	movel	a0@,a1		/* a1 = e->next ( = prev->next ) */
+	movel	a0,a1@(4)	/* prev->next->next = e */
+	unlk	a6		/* done with stack frame */
+	rts			/* all done */

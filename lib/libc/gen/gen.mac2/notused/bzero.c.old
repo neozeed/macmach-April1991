@@ -1,0 +1,22 @@
+#if defined(LIBC_SCCS) && !defined(lint)
+static char sccsid[] = "@(#)bzero.c MacMach 5.1";
+#endif LIBC_SCCS and not lint
+
+/*
+ * bzero -- vax movc5 instruction
+ */
+bzero(b, length)
+	register char *b;
+	register int length;
+{
+  register int bytes;
+
+  /* align to long, do 1, 2 or 3 bytes*/
+  while ((long)b & 3 && length--) *b++ = '\0';
+  /* do longs */
+  bytes = length & 3;
+  length >>= 2;
+  do *((long *)b)++ = 0 while (--length);
+  /* finish up any bytes left over, do 1, 2 or 3 bytes */
+  while (bytes--) *b++ = '\0';
+}

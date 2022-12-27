@@ -1,0 +1,53 @@
+.TH host_ipc_statistics 2 9/19/86
+.CM 4
+.SH NAME
+.nf
+host_ipc_statistics  \-  returns IPC statistics for the system
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t host_ipc_statistics(task, statistics)
+	task_t target_task;
+	ipc_statistics_t *statistics;	/* inout */
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+task
+Task running on the kernel whose statistics are desired.
+.TP 15
+.B
+statistics
+The returned statistics.
+
+.SH DESCRIPTION
+.B host_ipc_statistics
+returns the statistics about since the kernel was booted. 
+.B statistics
+is a fixed length array provided
+by the user.  See 
+.B <kern/ipc_statistics.h>
+for a  description of what is
+returned.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+
+.SH BUGS
+Only kernels compiled with 
+.B MACH_IPCSTATS
+enabled support this call.
+
+The first argument should be a host port of some kind.
+
+The meaning of the statistics varies; not all fields are used.
+

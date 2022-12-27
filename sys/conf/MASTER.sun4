@@ -1,0 +1,221 @@
+#
+# Mach Operating System
+# Copyright (c) 1986 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement
+# specifies the terms and conditions for use and redistribution.
+#  
+######################################################################
+#
+#  Master SUN configuration file (see the master machine independent
+#  configuration file for a description of the file format).
+#
+######################################################################
+# HISTORY
+# $Log:	MASTER.sun4,v $
+# Revision 2.5  90/08/08  17:16:56  mrt
+# 	Added cab devive (Controller Accelerator Board) to MF, ANY and WS
+# 	configurations. It is used on Nectar machines.
+# 	[90/08/07            rds]
+# 
+# Revision 2.4  90/07/27  17:48:10  mrt
+# 	Added lines for Sun 4/330.
+# 	[90/05/10            jjc]
+# 
+# Revision 2.3  90/02/19  15:11:38  jjc
+# 		Add hw_ast to MSTD.
+# 	[89/10/24            jjc]
+# 
+# Revision 2.2  89/07/11  13:28:17  jjc
+# 	Created from Sun 3 version.
+# 	[88/05/31            jjc]
+# 
+######################################################################
+#
+#  SUN (PSEUDO-)DEVICES (select any combination)
+#
+#
+#  CPU TYPE (select exactly one)
+#
+#	sun = any SUN CPU
+#
+######################################################################
+#  
+#  Devices both on Vme bus and onBoard:
+#
+#  si = [ siV siB ]
+#  ie = [ ieV ieB ]
+
+#  Standard CMU CS/RI Production Configurations:
+#  -------- --- -- -- ---------- --------------
+#
+#  ANY = [ sun xt xy sc si  sm sw ie  le zs mti bw cab ]
+#  MF  = [ sun xt xy sc siB sm sw ieB le zs     bw cab ]
+#  WS  = [ sun       sc siB sm sw ieB le zs     bw cab ]
+#
+#  (any SUN-4 cpu model)
+#  ("mainframe" SUN4 cpu configurations: machine rooms)
+#  ("work-station" SUN4 cpu configurations: offices)
+#
+#  EXTRA = [ ] 
+#
+#  ("one-of-a-kind" devices)
+#
+#
+#  Options which are almost always turned on when mach is turned on,
+#  but can still be individually selected:
+#
+#  MSTD  = [hw_ast]
+#
+#  Standard Mach Research Configurations:
+#  -------- ---- -------- ---------------
+#
+#  MACH =  [ medium ANY ]
+#
+#  MACHXPE =  [ medium ANY ]
+#
+#  ------- ---- -------
+#
+#  Mach Private Names
+#  ---- ---------
+#
+#  MDG		= [ STD md xp me medium WS ]
+#
+#
+######################################################################
+#
+#  (any SUN-4 cpu model)
+#
+#  EXTRA = [ ] 
+#
+#  ("one-of-a-kind" devices)
+#
+#
+######################################################################
+#
+
+machine		"sun4"
+cpu		"SUN4_260"	# type 1
+cpu		"SUN4_110"	# type 2
+cpu		"SUN4_330"	# type 3
+
+config		mach		swap generic	# <!unix>
+config		vmunix		swap generic	# <unix>
+
+#
+#  Mach/4.3 on the SUN-4
+#
+controller      obio 1 at nexus ?			# <bw,ieB,le,zs>
+controller	obio 2 at nexus ?			# <bw,color,ieB,le,zs>
+controller	obio 3 at nexus ?			# <bw,color,le,sm,zs>
+
+controller      obmem 1 at nexus ?			# <NOTUSED>
+controller	obmem 2 at nexus ?			# <NOTUSED>
+controller	obmem 3 at nexus ?			# <NOTUSED>
+
+controller	vme16d16 1 at nexus ?			# <mti,xt,xy>
+controller	vme24d16 1 at nexus ?			# <color,ieV,sc,siV>
+controller	vme32d16 1 at nexus ?			# <NOTUSED>
+controller	vme16d32 1 at nexus ?			# <NOTUSED>
+controller	vme24d32 1 at nexus ?			# <NOTUSED>
+controller	vme32d32 1 at nexus ?			# <NOTUSED>
+
+controller	vme16d16 2 at nexus ?			# <NOTUSED>
+controller	vme24d16 2 at nexus ?			# <NOTUSED>
+controller	vme32d16 2 at nexus ?			# <NOTUSED>
+controller	vme16d32 2 at nexus ?			# <NOTUSED>
+controller	vme24d32 2 at nexus ?			# <NOTUSED>
+controller	vme32d32 2 at nexus ?			# <NOTUSED>
+
+controller	vme16d16 3 at nexus ?			# <NOTUSED>
+controller	vme24d16 3 at nexus ?			# <NOTUSED>
+controller	vme32d16 3 at nexus ?			# <NOTUSED>
+controller	vme16d32 3 at nexus ?			# <NOTUSED>
+controller	vme24d32 3 at nexus ?			# <NOTUSED>
+controller	vme32d32 3 at nexus ?			# <NOTUSED>
+
+
+controller	xyc0 at vme16d16 ? csr 0xee40			# <xy>
+			priority 2 vector xyintr 0x48		# <xy>
+controller	xyc1 at vme16d16 ? csr 0xee48 			# <xy>
+			priority 2 vector xyintr 0x49		# <xy>
+disk		xy0 at xyc0 drive 0				# <xy>
+disk		xy1 at xyc0 drive 1				# <xy>
+disk		xy2 at xyc1 drive 0				# <xy>
+disk		xy3 at xyc1 drive 1				# <xy>
+controller	sc0 at vme24d16 ? csr 0x200000			# <sc>
+			priority 2 vector scintr 0x40		# <sc>
+disk		sd0 at sc0 drive 0 flags 0			# <sc>
+disk		sd1 at sc0 drive 1 flags 0			# <sc>
+disk		sd2 at sc0 drive 8 flags 0			# <sc>
+disk		sd3 at sc0 drive 9 flags 0			# <sc>
+tape		st0 at sc0 drive 32 flags 1			# <sc>
+tape		st1 at sc0 drive 40 flags 1			# <sc>
+#disk		sf0 at sc0 drive 8 flags 2
+controller	si0 at vme24d16 ? csr 0x200000			# <siV>
+			priority 2 vector siintr 0x40		# <siV>
+disk		sd0 at si0 drive 0 flags 0			# <siV>
+disk		sd1 at si0 drive 1 flags 0			# <siV>
+disk		sd2 at si0 drive 8 flags 0			# <siV>
+disk		sd3 at si0 drive 9 flags 0			# <siV>
+tape		st0 at si0 drive 32 flags 1			# <siV>
+tape		st1 at si0 drive 40 flags 1			# <siV>
+#disk		sf0 at si0 drive 8 flags 2
+controller	sm0 at obio ? csr 0xfa000000 priority 2		# <sm>
+tape		st0 at sm0 drive 32 flags 1			# <sm>
+tape		st1 at sm0 drive 40 flags 1			# <sm>
+#disk		sf0 at sm0 drive 49 flags 2			# <sm>
+disk		sd0 at sm0 drive 0 flags 0			# <sm>
+disk		sd1 at sm0 drive 1 flags 0			# <sm>
+disk		sd2 at sm0 drive 8 flags 0			# <sm>
+disk		sd3 at sm0 drive 9 flags 0			# <sm>
+disk		sd4 at sm0 drive 16 flags 0			# <sm>
+disk		sd6 at sm0 drive 24 flags 0			# <sm>
+controller	sw0 at obio 2 csr 0xa000000 priority 2		# <sw>
+disk		sd0 at sw0 drive 0 flags 0			# <sw>
+disk		sd1 at sw0 drive 1 flags 0			# <sw>
+disk		sd2 at sw0 drive 8 flags 0			# <sw>
+disk		sd3 at sw0 drive 9 flags 0			# <sw>
+tape		st0 at sw0 drive 32 flags 1			# <sw>
+tape		st1 at sw0 drive 40 flags 1			# <sw>
+#disk		sf0 at sw0 drive 8 flags 2			# <sw>
+device		zs0 at obio ? csr 0xf1000000 flags 3		# <zs>
+			priority 3				# <zs>
+device		zs1 at obio ? csr 0xf0000000 flags 0x103	# <zs>
+			priority 3				# <zs>
+device		mti0 at vme16d16 ? csr 0x620 flags 0xffff	# <mti>
+			priority 4 vector mtiintr 0x88		# <mti>
+device		mti1 at vme16d16 ? csr 0x640 flags 0xffff	# <mti>
+			priority 4 vector mtiintr 0x89		# <mti>
+device		mti2 at vme16d16 ? csr 0x660 flags 0xffff	# <mti>
+			priority 4 vector mtiintr 0x8a		# <mti>
+device		mti3 at vme16d16 ? csr 0x680 flags 0xffff	# <mti>
+			priority 4 vector mtiintr 0x8b		# <mti>
+device		ie0 at obio ? csr 0xf6000000 priority 3		# <ieB>
+device		ie1 at vme24d16 ? csr 0xe88000			# <ieV>
+			priority 3 vector ieintr 0x75		# <ieV>
+device		le0 at obio ? csr 0xf9000000 priority 3
+#controller	tm0 at vme16d16 ? csr 0xa0 priority 3 vector tmintr 0x60
+#controller	tm1 at vme16d16 ? csr 0xa2 priority 3 vector tmintr 0x61
+#tape		mt0 at tm0 drive 0 flags 1
+#tape		mt1 at tm1 drive 0 flags 1
+controller	xtc0 at vme16d16 ? csr 0xee60			# <xt>
+			priority 3 vector xtintr 0x64		# <xt>
+controller	xtc1 at vme16d16 ? csr 0xee68			# <xt>
+			priority 3 vector xtintr 0x65		# <xt>
+tape		xt0 at xtc0 drive 0 flags 1			# <xt>
+tape		xt1 at xtc1 drive 0 flags 1			# <xt>
+device		cgtwo0 at vme24d16 ? csr 0x400000 priority 4	# <color>
+			vector cgtwointr 0xa8			# <color>
+device		cgfour0 at obio 2 csr 0xfb300000 priority 4	# <color>
+device		cgfour0 at obio 3 csr 0xfb300000 priority 4	# <color>
+device		bwtwo0 at obio 1 csr 0xfd000000 priority 4	# <bw>
+device		bwtwo0 at obio 2 csr 0xfb300000 priority 4	# <bw>
+device		bwtwo0 at obio 3 csr 0xfb300000 priority 4	# <bw>
+
+#
+#	PSEUDO DEVICES
+#
+pseudo-device   win128
+pseudo-device   dtop4
+pseudo-device   ms3
+pseudo-device	kb3

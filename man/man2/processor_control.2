@@ -1,0 +1,90 @@
+.TH processor_control 2 8/13/89
+.CM 4
+.SH NAME
+.nf
+processor_control  \-  do something to a processor
+processor_exit  \-  exit a processor
+processor_start  \-  start a processor
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t processor_start(processor)
+	processor_t		processor;
+
+
+.fi
+.ft P
+.nf
+.ft B
+kern_return_t processor_exit(processor)
+	processor_t		processor;
+
+
+.fi
+.ft P
+.nf
+.ft B
+kern_return_t processor_control(processor, cmd, count)
+	processor_t		processor;
+	int			*cmd;  /* array of ints */
+	int			count; 
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+.B processor
+Specifies the processor.
+.TP 15
+.B
+.B cmd
+Contains the command to be applied to the processor.
+.TP 15
+.B
+.B count
+Specifies the length of the command as a number of ints.
+
+.SH DESCRIPTION
+Some multiprocessors may allow privileged software to control processors.
+The
+.B processor_start, processor_exit
+, and 
+.B processor_control
+operations implement this.  The interpretation of the command in
+.B cmd
+is machine dependent.  A newly started processor is assigned to the
+default processor set.  An exited processor is removed from the
+processor set to which it was assigned and ceases to be active.
+
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The operation was performed.
+.TP 25
+KERN_FAILURE
+The operation was not performed.  A likely reason is that it
+is not supported on this processor.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B processor
+is not a processor.
+.TP 25
+KERN_INVALID_ADDRESS
+.B data
+points to inaccessible memory.
+
+.SH SEE ALSO
+.B processor_info, host_processors
+
+.SH BUGS
+Availability limited.
+All of these operations are machine-dependent.  They may do nothing.
+The ability to restart an exited processor is also machine-dependent.
+

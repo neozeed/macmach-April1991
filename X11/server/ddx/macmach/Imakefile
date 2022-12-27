@@ -1,0 +1,40 @@
+#define PassCDebugFlags 'CDEBUGFLAGS=$(CDEBUGFLAGS)'
+
+SRCS =	\
+	macmachInit.c \
+	macmachColor.c \
+	macmachMono.c \
+	macmachIo.c \
+	macmachKbd.c \
+	macmachMouse.c \
+	macmachUtils.c \
+	macmachKMap.c \
+	macmachVideo.c
+
+OFILES = macmachInit.o 
+
+OBJS = \
+	macmachColor.o \
+	macmachMono.o \
+	macmachIo.o \
+	macmachKbd.o \
+	macmachMouse.o \
+	macmachUtils.o \
+	macmachKMap.o \
+	macmachVideo.o
+
+STD_DEFINES = ServerDefines
+CDEBUGFLAGS = ServerCDebugFlags
+   INCLUDES = -I.  -I../../include -I../mfb -I../mi -I../../dix -I$(INCLUDESRC)
+   LINTLIBS = ../../dix/llib-ldix.ln ../../os/4.2bsd/llib-los.ln \
+	      ../mfb/llib-lmfb.ln ../mi/llib-lmi.ln ../cfb/llib-lcfb.ln
+
+NormalLibraryObjectRule()
+
+all:: $(OFILES)
+
+NormalLibraryTarget(macmach,$(OBJS))
+NormalLintTarget($(SRCS))
+DependTarget()
+InstallManPage(Xmacmach,$(MANDIR))
+

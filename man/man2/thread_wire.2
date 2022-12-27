@@ -1,0 +1,73 @@
+.TH thread_wire 2 1/20/90
+.CM 4
+.SH NAME
+.nf
+thread_wire  \-  control swappability of threads
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t thread_wire(host_priv, thread, wired)
+	host_priv_t	host_priv;
+	thread_t	thread;
+	boolean_t	wired;
+	
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+host_priv
+The privileged host port for the thread's host.
+.TP 15
+.B
+thread
+The thread to be affected
+.TP 15
+.B
+wired
+Make thread unswappable if TRUE, swappable if FALSE.
+
+.SH DESCRIPTION
+
+.B thread_wire
+allows privileged to restrict the swappability of threads.  A unswappable
+thread has its kernel stack wired (made non-pageable) so it
+cannot be swapped out.  This counts against the limit of wired memory
+maintained by the kernel (see 
+.B vm_wire
+).  The number of pages
+that is consumed can be obtained from 
+.B vm_wire_statistics
+.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded
+.TP 25
+KERN_INVALID_ARGUMENT
+.B host_priv
+is not the privileged host port for
+.B thread
+'s host, or 
+.B thread
+is not a thread.
+.TP 25
+KERN_RESOURCE_SHORTAGE
+Some kernel resource limit, most likely that on the
+amount of memory that can be wired down, has been exceeded.
+
+.SH BUGS
+Statistics interface to obtain wire limit and count against that limit 
+(
+.B vm_wire_statistics
+) not available yet.  Availability limited.  
+
+.SH SEE ALSO
+.B vm_wire, vm_wire_statistics, host_priv_self
+

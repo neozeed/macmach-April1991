@@ -1,0 +1,100 @@
+.TH vm_protect 2 9/19/86
+.CM 4
+.SH NAME
+.nf
+vm_protect  \-  change protection of task's memory
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t vm_protect(target_task, address, size, set_maximum,
+				new_protection)
+	vm_task_t	target_task;
+	vm_address_t	address;
+	vm_size_t	size;
+	boolean_t	set_maximum;
+	vm_prot_t	new_protection;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+target_task
+Task whose virtual memory is to be affected.
+.TP 15
+.B
+address
+Starting address (will be rounded down to a
+page boundary).
+.TP 15
+.B
+size
+Size in bytes of the region for which protection
+is to change (will be rounded up to give a page boundary).
+.TP 15
+.B
+set_maximum
+If set, make the protection change apply to the 
+maximum protection associated with this address range;
+otherwise, the current protection on this
+range is changed.  If the maximum protection is reduced below the
+current protection, both will be changed to reflect the new maximum.
+.TP 15
+.B
+new_protection
+A new protection value for this region; a set of:
+.B VM_PROT_READ
+, 
+.B VM_PROT_WRITE
+,
+.B VM_PROT_EXECUTE
+.
+
+.SH DESCRIPTION
+.B vm_protect
+sets the virtual memory access privileges for a
+range of allocated addresses in a task's virtual address space.
+The protection argument describes a combination of read, write,
+and execute accesses that should be 
+.B permitted
+.
+
+The enforcement of virtual memory protection is machine-dependent.
+Some combinations of access rights may not be supported.  In
+particular, the kernel interface allows any of the following:
+write permission may imply read permission;
+read permission may imply execute permission; or,
+execute permission may imply read permission.
+
+All architectures must support the following access combinations:
+all (read, write, and execute) access;
+write-protected (read and execute) access;
+no access.
+
+For the Vax, RT/PC, and Sun3, all three of the reductions stated above apply.
+That is:  
+.B VM_PROT_WRITE
+allows read, execute and write access,
+.B VM_PROT_READ
+or 
+.B VM_PROT_EXECUTE
+allows read and execute access, but
+not write access.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+Memory protected.
+.TP 25
+KERN_PROTECTION_FAILURE
+An attempt was made to increase the current 
+or maximum protection beyond the existing maximum protection value.
+.TP 25
+KERN_INVALID_ADDRESS
+Illegal or non-allocated address specified.
+

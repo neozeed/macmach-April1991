@@ -1,0 +1,1 @@
+../../gcc-1.39/config/tm-hp9k320g.h

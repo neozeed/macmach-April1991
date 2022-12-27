@@ -1,0 +1,21 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#
+#
+# HISTORY
+# $Log:	devices.vax,v $
+# Revision 2.2  89/02/25  17:40:33  gm0w
+# 	Changes for cleanup.
+# 
+
+hp	0
+up	2
+hk	3
+rk	3
+ra	9
+rb	11
+rx	12
+rl	14

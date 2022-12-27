@@ -1,0 +1,33 @@
+.\"
+.\" Mach Operating System
+.\" Copyright (c) 1989 Carnegie-Mellon University
+.\" All rights reserved.  The CMU software License Agreement specifies
+.\" the terms and conditions for use and redistribution.
+.\"
+.\" HISTORY
+.\" $Log:	fix-copyright.man,v $
+.\" Revision 2.2  89/04/08  23:32:21  rpd
+.\" 	Created.
+.\" 	[89/03/14  21:22:41  rpd]
+.\" 
+.TH  FIX-COPYRIGHT  1 3/14/89
+.CM 4
+.SH NAME
+fix-copyright \- standardize Mach copyright
+.SH SYNOPSIS
+\fBfix-copyright\fR [year] < input > output
+.SH DESCRIPTION
+\fIfix-copyright(1)\fR standardizes the Mach copyright
+in kernel source files.  It is a pure filter, reading from
+stdin and writing to stdout.
+.PP
+\fIfix-copyright\fR converts old-style Mach copyrights to
+new-style copyrights.  It also adds appropriate additional
+lines, depending on the year.  The year may be specified
+on the command line (in four-digit form:  1999, for example)
+or it will default to the current year as returned by \fIdate(1)\fR.
+\fIfix-copyright\fR deduces the file's comment leader.  If
+the file doesn't already have a Mach copyright, \fIfix-copyright\fR
+doesn't add one.
+.SH "SEE ALSO"
+fix-includes(1), fix-log(1), fix-protection(1), date(1)

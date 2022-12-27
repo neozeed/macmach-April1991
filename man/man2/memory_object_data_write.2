@@ -1,0 +1,71 @@
+.TH memory_object_data_write 2 12/19/89
+.CM 4
+.SH NAME
+.nf
+memory_object_data_write  \-  write data to paging object
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t	memory_object_data_write(memory_object, memory_control, 
+				offset, data, data_count)
+	memory_object_t	memory_object;
+	memory_object_control_t
+			memory_control;
+	vm_offset_t	offset;
+	pointer_t	data;
+	unsigned int	data_count;
+
+
+.fi
+.ft P
+.SH DESCRIPTION
+.B memory_object_data_write
+provides the memory manager with data that has been
+modified while cached in physical memory.  Once the memory manager no longer
+needs this data (e.g., it has been written to another storage medium),
+it should be deallocated using 
+.B vm_deallocate
+.
+
+.SH ARGUMENTS
+.TP 15
+.B
+.B memory_object
+The port that represents the memory object data, as 
+supplied to the kernel in a 
+.B vm_map
+call.
+.TP 15
+.B
+.B memory_control
+The request port to which a response is 
+requested.  [In the event that a memory object has been supplied 
+to more than one the kernel that has made the request.]
+.TP 15
+.B
+.B offset
+The offset within a memory object to which this call refers.
+This will be page aligned.
+.TP 15
+.B
+.B data
+Data which has been modified while cached in physical memory.
+.TP 15
+.B
+.B data_count
+The amount of data to be written, in bytes.
+This will be an integral number of memory object pages.
+
+.SH DIAGNOSTICS
+.TP 25
+.B KERN_SUCCESS
+Since this routine is called by the kernel, which does not
+wait for a reply message, this value is ignored.
+
+.SH SEE ALSO
+.B vm_deallocate
+

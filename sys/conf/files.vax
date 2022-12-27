@@ -1,0 +1,230 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#
+#
+# HISTORY
+# $Log:	files.vax,v $
+# Revision 2.10  89/10/11  13:59:28  dlb
+# 	Add vax/vax_ast.c - remote ast stubs.
+# 	Add vax/cpu.c - multiprocessor control stubs.
+# 
+# Revision 2.9  89/03/09  05:42:56  rpd
+# 	Dropped the mach_time option.  Added entries for vax/pup_cksum.c,
+# 	vaxif/if_ix.c, vaxif/if_qn.c, vaxuba/np.c.  Removed entries for
+# 	vax/utime.c, vaxuba/cmulp.c, vaxuba/drc.c, vaxuba/gpib.c,
+# 	vaxuba/ib.c.  Moved entries for UNTESTED devices/files to the end.
+# 
+# Revision 2.8  89/02/25  17:41:28  gm0w
+# 	Changes for cleanup.
+# 
+# Revision 2.7  88/12/19  02:41:18  mwyoung
+# 	Coalesce mach_exception into mach.
+# 	[88/12/14            mwyoung]
+# 
+# Revision 2.6  88/11/14  14:32:22  gm0w
+# 	Added dialupip sources.
+# 	[88/10/25            gm0w]
+# 
+# Revision 2.5  88/08/09  17:59:16  rvb
+# Add vax/vaxmp.c for multiprocessor support.
+# Bi configuration is now in a separate file, biconf.
+# make files to support processor types.
+# 
+# Move "vaxfloat.s" into the build directory.
+#
+# 18-Apr-88  Steve Schwab (schwab) at Carnegie-Mellon University
+#	Add if_ni.c for DEBNA == bi ethernet
+#
+#  8-Apr-88  Robert Baron (rvb) at Carnegie-Mellon University
+#	Added vax/kax.c and vax/cca.c.
+#
+# 16-Feb-88  David Golub (dbg) at Carnegie-Mellon University
+#	Made qvfont.c conditional on either 'qv' or 'qd' to permit
+#	non-Ultrix licensees (who cannot get qvfont) to compile kernels.
+#
+# 24-Dec-87  David Golub (dbg) at Carnegie-Mellon University
+#	Added vax_exception.c for MACH_EXCEPTION support.
+#
+#  6-Nov-87  Robert V. Baron (rvb) at Carnegie-Mellon University
+#	Add vax/ka650.c for Mayfair support.
+#
+# 17-Sep-87  Mike Accetta (mja) at Carnegie-Mellon University
+#	Add "net_uda" option and "vax/mscp.c" file under "genmscp"
+#	pseudo- device to include new generic MSCP code from Chris
+#	Torek at UMD.
+#	[ V5.1(XF16) ]
+#
+# 29-May-87  Avadis Tevanian (avie) at Carnegie-Mellon University
+#	vax/nautilus.c added for VAX 8800 (Nautilus) support.
+#
+# 08-May-87  Mike Accetta (mja) at Carnegie-Mellon University
+#	Installed KDB modules and sorted entire list (watch out
+#	for begin/end emul/ modules which must stay out of
+#	order).
+#	[ V5.1(XF11) ]
+#
+# 22-Apr-87  Mike Accetta (mja) at Carnegie-Mellon University
+#	Made qvfont.c standard rather than optional on both "qv" and
+#	"qd" to permit configuration of systems with only QVSS or QDSS
+#	(otherwise both must be configured to include this file).
+#	[ V5.1(F10) ]
+#
+
+OPTIONS/net_uda		optional net_uda
+OPTIONS/ultrix_tmcsp	optional ultrix_tmscp
+dialupip/dialup.c	optional du
+dialupip/if_du.c	optional du
+emul/vaxbegin.s		optional emul
+emul/vaxarith.s		optional emul
+emul/vaxashp.s		optional emul
+emul/vaxconvrt.s	optional emul
+emul/vaxcvtlp.s		optional emul
+emul/vaxcvtpl.s		optional emul
+emul/vaxdeciml.s	optional emul
+emul/vaxeditpc.s	optional emul
+emul/vaxemulat.s	optional emul
+emul/vaxexception.s	optional emul
+./vaxfloat.s		optional emul
+emul/vaxhandlr.s	optional emul
+emul/vaxstring.s	optional emul
+emul/vaxend.s		optional emul
+vax/autoconf.c		standard device-driver
+vax/bi.c		optional bi device-driver
+vax/clock.c		standard
+vax/conf.c		standard
+vax/cons.c		standard
+vax/cpu.c		standard
+vax/cpudata.c		standard
+vax/crl.c		standard
+vax/dfloat.s		standard
+vax/dkbad.c		standard
+vax/dis/dis_opset.c	optional mach_db
+vax/dis/dis_extra.c	optional mach_db
+vax/emulate.s		optional not emul
+vax/flp.c		standard
+vax/in_cksum.c		optional inet
+vax/ka630.c		standard
+vax/ka650.c		standard
+vax/kdb.c		optional mach_kdb
+vax/kdb/access.c	optional mach_kdb
+vax/kdb/command.c	optional mach_kdb
+vax/kdb/expr.c		optional mach_kdb
+vax/kdb/format.c	optional mach_kdb
+vax/kdb/input.c		optional mach_kdb
+vax/kdb/kdb_main.c	optional mach_kdb
+vax/kdb/message.c	optional mach_kdb
+vax/kdb/opset.c		optional mach_kdb
+vax/kdb/optab.c		optional mach_kdb
+vax/kdb/output.c	optional mach_kdb
+vax/kdb/pcs.c		optional mach_kdb
+vax/kdb/print.c		optional mach_kdb
+vax/kdb/runpcs.c	optional mach_kdb
+vax/kdb/setup.c		optional mach_kdb
+vax/kdb/stack.c		optional mach_kdb
+vax/kdb/sym.c		optional mach_kdb
+vax/ma780.c		optional mach_mpm
+vax/ma780subrs.c	optional mach_mpm
+vax/machdep.c		standard
+vax/mdb_dis.c		optional mach_db
+vax/mdb_hole.s		optional mach_db
+vax/mdb_stack.c		optional mach_db
+vax/mem.c		standard
+vax/mscp.c		optional genmscp
+vax/ns_cksum.c		optional ns
+vax/pcb.c		standard
+vax/phys.s		standard
+vax/pmap.c		standard
+vax/rxcd.s		optional bi
+vax/sys_machdep.c	standard
+vax/thread_bootstrap.s	standard
+vax/trap.c		standard
+vax/tu.c		standard
+vax/udiv.s		standard
+vax/ufs_machdep.c	standard
+vax/urem.s		standard
+vax/vax_ast.c		standard
+vax/vax_init.c		standard
+vax/vax_exception.c	standard
+vax/vm_machdep.c	standard
+vax/watch_chip.c	standard
+vaxif/enet.c		optional enet
+vaxif/if_de.c		optional de device-driver
+vaxif/if_en.c		optional en device-driver
+vaxif/if_il.c		optional il device-driver
+vaxif/if_ni.c		optional ni device-driver
+vaxif/if_qe.c		optional qe device-driver
+vaxif/if_uba.c		optional bbnnet device-driver
+vaxif/if_uba.c		optional inet device-driver
+vaxif/if_uba.c		optional ns device-driver
+vaxnb/biconf.c		optional bi device-driver
+vaxnb/cca.c		standard
+vaxnb/ka62a.c		standard
+vaxnb/ka820.c		standard
+vaxnb/ka88.c		standard
+vaxnb/vaxmp.c		standard
+vaxmba/hp.c		optional hp device-driver
+vaxmba/ht.c		optional tu device-driver
+vaxmba/mba.c		optional mba device-driver
+vaxuba/dhu.c		optional dhu device-driver
+vaxuba/dmf.c		optional dmf device-driver
+vaxuba/dmz.c		optional dmz device-driver
+vaxuba/dr.c		optional dr device-driver
+vaxuba/drb.c		optional drb device-driver
+vaxuba/ds.c		optional ds device-driver
+vaxuba/dz.c		optional dz device-driver
+vaxuba/fps.c		optional fps device-driver
+vaxuba/gmr.c		optional gmr device-driver
+vaxuba/ip.c		optional ip device-driver
+vaxuba/qd.c		optional qd device-driver
+vaxuba/qv.c		optional qv device-driver
+vaxuba/qvfont.c		optional qd device-driver
+vaxuba/qvfont.c		optional qv device-driver
+vaxuba/rk.c		optional rk device-driver
+vaxuba/tmscp.c		optional tms device-driver
+vaxuba/ts.c		optional ts device-driver
+vaxuba/uba.c		optional uba device-driver
+vaxuba/uda.c		optional ra device-driver
+vaxuba/ut.c		optional tj device-driver
+vaxuba/vp.c		optional vp device-driver
+#
+# Unsupported devices/files.
+#
+vax/gfb.c		optional gfb device-driver
+vax/pup_cksum.c		optional pup
+vaxif/if_acc.c		optional acc imp device-driver
+vaxif/if_css.c		optional css imp device-driver
+vaxif/if_ddn.c		optional ddn device-driver
+vaxif/if_dmc.c		optional dmc device-driver
+vaxif/if_ec.c		optional ec device-driver
+vaxif/if_ex.c		optional ex device-driver
+vaxif/if_hdh.c		optional hdh device-driver
+vaxif/if_hy.c		optional hy device-driver
+vaxif/if_ix.c		optional np device-driver
+vaxif/if_pcl.c		optional pcl device-driver
+vaxif/if_qn.c		optional qn device-driver
+vaxif/if_vv.c		optional vv device-driver
+vaxif/raw_hy.c		optional hy device-driver
+vaxmba/mt.c		optional mu device-driver
+vaxuba/ad.c		optional ad device-driver
+vaxuba/ct.c		optional ct device-driver
+vaxuba/dh.c		optional dh device-driver
+vaxuba/dn.c		optional dn device-driver
+vaxuba/drv.c		optional drv device-driver
+vaxuba/dzq.c		optional dzq device-driver
+vaxuba/idc.c		optional rb device-driver
+vaxuba/ik.c		optional ik device-driver
+vaxuba/kgclock.c	optional kg device-driver
+vaxuba/lp.c		optional lp device-driver
+vaxuba/lpa.c		optional lpa device-driver
+vaxuba/np.c		optional np device-driver
+vaxuba/ps.c		optional ps device-driver
+vaxuba/rl.c		optional rl device-driver
+vaxuba/rx.c		optional rx device-driver
+vaxuba/tm.c		optional te device-driver
+vaxuba/up.c		optional up device-driver
+vaxuba/uu.c		optional uu device-driver
+vaxuba/va.c		optional va device-driver
+vaxuba/vs.c		optional vs device-driver

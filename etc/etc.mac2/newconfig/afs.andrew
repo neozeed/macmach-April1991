@@ -1,0 +1,102 @@
+#! /bin/sh
+
+# afs.andrew, version 02
+
+# shell script for AFS installation of a MacMach ANDREW Workstation
+
+# NOTE THAT THE SOURCE ROOT IS DIFFERENT FROM THAT USED BY THE AFS.MACMACH
+# SCRIPT AND THAT THE FORMAT FOR /.HOSTNAME IS DIFFERENT FOR AN ANDREW
+# WORKSTATION USING ANDREW VERSION OF /ETC/RC
+
+# First, /.hostname and /etc/fstab and /etc/package.proto are created.
+# Next, package is used to copy all files to the destination.
+
+if [ "$#" != 5 -a "$#" != 0 ] ; then
+   echo "usage: afs.andrew [ <addr> <gateway> <scsi id> <dest root> <source root> ]"
+   exit 1
+fi
+
+ADDR="$1"
+GATEWAY="$2"
+SCSIID="$3"
+DESTDIR="$4"
+SOURCE="$5"
+
+echo "AFS MacMach Andrew System Installation"
+[ "$ADDR" ] || { echo -n "Enter network address: "; read ADDR; }
+[ "$GATEWAY" ] || { echo -n "Enter network gateway address: "; read GATEWAY; }
+[ "$SCSIID" ] || { echo -n "Enter disk scsi id: "; read SCSIID; }
+[ "$DESTDIR" ] || { echo -n "Enter destination root: "; read DESTDIR; }
+[ "$SOURCE" ] || { echo -n "Enter source root: "; read SOURCE; }
+
+# NOTE: the GATEWAY is not used here
+
+COMMON="/afs/andrew/common/etc"
+OS="$SOURCE/os"
+LOCAL="$SOURCE/local"
+PROTO="$OS/etc/newconfig/macmach.proto"
+
+echo ""
+echo "SOURCE  = $SOURCE"
+echo "ADDR    = $ADDR"
+echo "GATEWAY = $GATEWAY"
+echo "SCSIID  = $SCSIID"
+echo "DESTDIR = $DESTDIR"
+echo "COMMON  = $COMMON"
+echo "OS      = $OS"
+echo "LOCAL   = $LOCAL"
+echo "PROTO   = $PROTO"
+
+echo ""
+echo "Creating $DESTDIR/.hostname for address $ADDR"
+# translate the IP address into the primary hostname
+# and put it in the .hostname file in the root directory.
+rm -f $DESTDIR/.hostname
+$OS/bin/sed -n \
+    -e "/$ADDR/s/[ 	][ 	]*/ /g"   \
+    -e "/$ADDR/s/^[^ ]* \([^ ]*\).*/\1/p" \
+  <$COMMON/hosts | while read NAME; do echo "$NAME" >$DESTDIR/.hostname; done
+[ -r $DESTDIR/.hostname ] || {
+  echo "ERROR: Network address \"$ADDR\" is not in $COMMON/hosts"
+  echo "Contact Data Comm (x2635) to report the problem."
+  exit 1
+}
+
+mkdir $DESTDIR/etc
+
+echo ""
+echo "Creating $DESTDIR/etc/package.proto"
+cp $PROTO $DESTDIR/etc/package.proto
+
+echo ""
+echo "Creating $DESTDIR/etc/fstab for disk $SCSIID"
+echo /dev/sd$SCSIID"a:/:rw:0:1" > $DESTDIR/etc/fstab 
+echo /dev/sd$SCSIID"g:/usr:rw:0:2" >> $DESTDIR/etc/fstab
+chmod 444 $DESTDIR/etc/fstab
+
+# make sure PACKAGE can change cacheinfo file
+[ -f $DESTDIR/usr/vice/etc/cacheinfo ] &&
+  chmod 644 $DESTDIR/usr/vice/etc/cacheinfo
+
+echo ""
+echo "Using PACKAGE to copy system files to $DESTDIR."
+echo "This will take about 5 minutes..."
+[ -f /etc/group ] || ln -s $COMMON/group /etc/group
+[ -f /etc/passwd ] || ln -s $COMMON/passwd /etc/passwd
+[ -f /etc/hosts ] || ln -s $COMMON/hosts /etc/hosts
+# sed script
+#     1st line: turn all sequences of spaces and tabs into a single space
+#     2nd line: turn relative paths into absolute paths
+#     3rd line: make all destinations start with $DESTDIR
+( echo D / ; \
+  $LOCAL/bin/mpp -Dsys=mac2_01 $PROTO | $OS/bin/sed \
+    -e 's;[ 	][ 	]*; ;g' \
+    -e 's;^\([FL]\)\([^A ]*\) /\([^ ]*\) /\([^ ]*\);\1A\2 /\3 /\4/\3;' \
+    -e 's;^\([SFLCBD][^ ]*\) /;\1 '"$DESTDIR/;" \
+) >$DESTDIR/etc/package.mac2_01
+$LOCAL/etc/package -v -c $DESTDIR/etc/package
+
+sync
+echo ""
+echo "AFS ANDREW Installation complete."
+exit 0

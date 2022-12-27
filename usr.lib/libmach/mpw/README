@@ -1,0 +1,10 @@
+These are the MACH sources needed to make and use libmach.o under MPW.
+
+MacMach version 01; bsd4.3-tahoe; Mach/2.6 #5.1(X129); CMU-MACMACH 013
+
+To use, move everything in include to interfaces:CIncludes.
+Use the libmach.o.make to compile a libmach.o library.
+Move libmach.o to Libraries:Libraries.
+
+Compile your application with: -d mac2 -d MacOS -d MacOS_DRVR
+Link your application the "{Libraries}"libmach.o library.

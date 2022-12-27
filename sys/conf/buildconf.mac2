@@ -1,0 +1,15 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#
+#
+# HISTORY
+# $Log:	buildconf.mac2,v $
+# Revision 2.2  90/08/30  12:05:11  bohman
+# 	Created.
+# 	[90/08/28            bohman]
+# 
+
+MACMACH-macos_emul

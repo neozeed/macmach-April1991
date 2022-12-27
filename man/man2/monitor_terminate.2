@@ -1,0 +1,48 @@
+.TH monitor_terminate 2 1/11/90
+.CM 4
+.SH NAME
+.nf
+monitor_terminate  \-  destroys specified monitor
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+#include <mach/kernel_event.h>
+
+.nf
+.ft B
+kern_return_t monitor_terminate(target_monitor)
+	monitor_t	target_monitor;	
+
+
+
+.fi
+.ft P
+.SH DESCRIPTION
+.B monitor_terminate
+destroys the monitor specified by 
+.B target_monitor
+.
+
+.SH ARGUMENTS
+.TP 15
+.B
+target_monitor
+The monitor to be destroyed.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The monitor has been destroyed.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B target_monitor
+is not a valid monitor or its monitor port
+no longer exists.
+
+.SH SEE ALSO
+.B monitor_create, monitor_resume, monitor_suspend,
+.B monitor_read, thread_monitor, thread_unmonitor, monitor
+
+
+

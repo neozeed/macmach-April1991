@@ -1,0 +1,136 @@
+#
+# Mach Operating System
+# Copyright (c) 1988 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement
+# specifies the terms and conditions for use and redistribution.
+#  
+# HISTORY
+# $Log:	MASTER.mips,v $
+# Revision 2.11  90/08/08  17:16:17  mrt
+# 	Added 3max support (kmax3 option).
+# 	Added pmap pagetable cache option.
+# 	[90/05/20  13:49:21  af]
+# 
+# 	Enabled fast_csw by default.
+# 	[90/03/15  13:17:00  af]
+# 
+# Revision 2.10  90/07/05  11:27:55  mrt
+# 	Removed EXP from all the configurations. If you want EXP build 
+# 	with +EXP. Left pm included.
+# 	[90/07/05            mrt]
+# 
+# Revision 2.9  90/07/03  16:36:23  mrt
+# 	Added configuration symbol CODA for the Coda file system.
+# 	[90/06/04            dcs]
+# 
+# Revision 2.8  90/03/08  23:37:03  af
+# 	Ooops, restored EXP to get emulation & co.
+# 
+# Revision 2.7  90/03/08  23:10:45  af
+# 	Cleaned up a bit now that I understand how this thing works.
+# 	Broke name clash on 'pm', kept pagemap code enabled since it
+# 	seems to work.
+# 	[90/03/08  22:48:15  af]
+# 
+# Revision 2.6  89/10/19  13:14:06  af
+# 	Made assembly silent. Removed some unused crap.
+# 	[89/10/16  15:36:38  af]
+# 
+# Revision 2.5  89/09/25  22:20:20  mja
+# 	Add standard ANY, WS and MF macros (same as PMAX for now).
+# 	[89/09/22  18:00:07  mja]
+# 
+# Revision 2.4  89/05/30  17:04:56  rvb
+# 	Add PMAX.
+# 
+#
+# ------------------------------------------------------------------
+# | Copyright Unpublished, MIPS Computer Systems, Inc.  All Rights |
+# | Reserved.  This software contains proprietary and confidential |
+# | information of MIPS and its suppliers.  Use, disclosure or     |
+# | reproduction is prohibited without the prior express written   |
+# | consent of MIPS.                                               |
+# ------------------------------------------------------------------
+
+#	ANY	= [ XXX pmax dc7985 i14818clock ln pmdev scsi kmax3 ]
+#	WS	= [ XXX pmax dc7985 i14818clock ln pmdev scsi kmax3 ]
+#	MF	= [ XXX pmax dc7985 i14818clock ln pmdev scsi kmax3 ]
+#
+#	MSERIES	= [ XXX mseries s2681cons i8254clock dkip cp ts tth enp ]
+#	PMAX	= [ XXX pmax dc7985 i14818clock ln pmdev scsi kmax3 ]
+#
+#	XXX	= [ pm fast_csw pmap_pcache]
+#
+### Support for the Coda File System
+#
+#	CODA	= [ cfs ipmcast ]
+#
+
+machine		mips
+
+# Mseries boxes
+cpu		"R2300"						# <mseries>
+ident		"MSERIES"					# <mseries>
+makeoptions	ENDIAN="-EB"					# <mseries>
+config		vmunix	root dkip0a swap dkip0b and dkip1b and dkip2b and dkip3b# <mseries>
+
+# DEC boxes
+options		PMAX						# <pmax>
+options		KMAX3						# <kmax3>
+cpu		"R2000a"					# <pmax>
+makeoptions	ENDIAN="-EL"					# <pmax>
+config		vmunix		swap generic			# <pmax>
+
+# Generic options
+
+options		REF_BITS					# <ref_bits>
+options		COMPACTED					# <mod_bits>
+options		COUNTERS					# <measure>
+options		PMAP_PCACHE					# <pmap_pcache>
+
+# Make options
+
+makeoptions	GPSIZE=32
+makeoptions	CC="cc"
+makeoptions	LD="ld"
+makeoptions	SIZE="size"
+makeoptions	CCOPTS="-O2"
+makeoptions	ASOPTS="-w"
+
+#
+#		M_SERIES DEVICES
+#
+pseudo-device	mseries						# <mseries>
+controller	vme0	at nexus ?				# <mseries>
+controller	dkipc0	at vme?	csr 0x8600 am 0x2d vector dkipintr dkipscintr	# <dkip>
+disk		dkip0	at dkipc0 drive 0			# <dkip>
+disk		dkip1	at dkipc0 drive 1			# <dkip>
+controller	dkipc1	at vme?	csr 0x8800 am 0x2d vector dkipintr dkipscintr	# <dkip>
+disk		dkip2	at dkipc1 drive 0			# <dkip>
+disk		dkip3	at dkipc1 drive 1			# <dkip>
+device		cp0	at vme?	csr 0xfff520 am 0x3d		vector cpintr	# <cp>
+device		cp1	at vme?	csr 0xfff580 am 0x3d		vector cpintr	# <cp>
+controller	ts0	at vme? csr 0xfff550 am 0x3d		vector tsintr	# <ts>
+device		tp0	at ts0 drive 0				# <ts>
+controller	tthc0	at vme? csr 0x8500 am 0x2d		vector tthintr	# <tth>
+device		tthu0	at tthc0 drive 0			# <tth>
+# CMC goes last because it can interrupt as soon as it is attached
+# and foul-up auto-config for devices that follow it in the tables
+device		enp0	at vme?	csr 0xde0000 am 0x3d		vector enpintr	# <enp>
+device		enp1	at vme?	csr 0xe00000 am 0x3d		vector enpintr	# <enp>
+
+pseudo-device	vme						# <mseries>
+pseudo-device	"s2681cons"					# <mseries>
+pseudo-device	"i8254clock"					# <mseries>
+
+#
+#		PMAX DEVICES
+#
+pseudo-device	pmax						# <pmax>
+pseudo-device	kmax3						# <kmax3>
+pseudo-device	"dc7085cons"					# <pmax>
+pseudo-device	"i146818clock"					# <pmax>
+pseudo-device	ln						# <pmax>
+pseudo-device	memd						# <pmax>
+pseudo-device	pmdev						# <pmax>
+pseudo-device	scsi						# <pmax>

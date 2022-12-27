@@ -1,0 +1,111 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#  
+#
+# HISTORY
+# $Log:	MASTER.i386,v $
+# Revision 2.9  89/09/25  15:46:36  rvb
+# 	fp defaults off for now.
+# 	[89/09/25            rvb]
+# 
+# Revision 2.8  89/09/25  12:20:05  rvb
+# 	fp configurable and qt -> wt
+# 	[89/09/23            rvb]
+# 
+# Revision 2.7  89/09/20  17:26:12  rvb
+# 	Don't optimize during compiles for now.
+# 	[89/09/20            rvb]
+# 
+# Revision 2.6  89/09/09  15:19:02  rvb
+# 	Allow blit device and make more devices configureable
+# 	[89/09/07            rvb]
+# 
+# Revision 2.5  89/07/17  10:34:36  rvb
+# 	New Devices: pccom and qd.
+# 	[89/07/10            rvb]
+# 
+# Revision 2.4  89/04/05  12:57:04  rvb
+# 	Must define AT386 now in X78
+# 	Add <gcc> stuff.
+# 	[89/03/04            rvb]
+# 
+# Revision 2.3  89/02/25  17:37:51  gm0w
+# 	Changes for cleanup.
+# 
+# Revision 2.2  89/01/23  22:11:06  af
+#	Created.
+#	
+#
+#  Master I386 configuration file (see the master machine independent
+#  configuration file for a description of the file format).
+#
+#	
+#	#####################################################################
+#	
+#	  I386 (PSEUDO-)DEVICES (select any combination)
+#	
+#	  CPU TYPE (select exactly one)
+#	AT	at bus
+#	MBII	multibus II bus
+#	
+#	#####################################################################
+#	
+#	  Standard Mach Research Configurations:
+#	  -------- ---- -------- ---------------
+#	
+#	  BOOT	    = [ hd bsmall ]
+#
+#	  STD	    = [ blit com hd fd pc586 qd wt ]
+#	
+#	  MACH     = [ en ]
+#	
+#	#####################################################################
+#	[89/01/16  16:57:08  af]
+#
+
+machine		"i386"		# <at,exl>
+cpu		"AT386"		# <at>
+options		"AT386"		# <at>
+cpu		EXL		# <exl>
+options		EXL		# <exl>
+
+config		mach		swap generic
+
+options 	MACH_LOAD	# 
+
+#
+#  Devices
+#
+pseudo-device	blit		# <blit>
+device		hd0		# <hd>
+device		fd0		# <fd>
+pseudo-device	fp		# <fp>
+pseudo-device	"pc586"		# <pc586>
+device		com0		# <com>
+device		com1		# <com>
+device		qd0		# <qd>
+device		qd1		# <qd>
+device		wt0		# <wt>
+
+
+#
+#  CMU/SU packet filter
+#
+pseudo-device	enet			# <en>
+
+
+#
+#	OVERRIDES FOR GCC
+#
+
+makevariables	CC="	fgcc"					# <gcc>
+makevariables	GAS="	gas"					# <gcc>
+makevariables	VOLATILE=					# <gcc>
+makevariables	FORCE_VOLATILE="-fvolatile "	 		# <gcc>
+makevariables	"C_RULE_1A"="${KCC} -c ${COPTS} -fno-function-cse " # <gcc>
+makevariables	"C_RULE_2"=					# <gcc>
+makevariables	"C_RULE_3"=					# <gcc>
+makevariables	"C_RULE_4"=					# <gcc>

@@ -1,0 +1,44 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#
+#
+# HISTORY
+# $Log:	buildconf.ca,v $
+# Revision 2.8  89/04/23  13:37:30  gm0w
+# 	Changed STD+WS-afs-nfs to STD+WS-afs-nfs+vice since we might
+# 	as well be building something usable as a test case...
+# 	[89/04/23            gm0w]
+# 
+# Revision 2.7  89/03/10  02:41:38  rpd
+# 	Added STD+WS-afs-nfs, so non-VFS code gets built regularly.
+# 
+# Revision 2.6  89/02/25  17:40:03  gm0w
+# 	Changes for cleanup.
+# 
+# Revision 2.5  88/11/14  15:04:19  gm0w
+# 	Added STD+ANY+EXP for Wales and Uther which
+# 	both have scsi drivers.
+# 	[88/11/02  15:31:50  mrt]
+# 
+# Revision 2.4  88/10/27  17:33:49  mrt
+# 	Changed the standard configurations to STD+WS and STD+ANY
+# 	Rename MACH+EXP to STD+WS+EXP
+# 	[88/10/27  17:10:13  mrt]
+# 
+# Revision 2.3  88/08/30  00:01:49  mwyoung
+# 	Add MACH+EXP so that common Mach features get compiled regularly.
+# 	[88/08/29            mwyoung]
+# 
+# 18-May-88  Mike Accetta (mja) at Carnegie-Mellon University
+#	Created.
+#	[ V5.1(XF25) ]
+#
+
+STD+WS = STD+ANY
+
+STD+WS+EXP = STD+ANY+EXP
+
+STD+WS-afs-nfs+vice

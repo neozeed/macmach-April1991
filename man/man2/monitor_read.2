@@ -1,0 +1,108 @@
+.TH monitor_read 2 1/11/90
+.CM 4
+.SH NAME
+.nf
+monitor_read  \-  reads events belonging to named monitor
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+#include <mach/kernel_event.h>
+
+/* only current interpretion of kernel_event */
+
+typedef
+struct 	kernel_event {	/* unit kernel event */
+     unsigned 	event_type;	 /* the type of kernel event  */
+     unsigned	first_element;	 /* the stopped thread 	      */
+     unsigned	second_element;  /* the started thread 	      */
+     unsigned	third_element;   /* flag and cpu number       */
+     unsigned 	hi_time;         /* hi time stamp 	      */
+     unsigned 	lo_time;         /* lo time stamp 	      */
+} kern_mon_event, *kern_mon_event_t, kern_mon_data_t, 
+  *kern_mon_buffer_t;
+
+.nf
+.ft B
+kern_return_t monitor_read(target_monitor, buffer, events_read)
+	monitor_t	 	target_monitor;
+    	kern_mon_buffer_t 	buffer;
+    	int			events_read;
+
+
+.fi
+.ft P
+.SH DESCRIPTION
+.B monitor_read
+returns events detected by 
+.B target_monitor
+into the
+.B buffer
+argument.  
+.B events_read
+is the number of events returned. 
+Each call to 
+.B monitor_read
+is limited to returning a maximum of 
+MONITOR_MIG_BUF_SIZE events, a limitation of MIG buffer size.  
+Buffer data is aligned around event boundaries but it is the 
+responsibility of user code to properly declare and allocate 
+.B buffer
+
+.SH ARGUMENTS
+.TP 15
+.B
+target_monitor
+The monitor for which events are being read.
+.TP 15
+.B
+buffer
+The user's buffer into which the events will be written.
+.TP 15
+.B
+events_read
+The number of events read by the call.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The monitor buffer was successfully read.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B target_monitor
+is not a monitor 
+or the monitor port is not valid.
+
+.SH BUGS
+A rule of thumb is that the greater the thread-to-processor ratio,
+.I t
+, of one's computation, the more context-switches there will be.
+Assume that when 
+.I t
+> 1.0, there will be ten context-switches per
+second.  In order to prevent the internal buffers from overflowing,
+.B monitor_read
+should be called at least once every
+.B MONITOR_MIG_BUF_SIZE
+/implementation is about every 30 seconds.  Or, if each time
+.B monitor_read
+is called it is immediately followed by repeated
+calls until the internal buffers are empty, these bursts of repeated
+calls should occur every every 
+.B B
+/(
+.B 10
+x
+.B sizeof(kern_mon_data_t
+)) seconds where 
+.B B
+is the size of the
+internal buffer in bytes.
+
+.SH SEE ALSO
+.B monitor_resume, monitor_terminate, monitor_suspend,
+.B monitor_read, thread_monitor, thread_unmonitor, monitor
+
+
+
+

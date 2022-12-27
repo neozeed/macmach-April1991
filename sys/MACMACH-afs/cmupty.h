@@ -1,0 +1,1 @@
+#define NCMUPTY 1

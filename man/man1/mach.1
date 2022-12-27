@@ -1,0 +1,74 @@
+.TH MACH_INTRO 1 1/19/87
+.CM 4
+.SH NAME
+mach \- introduction to Mach documentation
+.SH SYNOPSIS
+.nf
+.B man mach
+
+.SH DESCRIPTION
+Documentation for the Mach operating system can be found in two
+places: /usr/mach/man which contains the subdirectories for
+man pages and cat pages (pre-formatted man pages); and
+/usr/mach/doc which contains .ps and .doc files of various
+manuals. The source .mss files for these manuals are found
+in /usr/man/src/doc subdirectories. 
+.br
+.sp 1
+The manuals that are currently available in /usr/mach/doc are:
+.br
+.sp 1
+.B manual.ps
+is the Mach Kernel Interface Manual. It contains some brief 
+introductory material to Mach and documentation on the calling
+sequence, arguments and function of all the user calls to the 
+kernel. The c header files for these calls are in mach.h.
+.br
+.sp 1
+.B mach_bib.ps
+is a bibliography of Mach papers and docments.
+.br
+.sp 1
+.B Mig.ps 
+is the programmers manual for mig, the Mach Interface Generator.
+mig takes a specification of a message interface to a server and generates
+code to export a remote procedure call interface to the server. 
+.br
+.sp 1
+.B Threads.ps
+describes a C package for parallel programming which provides:
+.na
+   multiple threads of control for parallelism,
+   shared variables,
+   mutual exclusion for critical sections, and
+   condition variables for synchronization of threads.
+.br
+.sp 1
+.B envmgr.ps
+describes the Environment Manger, a server to allow the sharing
+of ports or variable betweens tasks.
+.br
+.sp 1
+.B machsys.ps
+A Programmer's Guide to the Mach System Calls is a tutorial document on how
+to program with at the kernel interface level.
+.br
+.sp 1
+.B machuse.ps
+A Programmer's Guide to the Mach User Environmnet is a tutorial document
+on how to program using the Mach environment.
+.br
+.sp 1
+.B netmsgserver.ps
+is a description of the implementation of the Network Server
+.br
+.SH FILES
+/usr/mach/man, man1, man2, man3, cat1, cat2, cat3
+.br
+/usr/mach/doc
+
+.SH HISTORY
+.TP
+25-Aug-86  Mary R. Thompson (mrt)
+Created man page.
+

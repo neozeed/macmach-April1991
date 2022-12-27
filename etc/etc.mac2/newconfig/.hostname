@@ -1,0 +1,8 @@
+# This is the system's name.
+HOSTNAME=MacMach
+
+# Set NETNAME to $HOSTNAME to enable external network access.
+NETNAME=""
+
+# This is the gateway IP address.
+GATEWAY=""

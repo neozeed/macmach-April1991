@@ -1,0 +1,57 @@
+.TH port_allocate 2 4/13/87
+.CM 4
+.SH NAME
+.nf
+port_allocate  \-  creates a port in a specified task
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t port_allocate(task, port_name)
+	task_t task;
+	port_name_t *port_name;		/* out */
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+task
+The task in which the new port is created.
+.TP 15
+.B
+port_name
+The task's name for the new port.
+
+.SH DESCRIPTION
+.B port_allocate
+causes a port to be created for the
+specified task; the resulting port's name is returned in 
+.B port_name
+.
+The target task initially has all three access rights to the port.
+If the caller is not the task specified by 
+.B task
+, then it does
+not have any rights to the port.
+The new port is not a member of any port set.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B task
+was invalid.
+.TP 25
+KERN_RESOURCE_SHORTAGE
+The kernel ran out of memory.
+
+.SH SEE ALSO
+.B port_deallocate
+

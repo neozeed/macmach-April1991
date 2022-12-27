@@ -1,0 +1,27 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#
+#
+# HISTORY
+# $Log:	MASTER.mips.local,v $
+# Revision 2.4  90/07/20  10:04:21  mrt
+# 	Included both kernel monitoring and CODA filesystem support
+# 	in EXP config.
+# 	[90/07/20            mrt]
+# 
+# Revision 2.3  89/02/25  17:38:19  gm0w
+# 	Changes for cleanup.
+# 
+# Revision 2.2  89/01/23  22:14:19  af
+#	.
+#
+# Revision 2.1.1.1  89/01/16  17:05:27  af
+#	Created empty.
+#
+#  Local configurations
+#
+#  EXP = [ km CODA ]
+#

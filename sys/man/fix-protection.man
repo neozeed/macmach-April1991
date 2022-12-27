@@ -1,0 +1,64 @@
+.\"
+.\" Mach Operating System
+.\" Copyright (c) 1989 Carnegie-Mellon University
+.\" All rights reserved.  The CMU software License Agreement specifies
+.\" the terms and conditions for use and redistribution.
+.\"
+.\" HISTORY
+.\" $Log:	fix-protection.man,v $
+.\" Revision 2.2  89/04/08  23:32:44  rpd
+.\" 	Created.
+.\" 	[89/03/14  21:24:05  rpd]
+.\" 
+.TH  FIX-PROTECTION  1 3/14/89
+.CM 4
+.SH NAME
+fix-protection \- add/modify header file protection
+.SH SYNOPSIS
+\fBfix-protection\fR symbol < input > output
+.SH DESCRIPTION
+\fIfix-protection(1)\fR modifies header files to protect
+against multiple inclusion.  It is a pure filter, reading from
+stdin and writing to stdout.
+.PP
+Header file protection is code like
+.PP
+.nf
+	#ifndef	SYMBOL
+	#define SYMBOL
+	/* code */
+	#endif	SYMBOL
+.fi
+.PP
+It protects the header file against being included multiple times.
+\fIfix-protection\fR adds protection to a header file if it isn't
+already protected, using for SYMBOL the command-line argument.
+If the header file is already protected, then \fIfix-protection\fR
+just changes SYMBOL to the command-line argument.
+.PP
+When adding protection, \fIfix-protection\fR tries to put it
+in a reasonable place.  This means after initial comments but
+before any real code.  If the input just contains comments, then
+\fIfix-protection\fR won't add any protection to it.
+.PP
+For kernel source files, the protection symbol is normally derived
+from the file name by converting the name to uppercase, converting
+/ (slash) and . (dot) to underscores, and adding leading and trailing
+underscores.  For example, sys/types.h uses_SYS_TYPES_H_ and
+mach/mach_types.defs uses _MACH_MACH_TYPES_DEFS_.
+.PP
+\fIfix-protection\fR returns an exit status of zero if everything looks OK,
+and non-zero if something is wrong.  (For example, the file contains
+a #if which isn't matched by a #endif, or contains existing protection
+with code following the protection's #endif.)
+.SH BUGS
+\fIfix-protection\fR doesn't properly recognize code following a comment's
+close, on the same line.  For example,
+.PP
+.nf
+	/*
+	 * comment
+	 */ int a = 0;
+.fi
+.SH "SEE ALSO"
+fix-copyright(1), fix-includes(1), fix-log(1)

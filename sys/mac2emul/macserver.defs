@@ -1,0 +1,133 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1991 Carnegie-Mellon University
+ * Copyright (c) 1990 Carnegie-Mellon University
+ * Copyright (c) 1989 Carnegie-Mellon University
+ * Copyright (c) 1988 Carnegie-Mellon University
+ * All rights reserved.  The CMU software License Agreement specifies
+ * the terms and conditions for use and redistribution.
+ */
+/*
+ * HISTORY
+ */
+
+/*
+ *	Apple Macintosh II Mach (macmach)
+ *
+ *	File: mac2emul/macserver.defs
+ *	Author: David E. Bohman II (CMU macmach)
+ */
+
+/*
+ * Interface definition for the
+ * mac kernel server.
+ */
+
+Subsystem mac 1;
+
+#include <mach/std_types.defs>
+#include <mach/mach_types.defs>
+
+import	<mac2emul/macserver_types.h>;
+
+/*
+ * Create internal data structures for
+ * the thread and return a request port
+ * for the rest of the routines.
+ */
+routine mac_create(
+		server_port	: port_t;
+		thread_port	: port_t;
+	out	request_port	: port_t);
+
+/*
+ * Provide the reset instruction vector, as well as
+ * the vectors & bitmaps specifying which OS
+ * and Toolbox traps are to be emulated from inside
+ * the macintosh task.  This call also  enables
+ * kernel-provided emulation services. This includes
+ * device emulation, simulated interrupt and exception
+ * handling, privileged instruction emulation, and kernel
+ * emulation of certain A-line traps.
+ */
+
+type	mac_os_map_t = array [ 256 / 8 ] of char;
+
+type	mac_tbox_map_t = array [ 1024 / 8 ] of char;
+
+routine mac_emulate(
+		request_port	: port_t;
+		reset_vector	: vm_address_t;
+		os_vector	: vm_address_t;
+		os_map		: mac_os_map_t;
+		tbox_vector	: vm_address_t;
+		tbox_map	: mac_tbox_map_t);
+
+/*
+ * Insert physical pages into the memory object
+ * at the specified offset.
+ */
+simpleroutine mac_phys_insert(
+			request_port	: port_t;
+			memory_object	: memory_object_t;
+			offset		: vm_offset_t;
+			size		: vm_size_t;
+			perm		: vm_prot_t;
+			physical	: vm_offset_t);
+		
+/*
+ * Setup the task address of the vector for
+ * a simulated interrrupt.
+ * N.B.: this is the address of the vector,
+ * not of the routine.
+ */
+routine mac_interrupt_vector(
+		request_port	: port_t;
+		which_intr	: int;
+		new_vector	: vm_address_t);
+
+/*
+ * Enable or disable the posting of a simulated
+ * interrupt.
+ */
+routine mac_interrupt_enable(
+		request_port	: port_t;
+		which_intr	: int;
+		enable		: boolean_t);
+
+/*
+ * Post or unpost a simulated interrupt.
+ */
+routine mac_interrupt_post(
+		request_port	: port_t;
+		which_intr	: int;
+		post		: boolean_t);
+
+/*
+ * Return the next input (keyboard or mouse)
+ * event.
+ */
+type	mac_input_event_t = struct [3] of char;
+
+routine mac_input_event(
+		request_port	: port_t;
+	    out event		: mac_input_event_t);
+
+/*
+ * Similar to vm_map(), except operates on the
+ * 24 bit compat map.
+ */
+routine mac_vm_map_compat(
+		request_port	: port_t;
+	inout	address		: vm_address_t;
+		size		: vm_size_t;
+		mask		: vm_address_t;
+		anywhere	: boolean_t;
+		memory_object	: memory_object_t;
+		offset		: vm_offset_t;
+		copy		: boolean_t;
+		cur_protection	: vm_prot_t;
+		max_protection	: vm_prot_t;
+		inheritance	: vm_inherit_t);
+
+#include "macether.defs"

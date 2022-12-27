@@ -1,0 +1,46 @@
+.TH processor_set_default 2 2/2/89
+.CM 4
+.SH NAME
+.nf
+processor_set_default  \-  Get default processor set.
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t processor_set_default(host, default_set);
+	host_t			host;
+	processor_set_t		*default_set;
+
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+.B host
+Specifies the host whose default processor set is requested.  Either
+the host port or the privileged host port may be used.
+.TP 15
+.B
+.B default_set
+Returns the name port for the default processor set.  
+
+.SH DESCRIPTION
+The default processor set is used by all threads, tasks, and processors
+that are not explicitly assigned to other sets. 
+.B processor_set_default
+returns a port that can be used to obtain information about this set
+(e.g. how many threads are assigned to it).  This port cannot be
+used to perform operations on that set.
+
+.SH BUGS
+Availability limited.
+
+.SH SEE ALSO
+.B processor_set_info, thread_assign, task_assign
+
+

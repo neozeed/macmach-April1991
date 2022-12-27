@@ -1,0 +1,36 @@
+#if defined(LIBC_SCCS)
+	.asciz "@(#)remque.s MacMach 5.1"
+	.even
+#endif /* LIBC_SCCS and not lint */
+
+#include "DEFS.h"
+
+	.text
+
+/*
+ * remque -- vax remque instruction
+ */
+
+/*
+struct vaxque {
+  struct vaxque	*vq_next;
+  struct vaxque	*vq_prev;
+};
+
+remque(e)
+register struct vaxque *e;
+{
+  e->vq_prev->vq_next = e->vq_next;
+  e->vq_next->vq_prev = e->vq_prev;
+}
+*/
+
+ENTRY(remque)
+	link	a6, #0		/* set up stack frame */
+	movel	a6@(8), a0	/* e */
+	movel	a0@, a1		/* a1 = e->next */
+	movel	a0@(4), a0	/* a0 = e->prev */
+	movel	a1, a0@		/* e->prev->next = e->next */
+	movel	a0, a1@(4)	/* e->next->prev = e->prev */
+	unlk	a6		/* done with stack frame */
+	rts			/* all done */

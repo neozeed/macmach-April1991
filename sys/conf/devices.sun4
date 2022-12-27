@@ -1,0 +1,17 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#
+#
+# HISTORY
+# $Log:	devices.sun4,v $
+# Revision 2.2  89/07/11  13:29:16  jjc
+# 	Copied from Sun3.
+# 	[89/06/29            jjc]
+# 
+#
+xy	3
+nd	5
+sd	7

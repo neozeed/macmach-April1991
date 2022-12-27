@@ -1,0 +1,9 @@
+#if defined(LIBC_SCCS) && !defined(lint)
+static char sccsid[] = "@(#)abs.c MacMach 5.1";
+#endif LIBC_SCCS and not lint
+
+int abs(arg)
+register int arg;
+{
+  return (arg >= 0 ? arg : -arg);
+}

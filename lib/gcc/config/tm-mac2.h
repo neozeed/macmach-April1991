@@ -1,0 +1,1 @@
+../../gcc-1.39/config/tm-mac2.h

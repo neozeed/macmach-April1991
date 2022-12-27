@@ -1,0 +1,22 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#
+#
+# HISTORY
+# $Log:	devices.mips,v $
+# Revision 2.3  89/02/25  17:40:20  gm0w
+# 	Changes for cleanup.
+# 
+# Revision 2.2  89/01/23  22:16:52  af
+# 	Created.
+# 	[89/01/16  17:19:17  af]
+# 
+
+dkip	0
+ts	1
+sd	3
+rd	4
+tthc	5

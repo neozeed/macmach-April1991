@@ -1,0 +1,157 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# Copyright (c) 1988 Carnegie-Mellon University
+# Copyright (c) 1987 Carnegie-Mellon University
+# Copyright (c) 1986 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#  
+#
+# HISTORY
+# $Log:	Makefile.sqt,v $
+# Revision 2.3  89/02/25  17:39:33  gm0w
+# 	Changes for cleanup.
+# 
+# Revision 2.2  88/07/21  00:03:34  rpd
+# Changed INLINECMD to ././inline, because make seems to strip a "./".
+# 
+#  3-Dec-87  Robert Baron (rvb) at Carnegie-Mellon University
+#	Fixed definition of INLINEOBJ to use . vs ../sqt/inline for .o's
+#	Also fixed locore rules to make sure locore.c is writable.
+#
+# 27-Oct-87  David Golub (dbg) at Carnegie-Mellon University
+#	Added make rules for inline program.  Added comments for
+#	compilation rules.
+#
+# 24-Jun-87  Robert Baron (rvb) at Carnegie-Mellon University
+#	SYS_RULES now just link and do mdb -z mach.
+#	A .EXIT is used rather than rerun md.
+#
+# 12-May-87  Robert Baron (rvb) at Carnegie-Mellon University
+#	must supply -lseq now to get the sequent disassembler
+#
+#  1-Apr-87  Robert Baron (rvb) at Carnegie-Mellon University
+#	Don't have crash.o depend on Makefile, but use -MD to gen it.
+#	Also have SYS_RULE use /bin/make since P=&
+#
+# 27-Mar-87  Robert Baron (rvb) at Carnegie-Mellon University
+#	added _P rules for profiling and defined P to & for parallel
+#	build by default
+#
+# 21-Feb-87  Avadis Tevanian (avie) at Carnegie-Mellon University
+#	Created.
+#
+
+.EXIT: 
+	md -f -d `ls *.${MD_SUFFIX}`
+
+P=&
+INLINECMD= ././inline
+LIBS_P=	crash.o -lseq
+LIBS=	crash.o -lseq
+
+MD_SUFFIX=d
+DEPENDS=
+
+LDDEPS_PREFIX=crash.o
+LDOBJS=locore.o ${FASTOBJS} ${OBJS} ioconf.o
+LDFLAGS=-k -e start
+
+#
+# Compilation rules to generate .o from .s
+#
+S_RULE_1A=${CPP} ${SFLAGS} 
+S_RULE_1B=$*.s | ${AS} -o $*.o
+S_RULE_2=
+S_RULE_3=
+S_RULE_4=
+
+#
+#  Compilation rules to generate .o from .c for normal files
+#  (BALANCE uses the ${INLINECMD} filter)
+#
+C_RULE_1A=${CC} -SO ${COPTS} 
+C_RULE_1B=$*.c | ${INLINECMD} | ${C2} | ${AS} ${CAFLAGS} -o $*.o
+C_RULE_2=
+C_RULE_3=
+C_RULE_4=
+
+#
+#  Compilation rules to generate .o from .c for driver files
+#  (BALANCE uses the ${INLINECMD} filter)
+#
+C_RULE_1A_D=${CC} -SO ${COPTS} 
+C_RULE_1B_D=$*.c | ${INLINECMD} | ${C2} -i | ${AS} ${CAFLAGS} -o $*.o
+C_RULE_2_D=
+C_RULE_3_D=
+C_RULE_4_D=
+
+#
+#  Compilation rules to generate .o from .c for profiling routine files
+#  (BALANCE uses the ${INLINECMD} filter)
+#
+C_RULE_1A_P=${CC} -SO ${COPTS_P} 
+C_RULE_1B_P=$*.c | ${INLINECMD} >$*.s
+C_RULE_2_P=ed - $*.s < ${GPROF.EX}
+C_RULE_3_P=${C2} $*.s | ${AS} -o $*.o
+C_RULE_4_P=rm -f $*.s
+
+SYS_RULE_1=ln $*.sys $*
+SYS_RULE_2=mdb -z $*
+SYS_RULE_3=
+SYS_RULE_4=
+
+
+
+#
+#  Special rules to build the ${INLINECMD} program.  These are moved
+#  here from the separate makefile since the program is configuration
+#  dependent (e.g. with conditional compilation). 
+#
+INLINE_SRC = ../sqt/inline/ns32000pats.c \
+	../sqt/inline/inline_machdep.c \
+	../inline/main.c
+
+INLINE_OBJ = 	ns32000pats.o \
+		inline_machdep.o \
+		main.o
+
+${INLINECMD}:${P} ${INLINE_OBJ}
+	${CC} -o ${INLINECMD} ${INLINE_OBJ}
+
+${INLINE_OBJ}: ../inline/inline.h
+
+ns32000pats.o: ../sqt/inline/ns32000pats.c
+	${CC} ${CFLAGS} -c ../sqt/inline/ns32000pats.c
+
+inline_machdep.o: ../sqt/inline/inline_machdep.c
+	${CC} ${CFLAGS} -c ../sqt/inline/inline_machdep.c
+
+main.o: ../inline/main.c
+	${CC} ${CFLAGS} -c ../inline/main.c
+
+#
+# FASTOBJ's are loaded 1st, thus having their text live in private RAM.
+# Should list desired "hot" modules here, in order of desireability to
+# have it live in private RAM, and list enough so we overflow the RAM 
+# (8k bytes worth).
+#
+
+%FASTOBJS
+
+# changing inline results in a total rebuild!
+${FASTOBJS} ${OBJS}: ./inline
+
+crash.o: ../sqt/crash.c
+	${CC} -c -go -MD ${COPTS} ${PARAM} ../sqt/crash.c
+
+ioconf.o: ../sys/param.h ../machine/pte.h ../sys/buf.h ../sys/map.h ../sys/vm.h \
+	../sqtmbad/ioconf.h ../sqtsec/ioconf.h ../sqtzdc/ioconf.h
+
+locore.c: ../sqt/locore.s assym.h ./inline
+	cp ../sqt/locore.s locore.c
+	chmod +w locore.c
+
+assym.h:${P} assym.s ./inline
+	cp assym.s assym.h

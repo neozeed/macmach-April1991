@@ -1,0 +1,84 @@
+######################################################################
+# HISTORY
+# $Log:	files.mac2,v $
+# Revision 2.2  90/08/30  10:59:54  bohman
+# 	Created.
+# 	[90/08/29  14:31:28  bohman]
+# 
+######################################################################
+OPTIONS/ramdisk		optional ramdisk
+mac2/conf.c		standard
+mac2dev/cons.c		standard
+mac2dev/kb.c		standard
+mac2dev/fdb.c		standard
+mac2dev/fdbs.s		standard
+mac2dev/key.c		standard
+mac2dev/mouse.c		standard
+mac2dev/font1.s		standard
+mac2dev/font_524.b	standard
+mac2dev/font_521.b	standard
+mac2dev/video.c		standard
+mac2dev/drvr_120.b	standard
+mac2dev/via.c		standard
+mac2dev/scc.c		standard
+mac2dev/mscsi.c		standard
+mac2dev/mhd.c		standard
+mac2if/if_en.c		standard
+mac2if/if_enintr_catch.s	standard
+OPTIONS/macos_emul	optional macos_emul
+mac2emul/mactrap.s	optional macos_emul
+mac2emul/mackern.c	optional macos_emul
+mac2emul/macserver_main.c	optional macos_emul
+mac2emul/macserver_routines.c	optional macos_emul
+mac2emul/macserver_phys_pages.c	optional macos_emul
+mac2emul/macServer.c	optional macos_emul
+mac2emul/macmemory.c	optional macos_emul
+mac2emul/macostrap.c	optional macos_emul
+mac2emul/macostrap_tables.c	optional macos_emul
+mac2emul/macexception.c	optional macos_emul
+mac2emul/macintr.c	optional macos_emul
+mac2emul/macuser.s	optional macos_emul
+mac2emul/macinst.c	optional macos_emul
+mac2emul/macinst_subr.c	optional macos_emul
+mac2emul/macbus_cycle.c	optional macos_emul
+mac2emul/macvia.c	optional macos_emul
+mac2emul/macdevice.c	optional macos_emul
+mac2emul/macpmap.c	optional macos_emul
+mac2emul/macscsi_mgr.c	optional macos_emul
+mac2emul/macinput.c	optional macos_emul
+mac2emul/macscc.c	optional macos_emul
+mac2emul/macether_routines.c	optional macos_emul
+mac2emul/macether_interface.c	optional macos_emul
+mac2emul/macether_hash.c	optional macos_emul
+mac2slotmgr/slotmgr_principal.c	standard
+mac2slotmgr/slotmgr_special.c	standard
+mac2slotmgr/slotmgr_advanced.c	standard
+mac2slotmgr/slotmgr_subr.c	standard
+mac2slotmgr/slotmgr_SExecCode.s	standard
+mac2slotmgr/slotmgr_alloc.c	standard
+mac2slotmgr/slotmgr_dispatch.c	standard
+mac2slotmgr/slotmgr_extra.c	standard
+mac2slotmgr/slotmgr_interrupts.c	standard
+mac2slotmgr/slotmgr_SCallIntr.s	standard
+mac2slotmgr/slotmgr_CallDriver.s	standard
+mac2/ostrap.c	standard
+mac2/ostrap_tables.c	standard
+mac2/mem.c		standard
+mac2/virt.s		standard
+mac2/setjmp.s		standard
+mac2/ivect.c		standard
+mac2/mac2_mach_process.c	standard
+mac2/ufs_machdep.c	standard
+mac2/autoconf.c		standard device-driver
+mac2/clock.c		standard device-driver
+mac2/machdep.c		standard
+mac2/pcb.c		standard
+mac2/pmap.c		standard
+mac2/act.c		standard
+mac2/softint.c		standard
+mac2/mac2_init.c	standard
+mac2/mac2_exception.c	standard
+mac2/trap.c		standard
+mac2/in_cksum.c		standard
+mac2/vm_machdep.c	standard
+mac2/strings.c		standard

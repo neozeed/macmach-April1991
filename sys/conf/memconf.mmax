@@ -1,0 +1,23 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1989 Carnegie-Mellon University
+ * All rights reserved.  The CMU software License Agreement specifies
+ * the terms and conditions for use and redistribution.
+ */
+/*
+ * HISTORY
+ * $Log:	memconf.mmax,v $
+ * Revision 2.2  89/02/25  17:41:46  gm0w
+ * 	Changes for cleanup.
+ * 
+ */
+
+SECTIONS
+{
+	.text 0x4000:	{}
+	GROUP ALIGN (0x1000):
+	{
+		.data:	{}
+		.bss:	{}
+	}
+}

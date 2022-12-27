@@ -1,0 +1,63 @@
+.TH port_type 2 4/13/87
+.CM 4
+.SH NAME
+.nf
+port_type  \-  return information about a task's port name 
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t port_type(task, port_name, port_type)
+	task_t task;
+	port_name_t port_name;
+	port_type_t *port_type;		/* out */
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+task
+The task whose port name space is queried.
+.TP 15
+.B
+port_name
+The name being queried.
+.TP 15
+.B
+port_type
+The type of the name.  Indicates what kind
+of right the task holds for the port or port set.
+
+.SH DESCRIPTION
+.B port_type
+returns information about 
+.B task
+'s rights for
+a specific name in its port name space.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B task
+was invalid or 
+.B task
+did
+not have any rights named 
+.B port_name
+.
+
+.SH SEE ALSO
+.B port_names
+,
+.B port_status
+,
+.B port_set_status
+

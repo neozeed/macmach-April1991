@@ -1,0 +1,54 @@
+.TH cpu_control 2 3/25/87
+.CM 4
+.SH NAME
+.nf
+cpu_control \- control physical processors
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+kern_return_t cpu_control(task, cpu, running)
+	task_t		task;
+	int		cpu;
+	boolean_t	running;
+
+
+.fi
+.ft P
+.SH DESCRIPTION
+Each processor in a multiprocessor may be started or stopped by user-level
+software.  This control is invoked with the
+.I cpu_control
+operation.  The host to be affected is specified as the host that is
+executing the
+.I task
+parameter.  The cpu within that host is specified by the
+.I cpu
+parameter.  The
+.I running
+parameter specified whether or not the processor should be running.
+.SH ARGUMENTS
+.TP 20
+.B
+.I task
+Specified which host is to be affected.  The host to be affected is the
+host executing the specified task.
+.TP 20
+.B
+.I cpu
+The cpu number of the processor to be affected.
+.TP 20
+.B
+.I running
+Specifies whether or not the processor should be running.
+
+.SH BUGS
+This call is currently ignored by the kernel since the protection mechanism
+has not yet been worked out.  In particular, it would be better to specify
+a
+.I cpu
+port, instead of a task.  The cpu port could be advertised, and authenticated,
+by a privileged server.
+It is not possible to stop the master processor from executing.  This should
+only be a restriction for as long there is a need for a master processor.

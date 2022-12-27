@@ -1,0 +1,64 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#
+#
+# HISTORY
+# $Log:	buildconf.vax,v $
+# Revision 2.11  89/04/23  13:37:42  gm0w
+# 	Changed STD+WS-afs-nfs to STD+WS-afs-nfs+vice since we might
+# 	as well be building something usable as a test case...
+# 	[89/04/23            gm0w]
+# 
+# Revision 2.10  89/03/10  02:41:44  rpd
+# 	Added STD+WS-afs-nfs, so non-VFS code gets built regularly.
+# 
+# Revision 2.9  89/02/25  17:40:16  gm0w
+# 	Changes for cleanup.
+# 
+# Revision 2.8  88/11/14  15:04:33  gm0w
+# 	Removed STD+ANY since it is incompatible
+# 	with either STD+ANY or STD+MP and used
+# 	[88/11/14  14:46:50  mrt]
+# 	
+# 	Removed STD+ANY+16 configration and added STD+ANY
+# 	[88/11/04  14:22:48  mrt]
+# 
+# Revision 2.7  88/10/28  13:49:59  mrt
+# 	Added STD+ANY+16 for testing purposes
+# 
+# Revision 2.6  88/10/27  17:35:51  mrt
+# 	Changed the standard configurations to STD+WS, STD+MF and STD+MP+16
+# 	Rename MACH+EXP to STD+WS+EXP
+# 	[88/10/27  17:12:06  mrt]
+# 
+# Revision 2.5  88/08/29  23:58:53  mwyoung
+# 	Add MACH+EXP so that common Mach features get compiled regularly.
+# 	[88/08/29            mwyoung]
+# 
+# Revision 2.4  88/08/22  21:28:31  mja
+# 	Add STD+M+ANY+EXTRA+16 configuration.
+# 	[88/08/08  16:00:21  mja]
+# 	
+# 	Eliminate "-ra+ora" from STD+L+MP+16 configuration (the new
+# 	driver now works on the BI).
+# 	[88/08/04  14:00:15  mja]
+# 
+# Revision 2.3  88/07/15  15:52:00  mja
+# Added STD+L+WS configuration.
+# 
+# 18-May-88  Mike Accetta (mja) at Carnegie-Mellon University
+#	Created.
+#	[ V5.1(XF25) ]
+#
+#
+
+STD+WS =  STD+MF
+
+STD+MP+16 
+
+STD+WS+EXP
+
+STD+WS-afs-nfs+vice

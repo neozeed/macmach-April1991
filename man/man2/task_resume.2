@@ -1,0 +1,46 @@
+.TH task_resume 2 9/19/86
+.CM 4
+.SH NAME
+.nf
+task_resume  \-  resumes designated task
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t task_resume(target_task)
+	task_t		target_task;
+
+
+.fi
+.ft P
+.SH DESCRIPTION
+Decrements the task's suspend count. If it becomes zero,
+all threads with zero suspend counts in the 
+task are resumed. The count may not become
+negative.
+
+.SH ARGUMENTS
+.TP 15
+.B
+target_task
+The task to be resumed.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The task has been resumed.
+.TP 25
+KERN_FAILURE
+The suspend count is already at zero.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B target_task
+is not a task.
+
+.SH SEE ALSO
+.B task_create, task_terminate, task_suspend, task_info,
+.B thread_suspend, thread_resume, thread_info
+

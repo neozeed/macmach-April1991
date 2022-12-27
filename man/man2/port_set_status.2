@@ -1,0 +1,66 @@
+.TH port_set_status 2 9/19/86
+.CM 4
+.SH NAME
+.nf
+port_set_status  \-  returns the members of a port set
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t port_set_status(task, set_name, members, membersCnt)
+	task_t task;
+	port_set_name_t set_name;
+	port_name_array_t *members;	/* out array */
+	unsigned int *membersCnt;	/* out */
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+task
+The task whose port set is queried.
+.TP 15
+.B
+set_name
+.B task
+'s name for the port set.
+.TP 15
+.B
+members
+
+.B task
+'s names for the port set's members.
+.TP 15
+.B
+membersCnt
+The number of port names returned.
+
+.SH DESCRIPTION
+.B port_set_status
+returns the members of a port set.
+.B members
+is an array that is automatically allocated
+when the reply message is received. The user may wish
+to 
+.B vm_deallocate
+it when the data is no longer needed.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B task
+was invalid or 
+.B set_name
+does not name a valid port set.
+
+.SH SEE ALSO
+.B port_status
+

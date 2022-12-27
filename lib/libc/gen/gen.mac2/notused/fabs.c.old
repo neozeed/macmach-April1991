@@ -1,0 +1,14 @@
+#if defined(LIBC_SCCS) && !defined(lint)
+static char sccsid[] = "@(#)fabs.c MacMach 5.1";
+#endif LIBC_SCCS and not lint
+
+/*
+ *	fabs returns the absolute value of its double-precision argument.
+ */
+
+double
+fabs(x)
+register double x;
+{
+	return (x < 0 ? -x : x);
+}

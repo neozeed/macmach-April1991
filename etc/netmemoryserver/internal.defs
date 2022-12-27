@@ -1,0 +1,66 @@
+/* 
+ * Mach Operating System
+ * Copyright (c) 1989 Carnegie-Mellon University
+ * All rights reserved.  The CMU software License Agreement specifies
+ * the terms and conditions for use and redistribution.
+ */
+/*
+ * HISTORY
+ * $Log:	internal.defs,v $
+ * Revision 1.1  90/02/19  21:48:03  bww
+ * 	Mach Release 2.5
+ * 	[90/02/19  21:47:02  bww]
+ * 
+ * Revision 1.3  89/08/24  17:46:57  mrt
+ * 	Cleanup
+ * 
+ * Revision 1.2  89/04/29  22:34:35  mrt
+ * 	Fixed includes for Mach 2.5
+ * 
+ *
+ * 23-May-88  Alessandro Forin (af) at Carnegie-Mellon University
+ *	Added definition of timed_out.
+ *
+ *   5-Nov-87 Joseph Barrera (jsb) at Carnegie-Mellon University
+ *	Created.
+ */
+/*
+ *	File:	internal.defs
+ *	Author:	Joseph S. Barrera III
+ *
+ *	Copyright (C) 1989, Joseph S. Barrera III
+ *
+ *	Internal mig definitions for the shared memory object manager.
+ *
+ */
+
+subsystem internal 4240;
+ServerPrefix _;
+
+type int = MSG_TYPE_INTEGER_32;
+
+type boolean_t = MSG_TYPE_BOOLEAN;
+type port_t = MSG_TYPE_PORT;
+type paging_object_t = MSG_TYPE_PORT;
+type vm_offset_t = int;
+type vm_size_t = int;
+
+type dead_port_t = int;
+type object_ptr_t = int;
+
+import <mach/mach_types.h>;
+import "internal_defs.h";
+
+simpleroutine	object_thread_terminate(
+		paging_object		: paging_object_t);
+
+simpleroutine	port_death(
+		paging_object		: paging_object_t;
+		object			: object_ptr_t;
+		kernel_id		: int;
+		dead_port		: dead_port_t);
+
+simpleroutine	timed_out(
+		paging_object		: paging_object_t;
+		object			: object_ptr_t;
+		kernel_id		: int);

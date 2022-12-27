@@ -1,0 +1,60 @@
+.TH port_set_remove 2 9/19/86
+.CM 4
+.SH NAME
+.nf
+port_set_remove  \-  removes a port from a port set
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t port_set_remove(task, port_name)
+	task_t task;
+	port_name_t port_name;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+task
+The task owning the receive rights and port set.
+.TP 15
+.B
+port_name
+.B task
+'s name for the receive rights to be removed.
+
+.SH DESCRIPTION
+.B port_set_remove
+removes the named port from a port set.  
+.B task
+must have receive rights for the port, and the port must be a member
+of a port set.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_NOT_RECEIVER
+.B port_name
+doesn't name receive rights in 
+.B task
+.
+.TP 25
+KERN_NOT_IN_SET
+The port isn't a member of a set.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B task
+was invalid or 
+.B port_name
+does not name a valid port.
+
+.SH SEE ALSO
+.B port_set_add
+

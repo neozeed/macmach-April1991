@@ -1,0 +1,1 @@
+etc/etc.mac2/newconfig/system.cshrc

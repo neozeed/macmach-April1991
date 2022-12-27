@@ -1,0 +1,68 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#  
+#
+# HISTORY
+# $Log:	MASTER.mmax.local,v $
+# Revision 2.8  90/07/20  10:04:26  mrt
+# 	Defined EXP configuration to include kernel monitoring hooks.
+# 	[90/07/20            mrt]
+# 
+# Revision 2.7  89/10/11  17:37:13  dlb
+# 	Add rfs to MACHMM.
+# 	[89/10/11            dlb]
+# 
+# Revision 2.6  89/10/11  13:54:50  dlb
+# 	Add MACHMM to specify default configuration.
+# 
+# Revision 2.5  89/02/25  17:38:31  gm0w
+# 	Changes for cleanup.
+# 
+# Revision 2.4  88/07/16  00:47:57  mwyoung
+# Create standard MACH configuration.
+# 
+#
+#  2-Jun-88  David Black (dlb) at Carnegie-Mellon University
+#	Add third disk to all configurations.
+#
+#  7-May-87  David Black (dlb) at Carnegie-Mellon University
+#	Removed SPEECHS configuration.
+#
+#  6-Apr-87  Avadis Tevanian (avie) at Carnegie-Mellon University
+#	Created.
+#
+######################################################################
+#
+#  Master Multi-Max configuration file (see the master machine independent
+#  configuration file for a description of the file format).  This file
+#  is site specific.
+#
+######################################################################
+#
+#  Multi-Max (PSEUDO-)DEVICES (select any combination)
+#
+#  emc - emc interface board.
+#
+######################################################################
+#  
+#  Configurations:
+#
+#  MACHMM       = [ MSTD ANY 64 XL mmax mach unix afs nfs rfs timing fast_csw]
+#  ANY		= [emc]
+#
+#  EXP 		= [ km ]
+#
+######################################################################
+
+
+#
+#  MULTIMAX emc with 3 disks and 1 tape
+#
+controller	emc0 at slot 4		#<emc>
+disk		msd0 at emc0 lun 16	#<emc>
+disk		msd1 at emc0 lun 17	#<emc>
+disk		msd2 at emc0 lun 18	#<emc>
+tape		mst0 at emc0 lun 8	#<emc>

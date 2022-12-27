@@ -1,0 +1,51 @@
+.TH processor_set_destroy 2 8/13/89
+.CM 4
+.SH NAME
+.nf
+processor_set_destroy  \-  destroy a processor set
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t processor_set_destroy(processor_set)
+	processor_set_t		processor_set;
+
+
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+.B processor_set
+Specifies the processor_set to be exited.
+
+.SH DESCRIPTION
+Destroys the specified processor set.  Any assigned processors, tasks, or
+threads are reassigned to the default set.  The object port for the
+processor set is required (not the name port).  The default processor
+set cannot be destroyed.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The set was destroyed.
+.TP 25
+KERN_FAILURE
+An attempt was made to destroy the default processor set, or
+the operating system does not support processor allocation.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B processor_set
+is not a processor set.
+
+.SH BUGS
+Availability limited.
+
+.SH SEE ALSO
+.B processor_set_create, processor_assign, task_assign, thread_assign
+

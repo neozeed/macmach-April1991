@@ -1,0 +1,61 @@
+.TH vm_statistics 2 9/19/86
+.CM 4
+.SH NAME
+.nf
+vm_statistics  \-  returns virtual memory statistics for the system
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+struct vm_statistics {
+	long	pagesize;		/* page size in bytes */
+	long	free_count;		/* # of pages free */
+	long	active_count;		/* # of pages active */
+	long	inactive_count;		/* # of pages inactive */
+	long	wire_count;		/* # of pages wired down */
+	long	zero_fill_count;	/* # of zero fill pages */
+	long	reactivations;		/* # of pages reactivated */
+	long	pageins;		/* # of pageins */
+	long	pageouts;		/* # of pageouts */
+	long	faults;			/* # of faults */
+	long	cow_faults;		/* # of copy-on-writes */
+	long	lookups;		/* object cache lookups */
+	long	hits;			/* object cache hits */
+};
+
+typedef struct vm_statistics	vm_statistics_data_t; 
+
+.nf
+.ft B
+kern_return_t	vm_statistics(target_task, vm_stats)
+	task_t		 	target_task;
+	vm_statistics_data_t	*vm_stats;	/* out */
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+target_task
+Task which is requesting statistics.
+.TP 15
+.B
+vm_stats
+The structure that will receive the statistics.
+
+.SH DESCRIPTION
+.B vm_statistics
+returns the statistics about the kernel's use of virtual memory
+since the kernel was booted.
+.B pagesize
+can also be found as a global variable 
+.B vm_page_size
+which
+is set at task initialization and remains constant for the life of the task.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+

@@ -1,0 +1,56 @@
+THINGS TO DO WITH THIS SOURCE TREE AS OF 2/5/91
+
+SEE /USR/BIN/GRAPH FOR POSSIBLE AS BIGNUM BUG
+
+MAKE PHANTASIA STDC COMPATABLE
+
+CHECK MATH.H FOR -TRADITIONAL COMPILE
+
+CHECK THAT GCC BUGS ARE NO MORE
+  1) allocating a zero lenght automatic array does not produce a warning
+     even if it is dereferenced as an lval
+  2) -fno-defer-pop actual parameters are not popped for the last function
+     call in a function which contradicts the documentation
+
+CPIO -V DOES NOT LIST DEVICE FILES OR SYMBOLIC LINKS
+
+GET /USR/UCB/LISP WORKING
+
+TEST SENDMAIL
+
+TEST UUCP
+
+UEMACS -- use /bin/csh instead of /bin/sh, maybe check /etc/passwd??
+
+CPP SHOULD USE ENDIAN.H TO DECIDE BYTE_MSF
+
+INLINE FUNCTIONS FOR ROUTED
+
+PORT /USR/UCB/SYSTAT
+
+PORT /USR/UCB/VLP
+
+FIX /USR/BIN/EFL
+
+xtrek /usr/X11/lib should be /usr/lib/X11
+
+mwm / twm conflicts
+
+xman mwm garbles the title (wrong size for bold font???)
+
+try startx while the emlator is running...
+
+niftyterm does not give cyles back to multifinder??
+
+fix screen for video-tape
+
+Contact Prof. Stephen Ward at mit for distribution 617-253-6036 ward@mit.edu
+
+sendmail.cf & uucp
+
+Peter Zukoski zukoski1@applelink.apple.com re: August
+
+xloadimage symbolic links to xview and xsetbg are broken
+
+emacs special key/mouse bindings from in side X -- CTRL-SHFT left mouse button
+

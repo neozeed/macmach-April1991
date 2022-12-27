@@ -1,0 +1,26 @@
+.TH MACH 1 3/12/87
+.UC 4
+.SH NAME
+MACH \- determine if the MACH kernel is runing on your computer
+.SH SYNOPSIS
+.nf
+.ft B
+MACH [ -s ]
+.fi
+.SH DESCRIPTION
+If the mach kernel is running on your computer, the \fIMACH\fP program
+writes "True" to standard output and returns the status value "0".
+If the mach kernel is \fBNOT\fP running on your computer, the \fIMACH\fP program
+writes "False" to standard output and returns the status value "1".
+
+The one option is 
+.TP 15
+-s
+which has \fIMACH\fP just sets the status value.
+.SH "SEE ALSO"
+sh(1)
+.SH "BUGS"
+The program works by executing the task_self() trap and catching the SIGSYS signal.
+We assume that if task_self() returns any value, a mach kernel is running.
+We assume that a non mach kernel will signal SIGSYS for this trap, which is very
+likely since BSD never defined negative trap numbers.

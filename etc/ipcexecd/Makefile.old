@@ -1,0 +1,20 @@
+######################################################################
+# HISTORY
+# $Log:	Makefile,v $
+# Revision 1.2  90/02/23  19:05:20  bww
+# 	Created for new and improved SSP format.
+# 	[90/02/23  19:04:36  bww]
+# 
+######################################################################
+
+IDIR			= /usr/etc/
+
+PROGRAMS		= ipcexecd
+OFILES			= main.o assert.o error.o patch.o \
+			  printmsg.o procs.o ipcxServer.o
+MIG_DEFS		= ipcx.defs
+LIBS			= -lmach
+
+include ${MAKETOP}Makefile-common
+
+main.o procs.o: ipcx_types.h

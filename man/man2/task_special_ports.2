@@ -1,0 +1,184 @@
+.TH task_special_ports 2 1/20/88
+.CM 4
+.SH NAME
+.nf
+task_get_special_port  \-  returns a special port of a task
+task_set_special_port  \-  set a special port of a task
+task_self  \-  returns calling thread's task port
+task_notify  \-  returns calling thread's task notification port
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t task_get_special_port(task, which_port, special_port)
+	task_t 		task;
+	int 		which_port;
+	port_t 		*special_port;	/* out */
+
+
+.fi
+.ft P
+.nf
+.ft B
+kern_return_t task_set_special_port(task, which_port, special_port)
+	task_t 		task;
+	int 		which_port;	
+	port_t 		special_port;
+
+
+
+.fi
+.ft P
+.nf
+.ft B
+task_t task_self()
+
+
+.fi
+.ft P
+.nf
+.ft B
+port_t task_notify()
+
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+task
+The task for which to get the port
+.TP 15
+.B
+which_port
+the port that is requested. Is one of 
+.B TASK_NOTIFY_PORT
+,
+.B TASK_BOOTSTRAP_PORT
+, 
+.B TASK_EXCEPTION_PORT
+.
+.TP 15
+.B
+special_port
+the value of the port that is being requested or
+being set.
+
+.SH DESCRIPTION
+
+.B get_special_port
+returns send rights to  one of a set of special 
+ports for the task specified by 
+.B task
+.  In the case of the task's own
+.B task_notify_port
+, the task also gets receive and ownership rights.
+
+.B set_special_port
+sets one of a set of special ports for the task specified
+by 
+.B task
+. 
+
+.B task_self
+returns the port to which kernel calls for
+the currently executing thread should be directed.
+Currently, 
+.B task_self
+returns the 
+.B task kernel port
+which
+is a port for which the kernel has receive rights
+and which it uses to identify a task. In the future it may be
+possible for one task to interpose a port as another's task's
+kernel port. At that time, 
+.B task_self
+will still return the
+port to which the executing thread should direct kernel calls,
+but it may  no longer be a port on which the kernel has receive rights.
+
+If one task, the controller,  has send access to the kernel port of 
+another task, the subject task, then the controller task can perform
+kernel
+operations for the subject task. Normally only the task itself and 
+the task that created it will have access to
+the task kernel port, but any task may pass rights to its kernel
+port to any other task.
+
+.B task_notify
+returns receive, ownership and send rights to the 
+.B notify port
+associated
+with the task to which the executing thread belongs. The 
+notify port is a port on which the task should receive
+notification of such kernel events of the destruction of a port
+to which it has send rights.
+
+The other special ports associated with a task are the 
+.B bootstrap port
+and the 
+.B exception port
+. The bootstrap port is a port to which a thread
+may send a message requesting other system service ports. This port is not
+used by the kernel. The task's
+exception port is the port to which messages are sent by the kernel when an exception
+occurs and the thread causing the exception has no exception port of
+its own.
+
+
+Within the C environment, 
+.B task_self
+and 
+.B task_notify
+are implemented
+as macros which execute the system traps the first time and thereafter
+return a cached value for the ports. Thus it is unnecessary for a
+programmer to cache these variables himself and such caching may interfere with the
+future implementation of port interposition.
+
+The following macros to call 
+.B task_set/get_special_port
+for a specific port
+are defined in 
+.B <mach/task_special_ports.h>
+: 
+.B task_get_notify_port
+,
+.B task_set_notify_port
+, 
+.B task_get_exception_port
+, 
+.B task_set_exception_port
+,
+.B task_get_bootstrap_port
+and 
+.B task_set_bootstrap_port
+.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The port was returned or set.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B task
+is not a task or 
+.B which_port
+is an invalid port selector.
+
+.SH SEE ALSO
+.B thread_special_ports,mach_init,task_create
+
+.SH BUGS
+The call on the bootstrap port to get system service ports
+has not been implemented yet.
+
+.B TASK_KERNEL_PORT
+may be added to the set of ports that
+.B task_set_special_port
+accepts.
+

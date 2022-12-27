@@ -1,0 +1,1 @@
+../../gcc-1.39/config/tm-i386esix.h

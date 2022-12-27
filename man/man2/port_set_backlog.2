@@ -1,0 +1,82 @@
+.TH port_set_backlog 2 9/19/86
+.CM 4
+.SH NAME
+.nf
+port_set_backlog  \-  changes a port's backlog value
+.SH SYNOPSIS
+.nf
+.ft B
+#include <mach.h>
+
+.nf
+.ft B
+kern_return_t port_set_backlog(task, port_name, backlog)
+	task_t task;
+	port_name_t port_name;
+	int backlog;
+
+
+.fi
+.ft P
+.SH ARGUMENTS
+.TP 15
+.B
+task
+The task owning the named port right.
+.TP 15
+.B
+port_name
+.B task
+'s name for the port right.
+.TP 15
+.B
+backlog
+The new backlog to be set.
+
+.SH DESCRIPTION
+The port's backlog value is the number of unreceived messages that
+are allowed in its message queue before the kernel will
+refuse to accept any more sends to that port.
+.B port_set_backlog
+changes the backlog value on the
+specified port.
+
+.B task
+must have receive rights for the named port.
+
+The file 
+.B <mach/mach_param.h>
+exports the system default value for
+a port's backlog
+as the constant 
+.B PORT_BACKLOG_DEFAULT
+and the maximum 
+backlog value as the constant 
+.B PORT_BACKLOG_MAX
+.
+
+.SH DIAGNOSTICS
+.TP 25
+KERN_SUCCESS
+The call succeeded.
+.TP 25
+KERN_NOT_RECEIVER
+.B port_name
+doesn't name receive rights in 
+.B task
+.
+.TP 25
+KERN_INVALID_ARGUMENT
+.B task
+was invalid or 
+.B port_name
+does not name a valid port or the desired backlog was non-positive
+or the desired backlog was greater than 
+.B PORT_BACKLOG_MAX
+.
+
+.SH SEE ALSO
+.B msg_send
+,
+.B port_status
+

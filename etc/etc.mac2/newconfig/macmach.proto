@@ -1,0 +1,14 @@
+%define	sys mac2_01
+%define wsadmin /afs/.andrew.cmu.edu/wsadmin
+%define machine /afs/andrew.cmu.edu/system/alpha/mac2_01/os
+%define machineroot /afs/andrew.cmu.edu/system/beta/mac2_01
+%define ownvmunix
+%include /afs/.andrew.cmu.edu/wsadmin/lib/base.generic
+%include /afs/.andrew.cmu.edu/wsadmin/lib/cmu.readonly
+%include /afs/.andrew.cmu.edu/wsadmin/beta/lib/admin.mac2
+FOAQ	/vmunix		${machine}/vmunix	${binmode}
+%include /afs/.andrew.cmu.edu/wsadmin/lib/tree.generic
+${rootlinkF}	/usr/lib/macpatches	${machine}	${textmode}
+L	/usr/src	${machine}
+%include /afs/.andrew.cmu.edu/wsadmin/lib/device.generic
+

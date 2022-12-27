@@ -1,0 +1,128 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# Copyright (c) 1988 Carnegie-Mellon University
+# Copyright (c) 1987 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#  
+#
+# HISTORY
+# $Log:	MASTER.sqt,v $
+# Revision 2.3  89/02/25  17:38:37  gm0w
+# 	Changes for cleanup.
+# 
+# 31-Mar-87  Avadis Tevanian (avie) at Carnegie-Mellon University
+#	Build mach, not vmunix.
+#
+
+######################################################################
+#
+#  Master Sequent configuration file (see the master machine independent
+#  configuration file for a description of the file format).
+#
+######################################################################
+#
+#  Sequent (PSEUDO-)DEVICES (select any combination)
+#
+#
+#  CPU TYPE (select exactly one)
+#
+#	sqt = any Sequent Balance-21000 CPU
+#
+######################################################################
+#  
+#  Configurations:
+#
+#  ANY   = [sqt]
+#
+######################################################################
+
+machine		sqt
+cpu		"BALANCE"
+
+config		mach		swap generic
+
+#
+# Sequent Balance 21000 Configuration information.
+#
+# Multibus Adapters
+#
+controller	mbad0	at slot ?
+#controller	mbad1	at slot ?
+#
+# SCSI/Ether Controllers
+#
+controller	sec0	at slot ?
+#controller	sec1	at slot ?
+#
+# ZDC Controllers
+#
+controller	zdc0	at slot ?
+#controller	zdc1	at slot ?
+#
+# Multibus Xylogics 450 Disk Controllers
+#
+#device		xy0	at mbad? csr 0x100 maps 34 bin 5 intr 0
+#device		xy1	at mbad? csr 0x110 maps 34 bin 5 intr 1
+#device		xy2	at mbad? csr 0x120 maps 34 bin 5 intr 2
+#
+# Systech multibus terminal boards
+#
+device		st0	at mbad? csr 0x200 maps  0 bin 4 intr 3
+device		st1	at mbad? csr 0x210 maps  0 bin 4 intr 4
+#device		st2	at mbad? csr 0x220 maps  0 bin 4 intr 5
+#device		st3	at mbad? csr 0x230 maps  0 bin 4 intr 3
+#device		st4	at mbad? csr 0x240 maps  0 bin 4 intr 4
+#device		st5	at mbad? csr 0x250 maps  0 bin 4 intr 5
+#
+# Multibus Xylogics 472 Tape Controllers
+#
+#device		zt0	at mbad? csr 0x300 maps 34 bin 5 intr 7
+#
+# Systech multibus line printer boards
+#
+#device		sl0	at mbad? csr 0x400 maps  8 bin 5 intr 6
+#
+# Console devices on SEC
+#
+device		co0	at sec0 req 4 doneq 4 bin 4 unit 0
+device		co0	at sec0 req 4 doneq 4 bin 4 unit 1
+device		co1	at sec0 req 4 doneq 4 bin 4 unit 2
+device		co1	at sec0 req 4 doneq 4 bin 4 unit 3
+#device		co2	at sec1 req 4 doneq 4 bin 4 unit 0
+#device		co2	at sec1 req 4 doneq 4 bin 4 unit 1
+#device		co3	at sec1 req 4 doneq 4 bin 4 unit 2
+#device		co3	at sec1 req 4 doneq 4 bin 4 unit 3
+#
+# Ether devices on SEC
+#
+device		se0	at sec0 req 200 doneq 200 bin 6 unit 0
+device		se0	at sec0 req  10 doneq  10 bin 6 unit 1
+#device		se1	at sec1 req 200 doneq 200 bin 6 unit 0
+#device		se1	at sec1 req  10 doneq  10 bin 6 unit 1
+#
+# SCSI disk on SEC
+#
+#device		sd0	at sec? req 4 doneq 4 bin 5 unit ? target 6
+#device		sd1	at sec? req 4 doneq 4 bin 5 unit ? target 6
+#
+# SCSI streamer tape on SEC
+#
+device		ts0	at sec? req 4 doneq 4 bin 5 unit ? target 4
+#
+# SCSI memory driver on SEC
+#
+device		sm0	at sec0 req 3 doneq 3 bin 4 unit 0
+#device		sm1	at sec1 req 3 doneq 3 bin 4 unit 0
+#
+# ZDC Drives
+#
+device		zd0	at zdc? drive ? drive_type ?
+device		zd1	at zdc? drive ? drive_type ?
+device		zd2	at zdc? drive ? drive_type ?
+device		zd3	at zdc? drive ? drive_type ?
+#device		zd4	at zdc? drive ? drive_type ?
+#device		zd5	at zdc? drive ? drive_type ?
+#device		zd6	at zdc? drive ? drive_type ?
+#device		zd7	at zdc? drive ? drive_type ?

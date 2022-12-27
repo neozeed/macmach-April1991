@@ -1,0 +1,67 @@
+#
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement
+# specifies the terms and conditions for use and redistribution.
+#
+# HISTORY
+# $Log:	Makefile.mips,v $
+# Revision 2.5  90/08/08  17:21:38  mrt
+# 	Added nullification of VOLATILE nullifying macro (sic).
+# 	[90/05/20            af]
+# 
+# Revision 2.4  89/05/30  17:06:21  rvb
+# 	Nothing Noteworthy.
+# 
+#
+######################################################################
+#BEGIN	Machine dependent Makefile fragment for the MIPS
+######################################################################
+# ------------------------------------------------------------------
+# | Copyright Unpublished, MIPS Computer Systems, Inc.  All Rights |
+# | Reserved.  This software contains proprietary and confidential |
+# | information of MIPS and its suppliers.  Use, disclosure or     |
+# | reproduction is prohibited without the prior express written   |
+# | consent of MIPS.                                               |
+# ------------------------------------------------------------------
+#
+# Makefile for 4.3 bsd on MIPS Computer Systems Charleston architecture
+#
+
+RM=		rm -f
+GPSIZE=		128
+TEXTBASE=	80030000
+
+
+#
+# COPTS is recognized by config and massaged for profiling kernels
+#
+#
+# cc options for most kernel sources
+# CCNFLAGS - normal files
+# CCDFLAGS - device drivers
+# CCSFLAGS - swap*.c files
+# CCASFLAGS - *.s files
+# CCPFLAGS - profiling *.c files
+# CCPASFLAGS - profiling *.s files
+#
+# CCOPTS may be set from the config file
+# ASOPTS may be set from the config file
+# ENDIAN may be set from the config file
+#
+CCNFLAGS= -c ${ENDIAN} ${CCOPTS} ${COPTS} ${DEFINES}
+CCDFLAGS= -c ${ENDIAN} ${CCOPTS} ${COPTS} ${DEFINES}
+CCSFLAGS= -c ${ENDIAN} ${CCOPTS} ${COPTS} ${DEFINES}
+CCASFLAGS= -c ${ENDIAN} ${ASOPTS} ${COPTS} ${DEFINES} -DASSEMBLER
+CCPFLAGS= -c ${ENDIAN} ${CCOPTS} ${PCOPTS} ${DEFINES}
+CCPASFLAGS= -c ${ENDIAN} ${ASOPTS} ${PCOPTS} ${DEFINES} -DASSEMBLER
+#
+LDOBJS_PREFIX=entry.o
+LDFLAGS= ${ENDIAN} -G ${GPSIZE} -N -T ${TEXTBASE} -e start ${LDOPTS}
+
+${SOBJS}: assym.s
+DEPENDS=-MD -G ${GPSIZE}
+VOLATILE=
+######################################################################
+#END	Machine dependent Makefile fragment for the MIPS
+######################################################################
